@@ -1,4 +1,3 @@
-```python
 import yfinance as yf
 import json
 import datetime
@@ -145,6 +144,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-```
