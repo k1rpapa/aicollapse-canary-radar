@@ -1,11 +1,27 @@
 {
-  "timestamp": "2026-06-26T12:37:24.723203+00:00",
+  "timestamp": "2026-06-26T12:47:45.988998+00:00",
+  "config": {
+    "TIER_1": [
+      "CEG",
+      "VRT",
+      "ETN",
+      "EQIX"
+    ],
+    "TIER_1_5": [
+      "SMCI",
+      "ANET"
+    ],
+    "TIER_2": [
+      "CRWV",
+      "NBIS"
+    ]
+  },
   "layers": {
-    "TIER_1": 1.57,
+    "TIER_1": 1.73,
     "TIER_1_5": -0.04,
     "TIER_2": -1.64
   },
-  "status": "🟢 【正常】物理基盤に資本が流入しており健全",
+  "status": "🟡 【質の逃避】物理基盤は堅調だが、期待値層(Tier 2)から資金が抜けている",
   "details": {
     "CEG": {
       "price": 268.69,
@@ -20,8 +36,8 @@
       "change": 3.78
     },
     "EQIX": {
-      "price": 1087.61,
-      "change": -0.67
+      "price": 0.0,
+      "change": 0.0
     },
     "SMCI": {
       "price": 31.68,
@@ -39,21 +55,5 @@
       "price": 256.63,
       "change": -1.17
     }
-  },
-  "config": {
-    "TIER_1": [
-      "CEG",
-      "VRT",
-      "ETN",
-      "EQIX"
-    ],
-    "TIER_1_5": [
-      "SMCI",
-      "ANET"
-    ],
-    "TIER_2": [
-      "CRWV",
-      "NBIS"
-    ]
   }
 }
