@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-26T15:58:24.968523+00:00",
+  "timestamp": "2026-06-26T20:25:18.451726+00:00",
   "config": {
     "TIER_1": [
       "CEG",
@@ -23,60 +23,60 @@
     ]
   },
   "layers": {
-    "TIER_1": -3.07,
-    "TIER_1_5": -3.1,
-    "TIER_2": -4.66,
-    "TIER_3": 0.88
+    "TIER_1": -3.03,
+    "TIER_1_5": -4.03,
+    "TIER_2": -4.29,
+    "TIER_3": -0.6
   },
-  "status": "🔴 【崩壊確定】物理・演算ともに資金流出。インフラバブルの破裂",
+  "status": "⚪ 【注視】各レイヤーで強弱が混在。トレンドの明確化を待て",
   "details": {
     "CEG": {
-      "price": 265.27,
-      "change": -1.27
+      "price": 264.02,
+      "change": -1.74
     },
     "VRT": {
-      "price": 305.35,
-      "change": -6.21
+      "price": 303.95,
+      "change": -6.64
     },
     "ETN": {
-      "price": 401.62,
-      "change": -4.35
+      "price": 402.68,
+      "change": -4.09
     },
     "EQIX": {
-      "price": 1082.59,
-      "change": -0.46
+      "price": 1091.3,
+      "change": 0.34
     },
     "SMCI": {
-      "price": 31.08,
-      "change": -1.91
+      "price": 30.63,
+      "change": -3.31
     },
     "ANET": {
-      "price": 158.37,
-      "change": -4.28
+      "price": 157.6,
+      "change": -4.74
     },
     "CRWV": {
-      "price": 95.6,
-      "change": -3.2
+      "price": 96.58,
+      "change": -2.21
     },
     "NBIS": {
-      "price": 240.96,
-      "change": -6.11
+      "price": 240.3,
+      "change": -6.36
     },
     "FCX": {
-      "price": 62.87,
-      "change": 0.1
+      "price": 62.45,
+      "change": -0.56
     },
     "SCCO": {
-      "price": 176.09,
-      "change": 0.78
+      "price": 171.26,
+      "change": -1.99
     },
     "CCJ": {
-      "price": 105.96,
-      "change": 2.3
+      "price": 104.49,
+      "change": 0.88
     },
     "URA": {
-      "price": 44.07,
-      "change": 0.34
+      "price": 43.59,
+      "change": -0.75
     }
   }
 }
