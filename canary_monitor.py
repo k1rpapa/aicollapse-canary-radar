@@ -94,20 +94,35 @@ def run_diagnostic(tier_averages):
     else:
         return "⚪ 【注視】各レイヤーで強弱が混在。トレンドの明確化を待て"
 
-def send_line_notify(message):
-    token = os.environ.get("LINE_NOTIFY_TOKEN")
-    if not token:
-        print("[-] LINE_NOTIFY_TOKEN is not set. Skipping LINE notification.")
+def send_line_messaging_api(message):
+    token = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN")
+    user_id = os.environ.get("LINE_USER_ID")
+    
+    if not token or not user_id:
+        print("[-] LINE credentials (TOKEN or USER_ID) are not set. Skipping LINE notification.")
         return
-    url = "https://notify-api.line.me/api/notify"
-    headers = {"Authorization": f"Bearer {token}"}
-    data = {"message": message}
+        
+    url = "https://api.line.me/v2/bot/message/push"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {token}"
+    }
+    data = {
+        "to": user_id,
+        "messages": [
+            {
+                "type": "text",
+                "text": message
+            }
+        ]
+    }
+    
     try:
-        response = requests.post(url, headers=headers, data=data)
+        response = requests.post(url, headers=headers, json=data)
         if response.status_code == 200:
-            print("[+] LINE notification sent successfully.")
+            print("[+] LINE Messaging API notification sent successfully.")
         else:
-            print(f"[!] LINE API Error: {response.status_code}")
+            print(f"[!] LINE API Error: {response.status_code} - {response.text}")
     except Exception as e:
         print(f"[!] Failed to send LINE notification: {e}")
 
@@ -120,7 +135,7 @@ def main():
     status_msg = run_diagnostic(tier_averages)
 
     # LINE通知用のメッセージ構築
-    line_msg = f"\n⚠️ AIインフラ監視レポート\n"
+    line_msg = f"⚠️ AIインフラ監視レポート\n"
     line_msg += f"判定: {status_msg}\n\n"
     line_msg += f"■ T1 (物理基盤): {tier_averages['TIER_1']}%\n"
     line_msg += f"■ T1.5 (演算基盤): {tier_averages['TIER_1_5']}%\n"
@@ -128,8 +143,8 @@ def main():
     line_msg += f"■ T3 (資源・上流): {tier_averages['TIER_3']}%\n"
     line_msg += f"\nダッシュボードを確認:\nhttps://k1rpapa.github.io/aicollapse-canary-radar/"
     
-    # LINE送信
-    send_line_notify(line_msg)
+    # LINE Messaging API 実行
+    send_line_messaging_api(line_msg)
 
     output_data = {
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
