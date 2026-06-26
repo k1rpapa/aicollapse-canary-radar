@@ -1,4 +1,3 @@
-```yaml
 name: Canary Infrastructure Auto-Update
 
 on:
@@ -38,6 +37,3 @@ jobs:
           git config --local user.name "GitHub Action"
           git add dashboard_data.json
           git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update dashboard data" && git push)
-
-
-```
