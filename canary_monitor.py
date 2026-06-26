@@ -66,45 +66,48 @@ def run_diagnostic(tier_averages):
     t2 = tier_averages.get('TIER_2', 0)
     t3 = tier_averages.get('TIER_3', 0)
 
-    if t1 < -1.0 and t2 < -1.0:
-        return "🔴 【崩壊確定】物理・演算ともに資金流出。インフラバブルの破裂"
+    # 1. 最悪のシナリオ: 資源高騰(T3>0) ＋ インフラ投資死滅(T1,T2崩壊)
+    if t3 > 0 and t1 < -1.0 and t2 < -1.0:
+        return "🔴 【致命的崩壊】資源高騰下でのインフラ投資死滅。最悪のスタグフレーション"
+    
+    # 2. 全面崩壊: 資源から末端まで全てから資金流出
+    elif t1 < -1.0 and t2 < -1.0 and t3 < -1.0:
+        return "🔴 【全面崩壊】資源からクラウドまでAIインフラ全層からの資金流出"
+
+    # 3. コスト限界: 資源が高騰し、インフラ基盤の採算が悪化し始めている
+    elif t3 > 1.0 and t1 < 0:
+        return "🟠 【コスト限界】資源(銅/ウラン)高騰がインフラ構築の採算を圧迫している"
+
+    # 4. 質の逃避: 物理は買われているが、夢(クラウド)が売られている
     elif t1 >= 0 and t2 < -1.0:
         return "🟡 【質の逃避】物理基盤は堅調だが、期待値層(Tier 2)から資金が抜けている"
-    elif t3 > 2.0 and t1 < 0:
-        return "🟠 【コスト圧迫】資源(銅/ウラン)が高騰し、インフラ企業の利益を圧迫している兆候"
-    elif t1 < 0 and t15 > 1.0:
-        return "🟠 【ボトルネック警戒】基盤構築よりサーバー投資が過熱。供給網の歪み"
-    elif t1 >= 0 and t2 >= 0 and t3 >= 0:
-        return "🟢 【正常】資源から演算層まで資金が流入しており極めて健全"
-    else:
-        return "⚪ 【注視】各層で強弱が混在。トレンドの明確化を待て"
 
-def send_line_messaging_api(message):
-    token = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN")
+    # 5. ボトルネック警戒: 箱(物理)が建っていないのに、中身(サーバー)だけ買われている
+    elif t1 < 0 and t15 > 1.0:
+        return "🟡 【供給網歪み】基盤構築よりサーバー投資が過熱。ボトルネック警戒"
+
+    # 6. 完全正常
+    elif t1 >= 0 and t15 >= 0 and t2 >= 0 and t3 >= 0:
+        return "🟢 【正常】資源から演算層まで資金が循環しており極めて健全"
+
+    # 7. その他(トレンド形成待ち)
+    else:
+        return "⚪ 【注視】各レイヤーで強弱が混在。トレンドの明確化を待て"
+
+def send_line_notify(message):
+    token = os.environ.get("LINE_NOTIFY_TOKEN")
     if not token:
-        print("[-] LINE_CHANNEL_ACCESS_TOKEN is not set. Skipping LINE notification.")
+        print("[-] LINE_NOTIFY_TOKEN is not set. Skipping LINE notification.")
         return
-    
-    # Messaging APIのブロードキャスト（友だち全員へ送信）エンドポイント
-    url = "https://api.line.me/v2/bot/message/broadcast"
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json"
-    }
-    data = {
-        "messages": [
-            {
-                "type": "text",
-                "text": message
-            }
-        ]
-    }
+    url = "https://notify-api.line.me/api/notify"
+    headers = {"Authorization": f"Bearer {token}"}
+    data = {"message": message}
     try:
-        response = requests.post(url, headers=headers, json=data)
+        response = requests.post(url, headers=headers, data=data)
         if response.status_code == 200:
-            print("[+] LINE Messaging API notification sent successfully.")
+            print("[+] LINE notification sent successfully.")
         else:
-            print(f"[!] LINE API Error: {response.status_code} - {response.text}")
+            print(f"[!] LINE API Error: {response.status_code}")
     except Exception as e:
         print(f"[!] Failed to send LINE notification: {e}")
 
@@ -117,16 +120,16 @@ def main():
     status_msg = run_diagnostic(tier_averages)
 
     # LINE通知用のメッセージ構築
-    line_msg = f"⚠️ AIインフラ監視レポート\n"
+    line_msg = f"\n⚠️ AIインフラ監視レポート\n"
     line_msg += f"判定: {status_msg}\n\n"
     line_msg += f"■ T1 (物理基盤): {tier_averages['TIER_1']}%\n"
     line_msg += f"■ T1.5 (演算基盤): {tier_averages['TIER_1_5']}%\n"
     line_msg += f"■ T2 (AIサービス): {tier_averages['TIER_2']}%\n"
     line_msg += f"■ T3 (資源・上流): {tier_averages['TIER_3']}%\n"
-    line_msg += f"\nダッシュボードを確認:\nhttps://[君のGitHub_ID].github.io/[リポジトリ名]/"
+    line_msg += f"\nダッシュボードを確認:\nhttps://k1rpapa.github.io/aicollapse-canary-radar/"
     
-    # LINE Messaging API 実行
-    send_line_messaging_api(line_msg)
+    # LINE送信
+    send_line_notify(line_msg)
 
     output_data = {
         "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
