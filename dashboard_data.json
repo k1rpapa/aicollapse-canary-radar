@@ -1,6 +1,11 @@
 {
-  "timestamp": "2026-06-27T12:45:07.262285+00:00",
+  "timestamp": "2026-06-27T20:48:11.435903+00:00",
   "config": {
+    "TIER_0": [
+      "NG=F",
+      "EQT",
+      "KMI"
+    ],
     "TIER_1": [
       "CEG",
       "VRT",
@@ -38,6 +43,7 @@
     ]
   },
   "layers": {
+    "TIER_0": -0.26,
     "TIER_1": -3.03,
     "TIER_1_5": -4.03,
     "TIER_2": -4.29,
@@ -46,6 +52,21 @@
   },
   "status": "🟢 【健全なローテーション】インフラ売却・データ資源買い。テクノロジー全体の崩壊ではない",
   "details": {
+    "NG=F": {
+      "price": 3.23,
+      "change": -3.35,
+      "vol_surge": 1.14
+    },
+    "EQT": {
+      "price": 52.7,
+      "change": 2.03,
+      "vol_surge": 1.4
+    },
+    "KMI": {
+      "price": 33.19,
+      "change": 0.55,
+      "vol_surge": 1.57
+    },
     "CEG": {
       "price": 264.02,
       "change": -1.74,
@@ -69,7 +90,7 @@
     "SMCI": {
       "price": 30.63,
       "change": -3.31,
-      "vol_surge": 0.67
+      "vol_surge": 0.68
     },
     "ANET": {
       "price": 157.6,
