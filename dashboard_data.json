@@ -1,8 +1,9 @@
 {
-  "timestamp": "2026-06-27T20:48:11.435903+00:00",
+  "timestamp": "2026-06-27T21:28:01.916332+00:00",
   "config": {
     "TIER_0": [
-      "NG=F",
+      "UNG",
+      "UNL",
       "EQT",
       "KMI"
     ],
@@ -43,19 +44,25 @@
     ]
   },
   "layers": {
-    "TIER_0": -0.26,
+    "TIER_0": 0.94,
     "TIER_1": -3.03,
     "TIER_1_5": -4.03,
     "TIER_2": -4.29,
     "TIER_3": -0.6,
     "TIER_4": 6.83
   },
+  "spread_ratio": 0.548,
   "status": "🟢 【健全なローテーション】インフラ売却・データ資源買い。テクノロジー全体の崩壊ではない",
   "details": {
-    "NG=F": {
-      "price": 3.23,
-      "change": -3.35,
-      "vol_surge": 1.14
+    "UNG": {
+      "price": 11.87,
+      "change": 1.02,
+      "vol_surge": 1.83
+    },
+    "UNL": {
+      "price": 6.5,
+      "change": 0.15,
+      "vol_surge": 1.94
     },
     "EQT": {
       "price": 52.7,
