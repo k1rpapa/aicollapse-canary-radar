@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-26T20:54:06.779322+00:00",
+  "timestamp": "2026-06-27T12:45:07.262285+00:00",
   "config": {
     "TIER_1": [
       "CEG",
@@ -20,63 +20,156 @@
       "SCCO",
       "CCJ",
       "URA"
+    ],
+    "TIER_4": [
+      "NOW",
+      "WDAY",
+      "CRM",
+      "SAP",
+      "VEEV",
+      "HUBS",
+      "SNOW",
+      "TDC",
+      "ZS",
+      "MDB",
+      "PAYC",
+      "INTU",
+      "ADBE"
     ]
   },
   "layers": {
     "TIER_1": -3.03,
     "TIER_1_5": -4.03,
     "TIER_2": -4.29,
-    "TIER_3": -0.6
+    "TIER_3": -0.6,
+    "TIER_4": 6.83
   },
-  "status": "🔴 【全面崩壊】資源からクラウドまでAIインフラ全層からの資金流出",
+  "status": "🟢 【健全なローテーション】インフラ売却・データ資源買い。テクノロジー全体の崩壊ではない",
   "details": {
     "CEG": {
       "price": 264.02,
-      "change": -1.74
+      "change": -1.74,
+      "vol_surge": 1.27
     },
     "VRT": {
       "price": 303.95,
-      "change": -6.64
+      "change": -6.64,
+      "vol_surge": 2.93
     },
     "ETN": {
       "price": 402.68,
-      "change": -4.09
+      "change": -4.09,
+      "vol_surge": 2.26
     },
     "EQIX": {
       "price": 1091.3,
-      "change": 0.34
+      "change": 0.34,
+      "vol_surge": 0.98
     },
     "SMCI": {
       "price": 30.63,
-      "change": -3.31
+      "change": -3.31,
+      "vol_surge": 0.67
     },
     "ANET": {
       "price": 157.6,
-      "change": -4.74
+      "change": -4.74,
+      "vol_surge": 1.49
     },
     "CRWV": {
       "price": 96.58,
-      "change": -2.21
+      "change": -2.21,
+      "vol_surge": 1.92
     },
     "NBIS": {
       "price": 240.3,
-      "change": -6.36
+      "change": -6.36,
+      "vol_surge": 0.83
     },
     "FCX": {
       "price": 62.45,
-      "change": -0.56
+      "change": -0.56,
+      "vol_surge": 1.58
     },
     "SCCO": {
       "price": 171.26,
-      "change": -1.99
+      "change": -1.99,
+      "vol_surge": 1.14
     },
     "CCJ": {
       "price": 104.49,
-      "change": 0.88
+      "change": 0.88,
+      "vol_surge": 0.76
     },
     "URA": {
       "price": 43.59,
-      "change": -0.75
+      "change": -0.75,
+      "vol_surge": 0.74
+    },
+    "NOW": {
+      "price": 98.34,
+      "change": 9.85,
+      "vol_surge": 1.11
+    },
+    "WDAY": {
+      "price": 124.21,
+      "change": 9.18,
+      "vol_surge": 2.21
+    },
+    "CRM": {
+      "price": 158.37,
+      "change": 5.45,
+      "vol_surge": 1.23
+    },
+    "SAP": {
+      "price": 155.09,
+      "change": 4.75,
+      "vol_surge": 0.87
+    },
+    "VEEV": {
+      "price": 171.36,
+      "change": 8.4,
+      "vol_surge": 2.33
+    },
+    "HUBS": {
+      "price": 185.47,
+      "change": 8.92,
+      "vol_surge": 1.56
+    },
+    "SNOW": {
+      "price": 248.96,
+      "change": 9.65,
+      "vol_surge": 5.05
+    },
+    "TDC": {
+      "price": 32.85,
+      "change": 5.39,
+      "vol_surge": 4.15
+    },
+    "ZS": {
+      "price": 132.26,
+      "change": 6.83,
+      "vol_surge": 1.42
+    },
+    "MDB": {
+      "price": 314.01,
+      "change": 6.77,
+      "vol_surge": 2.36
+    },
+    "PAYC": {
+      "price": 129.18,
+      "change": 3.78,
+      "vol_surge": 2.35
+    },
+    "INTU": {
+      "price": 267.72,
+      "change": 4.96,
+      "vol_surge": 1.99
+    },
+    "ADBE": {
+      "price": 202.73,
+      "change": 4.82,
+      "vol_surge": 1.26
     }
   }
 }
