@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-27T21:28:01.916332+00:00",
+  "timestamp": "2026-06-27T23:04:24.437123+00:00",
   "config": {
     "TIER_0": [
       "UNG",
@@ -45,159 +45,217 @@
   },
   "layers": {
     "TIER_0": 0.94,
-    "TIER_1": -3.03,
+    "TIER_1": -0.65,
     "TIER_1_5": -4.03,
-    "TIER_2": -4.29,
+    "TIER_2": -4.23,
     "TIER_3": -0.6,
-    "TIER_4": 6.83
+    "TIER_4": 5.77
   },
   "spread_ratio": 0.548,
-  "status": "🟢 【健全なローテーション】インフラ売却・データ資源買い。テクノロジー全体の崩壊ではない",
+  "status": "⚪ 【注視】各レイヤーで強弱が混在",
   "details": {
     "UNG": {
       "price": 11.87,
       "change": 1.02,
-      "vol_surge": 1.83
+      "vol_surge": 1.83,
+      "name": "US Natural Gas Fund",
+      "role": "ガス期近・天候ノイズ"
     },
     "UNL": {
       "price": 6.5,
       "change": 0.15,
-      "vol_surge": 1.94
+      "vol_surge": 1.94,
+      "name": "US 12-Month NatGas",
+      "role": "ガス遠月・構造需要"
     },
     "EQT": {
       "price": 52.7,
       "change": 2.03,
-      "vol_surge": 1.4
+      "vol_surge": 1.4,
+      "name": "EQT Corp",
+      "role": "天然ガス生産最大手"
     },
     "KMI": {
       "price": 33.19,
       "change": 0.55,
-      "vol_surge": 1.57
+      "vol_surge": 1.57,
+      "name": "Kinder Morgan",
+      "role": "ガスパイプライン網"
     },
     "CEG": {
       "price": 264.02,
       "change": -1.74,
-      "vol_surge": 1.27
+      "vol_surge": 1.27,
+      "name": "Constellation Energy",
+      "role": "原子力発電・電力"
     },
     "VRT": {
-      "price": 303.95,
-      "change": -6.64,
-      "vol_surge": 2.93
+      "price": 325.57,
+      "change": 2.89,
+      "vol_surge": 1.0,
+      "name": "Vertiv Holdings",
+      "role": "DC冷却・熱管理"
     },
     "ETN": {
       "price": 402.68,
       "change": -4.09,
-      "vol_surge": 2.26
+      "vol_surge": 2.26,
+      "name": "Eaton Corp",
+      "role": "配電・電力制御"
     },
     "EQIX": {
       "price": 1091.3,
       "change": 0.34,
-      "vol_surge": 0.98
+      "vol_surge": 0.98,
+      "name": "Equinix",
+      "role": "DC不動産・コロケーション"
     },
     "SMCI": {
       "price": 30.63,
       "change": -3.31,
-      "vol_surge": 0.68
+      "vol_surge": 0.68,
+      "name": "Super Micro Computer",
+      "role": "高密度AIサーバー"
     },
     "ANET": {
       "price": 157.6,
       "change": -4.74,
-      "vol_surge": 1.49
+      "vol_surge": 1.49,
+      "name": "Arista Networks",
+      "role": "超高速ネットワーク"
     },
     "CRWV": {
-      "price": 96.58,
-      "change": -2.21,
-      "vol_surge": 1.92
+      "price": 98.76,
+      "change": -2.1,
+      "vol_surge": 1.6,
+      "name": "CoreWeave Index",
+      "role": "AI特化型クラウド"
     },
     "NBIS": {
       "price": 240.3,
       "change": -6.36,
-      "vol_surge": 0.83
+      "vol_surge": 0.83,
+      "name": "Nebius Group",
+      "role": "AIクラウドインフラ"
     },
     "FCX": {
       "price": 62.45,
       "change": -0.56,
-      "vol_surge": 1.58
+      "vol_surge": 1.58,
+      "name": "Freeport-McMoRan",
+      "role": "銅（コッパー）生産"
     },
     "SCCO": {
       "price": 171.26,
       "change": -1.99,
-      "vol_surge": 1.14
+      "vol_surge": 1.14,
+      "name": "Southern Copper",
+      "role": "銅（コッパー）生産"
     },
     "CCJ": {
       "price": 104.49,
       "change": 0.88,
-      "vol_surge": 0.76
+      "vol_surge": 0.76,
+      "name": "Cameco Corp",
+      "role": "ウラン採掘・精製"
     },
     "URA": {
       "price": 43.59,
       "change": -0.75,
-      "vol_surge": 0.74
+      "vol_surge": 0.74,
+      "name": "Global X Uranium ETF",
+      "role": "ウラン・原子力ETF"
     },
     "NOW": {
       "price": 98.34,
       "change": 9.85,
-      "vol_surge": 1.11
+      "vol_surge": 1.11,
+      "name": "ServiceNow",
+      "role": "IT・業務ワークフロー"
     },
     "WDAY": {
       "price": 124.21,
       "change": 9.18,
-      "vol_surge": 2.21
+      "vol_surge": 2.21,
+      "name": "Workday",
+      "role": "人事・財務データ"
     },
     "CRM": {
       "price": 158.37,
       "change": 5.45,
-      "vol_surge": 1.23
+      "vol_surge": 1.23,
+      "name": "Salesforce",
+      "role": "顧客・営業データ"
     },
     "SAP": {
-      "price": 155.09,
-      "change": 4.75,
-      "vol_surge": 0.87
+      "price": 148.06,
+      "change": -3.07,
+      "vol_surge": 0.83,
+      "name": "SAP SE",
+      "role": "基幹業務・ERPデータ"
     },
     "VEEV": {
       "price": 171.36,
       "change": 8.4,
-      "vol_surge": 2.33
+      "vol_surge": 2.33,
+      "name": "Veeva Systems",
+      "role": "製薬・治験・規制データ"
     },
     "HUBS": {
       "price": 185.47,
       "change": 8.92,
-      "vol_surge": 1.56
+      "vol_surge": 1.56,
+      "name": "HubSpot",
+      "role": "中堅フロントオフィス"
     },
     "SNOW": {
       "price": 248.96,
       "change": 9.65,
-      "vol_surge": 5.05
+      "vol_surge": 5.05,
+      "name": "Snowflake",
+      "role": "クラウド・データレイク"
     },
     "TDC": {
       "price": 32.85,
       "change": 5.39,
-      "vol_surge": 4.15
+      "vol_surge": 4.15,
+      "name": "Teradata",
+      "role": "重量級データ分析"
     },
     "ZS": {
       "price": 132.26,
       "change": 6.83,
-      "vol_surge": 1.42
+      "vol_surge": 1.42,
+      "name": "Zscaler",
+      "role": "クラウド・セキュリティ"
     },
     "MDB": {
       "price": 314.01,
       "change": 6.77,
-      "vol_surge": 2.36
+      "vol_surge": 2.36,
+      "name": "MongoDB",
+      "role": "非構造化・モダンDB"
     },
     "PAYC": {
-      "price": 129.18,
-      "change": 3.78,
-      "vol_surge": 2.35
+      "price": 124.48,
+      "change": -2.15,
+      "vol_surge": 0.89,
+      "name": "Paycom Software",
+      "role": "人事・給与ワークフロー"
     },
     "INTU": {
       "price": 267.72,
       "change": 4.96,
-      "vol_surge": 1.99
+      "vol_surge": 1.99,
+      "name": "Intuit",
+      "role": "中小財務・税務データ"
     },
     "ADBE": {
       "price": 202.73,
       "change": 4.82,
-      "vol_surge": 1.26
+      "vol_surge": 1.26,
+      "name": "Adobe",
+      "role": "クリエイティブ・PDF規格"
     }
   }
 }
