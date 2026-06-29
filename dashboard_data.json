@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-27T23:04:24.437123+00:00",
+  "timestamp": "2026-06-29T03:29:43.524542+00:00",
   "config": {
     "TIER_0": [
       "UNG",
@@ -45,14 +45,14 @@
   },
   "layers": {
     "TIER_0": 0.94,
-    "TIER_1": -0.65,
+    "TIER_1": -3.03,
     "TIER_1_5": -4.03,
-    "TIER_2": -4.23,
+    "TIER_2": -4.29,
     "TIER_3": -0.6,
-    "TIER_4": 5.77
+    "TIER_4": 6.83
   },
   "spread_ratio": 0.548,
-  "status": "⚪ 【注視】各レイヤーで強弱が混在",
+  "status": "🟢 【健全なローテーション】インフラ売却・データ資源買い。全体の崩壊ではない",
   "details": {
     "UNG": {
       "price": 11.87,
@@ -90,9 +90,9 @@
       "role": "原子力発電・電力"
     },
     "VRT": {
-      "price": 325.57,
-      "change": 2.89,
-      "vol_surge": 1.0,
+      "price": 303.95,
+      "change": -6.64,
+      "vol_surge": 2.93,
       "name": "Vertiv Holdings",
       "role": "DC冷却・熱管理"
     },
@@ -125,9 +125,9 @@
       "role": "超高速ネットワーク"
     },
     "CRWV": {
-      "price": 98.76,
-      "change": -2.1,
-      "vol_surge": 1.6,
+      "price": 96.58,
+      "change": -2.21,
+      "vol_surge": 1.92,
       "name": "CoreWeave Index",
       "role": "AI特化型クラウド"
     },
@@ -188,9 +188,9 @@
       "role": "顧客・営業データ"
     },
     "SAP": {
-      "price": 148.06,
-      "change": -3.07,
-      "vol_surge": 0.83,
+      "price": 155.09,
+      "change": 4.75,
+      "vol_surge": 0.87,
       "name": "SAP SE",
       "role": "基幹業務・ERPデータ"
     },
@@ -237,9 +237,9 @@
       "role": "非構造化・モダンDB"
     },
     "PAYC": {
-      "price": 124.48,
-      "change": -2.15,
-      "vol_surge": 0.89,
+      "price": 129.18,
+      "change": 3.78,
+      "vol_surge": 2.35,
       "name": "Paycom Software",
       "role": "人事・給与ワークフロー"
     },
