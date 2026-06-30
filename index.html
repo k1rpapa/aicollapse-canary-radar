@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CANARY RADAR v12.1</title>
+    <title>CANARY RADAR v12.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -22,7 +22,7 @@
 </head>
 <body class="text-stone-200 p-1 sm:p-4">
     <header class="mb-2 border-b border-stone-800 pb-2 px-1">
-        <h1 class="text-xl sm:text-3xl font-black text-cyan-500 tracking-tighter">CANARY RADAR <span class="text-stone-400">v12.1</span></h1>
+        <h1 class="text-xl sm:text-3xl font-black text-cyan-500 tracking-tighter">CANARY RADAR <span class="text-stone-400">v12.2</span></h1>
         <div class="flex items-center mt-1">
             <div class="w-2 h-2 bg-emerald-500 rounded-full blink mr-2"></div>
             <p id="timestamp" class="text-stone-500 text-[10px] sm:text-xs">Connecting to orbital satellite...</p>
@@ -120,7 +120,6 @@
     <!-- VIEW: DOCS (戦略マニュアル画面)                -->
     <!-- ========================================== -->
     <div id="view-docs" class="hidden-tab mx-1 text-stone-300 pb-10">
-        
         <div class="bg-stone-900 p-4 sm:p-6 rounded-lg border border-stone-800 mb-6">
             <h2 class="text-xl sm:text-2xl font-black text-white mb-2 border-l-4 border-cyan-500 pl-3">CANARY RADAR 戦略ドクトリン</h2>
             <p class="text-sm sm:text-base leading-relaxed mb-4">
@@ -131,30 +130,22 @@
         </div>
 
         <h3 class="text-lg font-bold text-white mb-3 mt-8 border-b border-stone-700 pb-2">■ アーキテクチャ（各Tierの役割）</h3>
-        
         <div class="space-y-4">
-            <!-- Tier -1 -->
             <div class="bg-stone-900/50 p-4 border-l-2 border-purple-500 rounded">
                 <h4 class="font-bold text-purple-400">Tier -1: The Bedrock（岩盤）</h4>
                 <p class="text-xs text-stone-400 mb-2">監視対象: XLU(公益事業) / TLT(長期国債) 比率</p>
                 <p class="text-sm">電力会社が高騰しているのは、Big Techとの「20年間の電力買い取り契約（PPA）」という絶対的な信用があるからだ。この比率は、市場の「PPAへの過信」を測る心電図である。これがピークを打ち下落に転じた時、AIインフラの前提となる資金の岩盤が崩壊する。</p>
             </div>
-
-            <!-- Tier 0 -->
             <div class="bg-stone-900/50 p-4 border-l-2 border-red-500 rounded">
                 <h4 class="font-bold text-red-500">Tier 0: Macro Energy（根源的エネルギー）</h4>
                 <p class="text-xs text-stone-400 mb-2">監視対象: UNG(期近ガス), UNL(遠月ガス), EQT等</p>
                 <p class="text-sm">データセンターを稼働させる「血」は天然ガスだ。数年先の遠月物ガス（UNL）が暴落するということは、市場が「将来のAI電力需要は消滅する（データセンターは建たない）」と冷酷に見切った証拠となる。最高の先行指標。</p>
             </div>
-
-            <!-- Tier 1 -->
             <div class="bg-stone-900/50 p-4 border-l-2 border-cyan-500 rounded">
                 <h4 class="font-bold text-cyan-400">Tier 1: Foundation（物理基盤）</h4>
                 <p class="text-xs text-stone-400 mb-2">監視対象: CEG(原子力), VRT(冷却), EQIX(DC不動産)等</p>
                 <p class="text-sm">AIを物理的に支える電力網と冷却装置。ここの下落は、AIロードマップが「物理的な供給限界」にぶつかり、投資がストップしたことを意味する。</p>
             </div>
-
-            <!-- Tier 2 & 3 -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="bg-stone-900/50 p-4 border-l-2 border-fuchsia-500 rounded">
                     <h4 class="font-bold text-fuchsia-400">Tier 2: Velocity（稼働）</h4>
@@ -167,8 +158,6 @@
                     <p class="text-sm">インフラを作るための素材。ここが高騰しすぎると、建設コストが限界を迎えインフラ企業が死滅する。</p>
                 </div>
             </div>
-
-            <!-- Tier 4 -->
             <div class="bg-stone-900/50 p-4 border-l-2 border-emerald-500 rounded shadow-[0_0_10px_rgba(16,185,129,0.05)]">
                 <h4 class="font-bold text-emerald-400">Tier 4: True Asset（データ資源・関所）</h4>
                 <p class="text-xs text-stone-400 mb-2">監視対象: NOW, CRM, WDAY, SAP, MDB等（SaaS群）</p>
@@ -177,39 +166,28 @@
         </div>
 
         <h3 class="text-lg font-bold text-white mb-3 mt-10 border-b border-stone-700 pb-2">■ 判定ステータスと判断ロジック</h3>
-        <p class="text-sm mb-4 text-stone-400">レーダー最上部に表示されるメッセージは、各Tierの数値の組み合わせからシステムが自動判定している。</p>
-
         <div class="space-y-3">
             <div class="bg-black p-3 rounded border border-stone-800">
                 <div class="text-purple-400 font-black mb-1">🔴 【PPA岩盤崩壊】</div>
                 <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier-1(比率)急落 ＋ Tier 1下落</p>
                 <p class="text-sm mt-1">Big Techの電力契約に対する信用が収縮。借金まみれの電力インフラ株が金利の重力に引き戻される致命的シグナル。</p>
             </div>
-
             <div class="bg-black p-3 rounded border border-stone-800">
                 <div class="text-red-500 font-black mb-1">🔴 【需要幻滅の死】</div>
                 <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier 0(遠月ガス)急落 ＋ Tier 1下落</p>
                 <p class="text-sm mt-1">未来のデータセンター建設計画自体がキャンセルされている。インフラ株を即座に空売り（ショート）すべき局面。</p>
             </div>
-
             <div class="bg-black p-3 rounded border border-stone-800">
                 <div class="text-red-600 font-black mb-1">🔴 【真のパニック崩壊】</div>
                 <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier 1, 2 下落 ＋ Tier 4も下落</p>
                 <p class="text-sm mt-1">インフラだけでなく、避難先であるデータ資源(SaaS)すらも売られている。相関が1に近づく本物の金融ショック。</p>
             </div>
-
             <div class="bg-black p-3 rounded border border-stone-800">
                 <div class="text-emerald-400 font-black mb-1">🟢 【健全なローテーション】</div>
                 <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier 1, 2 下落 ＋ Tier 4上昇</p>
                 <p class="text-sm mt-1">AIインフラのポジションが解消され、SaaSへ資金が還流している。テクノロジー全体の死ではない。</p>
             </div>
-
-            <div class="bg-black p-3 rounded border border-stone-800">
-                <div class="text-amber-500 font-black mb-1">🟠 【コスト限界】 / 🟡 【天候ノイズ】等</div>
-                <p class="text-sm mt-1">ガスの暴騰によるインフラ企業の利益圧迫や、期近ガスのみの急落（冬が暖かいだけ）など、構造的崩壊ではないノイズをシステムが切り分けて警告する。</p>
-            </div>
         </div>
-
     </div>
 
     <script>
@@ -244,14 +222,12 @@
 
         function renderBedrockChart(bedrockData) {
             if (!bedrockData) return;
-            
             document.getElementById('bedrock-ratio').innerText = bedrockData.current_ratio.toFixed(3);
             const chg = bedrockData.ratio_change;
             document.getElementById('bedrock-change').innerText = `${chg > 0 ? '+' : ''}${chg.toFixed(2)}%`;
             document.getElementById('bedrock-change').className = `text-xs font-bold ${getColorClass(chg)}`;
 
             const ctx = document.getElementById('bedrockChart').getContext('2d');
-            
             if (bedrockChartInstance) bedrockChartInstance.destroy();
 
             bedrockChartInstance = new Chart(ctx, {
@@ -259,48 +235,18 @@
                 data: {
                     labels: bedrockData.dates,
                     datasets: [
-                        {
-                            label: 'XLU/TLT Ratio',
-                            data: bedrockData.ratio,
-                            borderColor: '#a855f7',
-                            borderWidth: 2,
-                            pointRadius: 0,
-                            tension: 0.1
-                        },
-                        {
-                            label: 'Gravity (50 SMA)',
-                            data: bedrockData.sma,
-                            borderColor: 'rgba(255, 255, 255, 0.2)',
-                            borderWidth: 1,
-                            borderDash: [5, 5],
-                            pointRadius: 0,
-                            tension: 0.1
-                        },
-                        {
-                            label: 'Bubble Limit (+2σ)',
-                            data: bedrockData.upper,
-                            borderColor: 'rgba(239, 68, 68, 0.5)',
-                            borderWidth: 1,
-                            borderDash: [2, 2],
-                            pointRadius: 0,
-                            tension: 0.1
-                        }
+                        { label: 'XLU/TLT Ratio', data: bedrockData.ratio, borderColor: '#a855f7', borderWidth: 2, pointRadius: 0, tension: 0.1 },
+                        { label: 'Gravity (50 SMA)', data: bedrockData.sma, borderColor: 'rgba(255, 255, 255, 0.2)', borderWidth: 1, borderDash: [5, 5], pointRadius: 0, tension: 0.1 },
+                        { label: 'Bubble Limit (+2σ)', data: bedrockData.upper, borderColor: 'rgba(239, 68, 68, 0.5)', borderWidth: 1, borderDash: [2, 2], pointRadius: 0, tension: 0.1 }
                     ]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
+                    responsive: true, maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleFont: { family: 'Courier New' } }
-                    },
+                    plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleFont: { family: 'Courier New' } } },
                     scales: {
                         x: { display: false },
-                        y: { 
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: '#78716c', font: { family: 'Courier New', size: 10 } }
-                        }
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#78716c', font: { family: 'Courier New', size: 10 } } }
                     }
                 }
             });
@@ -343,8 +289,10 @@
                     data.config[tier].forEach(t => {
                         const d = data.details[t];
                         if (!d) return;
-                        const fullName = d.name || t;
                         
+                        const fullName = d.name || t;
+                        // NEW: ロール（セクター）情報の復活
+                        const roleDesc = d.role ? `<p class="text-[8px] sm:text-[9px] text-stone-500 truncate mt-0.5">${d.role}</p>` : '';
                         const surgeIndicator = d.vol_surge > 1.5 ? `<span class="text-[8px] sm:text-[10px] bg-amber-500 text-stone-900 px-1 sm:px-1.5 py-0.5 rounded font-black ml-2 animate-pulse">VOL SURGE</span>` : '';
 
                         container.innerHTML += `
@@ -354,7 +302,8 @@
                                         <a href="https://finance.yahoo.com/quote/${t}" target="_blank" class="font-black text-xs sm:text-sm text-stone-100 hover:text-cyan-400 tracking-wide">${t}</a>
                                         ${surgeIndicator}
                                     </div>
-                                    <p class="text-[9px] sm:text-[10px] text-stone-400 truncate mt-0.5">${fullName}</p>
+                                    <p class="text-[10px] sm:text-[11px] text-stone-300 font-bold truncate mt-0.5">${fullName}</p>
+                                    ${roleDesc}
                                 </div>
                                 <div class="flex flex-col items-end w-1/3">
                                     <span class="${getColorClass(d.change)} font-mono text-xs sm:text-sm font-black">
@@ -367,9 +316,7 @@
             } catch (e) { console.error(e); }
         }
         
-        // 初回レンダリング
-        render(); 
-        setInterval(render, 60000);
+        render(); setInterval(render, 60000);
     </script>
 </body>
 </html>
