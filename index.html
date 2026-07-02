@@ -3,320 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CANARY RADAR v12.2</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>CanaryInTheGrid - Macro Radar</title>
+    <!-- Chart.jsの読み込み -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: 'Courier New', Courier, monospace; background-color: #0c0a09; }
-        .blink { animation: blinker 1.5s linear infinite; }
-        @keyframes blinker { 50% { opacity: 0.3; } }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(28, 25, 23, 0.5); }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(87, 83, 78, 0.8); border-radius: 2px; }
-        
-        /* タブ切り替え用クラス */
-        .hidden-tab { display: none; }
-        .active-tab-btn { color: #22d3ee; border-bottom-color: #22d3ee; }
-        .inactive-tab-btn { color: #78716c; border-bottom-color: transparent; }
+        body { 
+            background-color: #121212; 
+            color: #e0e0e0; 
+            font-family: 'Helvetica Neue', Arial, sans-serif; 
+            padding: 20px; 
+            margin: 0;
+        }
+        h2 { border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .panel { 
+            background: #1e1e1e; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .alert-box { 
+            padding: 15px; 
+            border-radius: 5px; 
+            font-weight: bold; 
+            font-size: 1.2em; 
+            margin-bottom: 15px;
+        }
+        .alert-normal { background-color: #1b5e20; color: #fff; }
+        .alert-danger { background-color: #b71c1c; color: #fff; }
+        .data-text { font-size: 1.1em; line-height: 1.6; }
+        .data-text b { color: #fff; }
+        canvas { max-width: 100%; height: 400px; }
     </style>
 </head>
-<body class="text-stone-200 p-1 sm:p-4">
-    <header class="mb-2 border-b border-stone-800 pb-2 px-1">
-        <h1 class="text-xl sm:text-3xl font-black text-cyan-500 tracking-tighter">CANARY RADAR <span class="text-stone-400">v12.2</span></h1>
-        <div class="flex items-center mt-1">
-            <div class="w-2 h-2 bg-emerald-500 rounded-full blink mr-2"></div>
-            <p id="timestamp" class="text-stone-500 text-[10px] sm:text-xs">Connecting to orbital satellite...</p>
-        </div>
-    </header>
+<body>
 
-    <!-- タブナビゲーション -->
-    <div class="flex space-x-4 border-b border-stone-800 mb-4 px-1">
-        <button id="btn-radar" onclick="switchTab('radar')" class="px-2 py-2 text-sm sm:text-base font-bold border-b-2 active-tab-btn transition-colors">RADAR VIEW</button>
-        <button id="btn-docs" onclick="switchTab('docs')" class="px-2 py-2 text-sm sm:text-base font-bold border-b-2 inactive-tab-btn hover:text-stone-300 transition-colors">STRATEGY DOCS</button>
+    <h2>📊 CanaryInTheGrid : Macro Command Center</h2>
+
+    <!-- 金融レイヤーパネル -->
+    <div class="panel">
+        <h3>［1. 金融レイヤー］ 天然ガス先物 フォワードカーブ（マージナル・セッター）</h3>
+        <div id="signal-box" class="alert-box">データのロード中...</div>
+        <div class="data-text" id="spread-details"></div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- VIEW: RADAR (ダッシュボード画面)             -->
-    <!-- ========================================== -->
-    <div id="view-radar">
-        <div id="status-display" class="mb-4 mx-1 p-3 bg-stone-900 border-l-4 border-stone-600 rounded shadow-lg text-sm sm:text-lg font-bold leading-tight">
-            データロード中...
-        </div>
-
-        <div class="mb-4 mx-1">
-            <div class="bg-stone-900/80 p-3 rounded border border-purple-900/50 shadow-[0_0_15px_rgba(147,51,234,0.1)] relative">
-                <div class="flex justify-between items-center mb-2 border-b border-stone-800 pb-1">
-                    <div>
-                        <h2 class="text-sm font-bold text-purple-400 uppercase tracking-widest leading-none">Tier -1: The Bedrock</h2>
-                        <p class="text-[10px] text-stone-500 mt-1">PPA信用プレミアム (XLU/TLT Ratio)</p>
-                    </div>
-                    <div class="text-right">
-                        <div id="bedrock-ratio" class="text-xl font-black text-purple-300">-</div>
-                        <div id="bedrock-change" class="text-xs font-bold">-</div>
-                    </div>
-                </div>
-                <div class="w-full h-40 sm:h-64 relative">
-                    <canvas id="bedrockChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div class="mb-4 mx-1">
-            <div class="bg-stone-900/80 p-3 rounded border border-red-900/50">
-                <div class="flex justify-between items-center mb-3 border-b border-stone-800 pb-1">
-                    <div>
-                        <h2 class="text-sm font-bold text-red-500 uppercase tracking-widest leading-none">Tier 0: Macro Energy</h2>
-                        <p class="text-[10px] text-stone-500 mt-1">根源的エネルギー限界・ガス先物</p>
-                    </div>
-                    <div id="t0-avg" class="text-xl font-black">-</div>
-                </div>
-                <div id="t0-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2"></div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mx-1 mb-4">
-            <div class="bg-stone-900 p-3 rounded border border-stone-800">
-                <div class="flex justify-between items-center mb-3 border-b border-stone-800 pb-1">
-                    <h2 class="text-sm font-bold text-cyan-400 uppercase tracking-widest leading-none">Tier 1: Foundation</h2>
-                    <div id="t1-avg" class="text-lg font-black">-</div>
-                </div>
-                <div id="t1-list" class="space-y-2"></div>
-            </div>
-            <div class="bg-stone-900 p-3 rounded border border-stone-800">
-                <div class="flex justify-between items-center mb-3 border-b border-stone-800 pb-1">
-                    <h2 class="text-sm font-bold text-amber-400 uppercase tracking-widest leading-none">Tier 1.5: Compute</h2>
-                    <div id="t15-avg" class="text-lg font-black">-</div>
-                </div>
-                <div id="t15-list" class="space-y-2"></div>
-            </div>
-            <div class="bg-stone-900 p-3 rounded border border-stone-800">
-                <div class="flex justify-between items-center mb-3 border-b border-stone-800 pb-1">
-                    <h2 class="text-sm font-bold text-fuchsia-400 uppercase tracking-widest leading-none">Tier 2: Velocity</h2>
-                    <div id="t2-avg" class="text-lg font-black">-</div>
-                </div>
-                <div id="t2-list" class="space-y-2"></div>
-            </div>
-            <div class="bg-stone-900 p-3 rounded border border-stone-800">
-                <div class="flex justify-between items-center mb-3 border-b border-stone-800 pb-1">
-                    <h2 class="text-sm font-bold text-orange-500 uppercase tracking-widest leading-none">Tier 3: Upstream</h2>
-                    <div id="t3-avg" class="text-lg font-black">-</div>
-                </div>
-                <div id="t3-list" class="space-y-2"></div>
-            </div>
-        </div>
-
-        <div class="mx-1 mb-8">
-            <div class="bg-stone-900 p-3 rounded border border-emerald-800 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
-                <div class="flex justify-between items-center mb-3 border-b border-stone-800 pb-1">
-                    <h2 class="text-sm font-bold text-emerald-400 uppercase tracking-widest leading-none">Tier 4: True Asset</h2>
-                    <div id="t4-avg" class="text-xl font-black">-</div>
-                </div>
-                <div id="t4-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-[400px] overflow-y-auto pr-1 custom-scrollbar"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ========================================== -->
-    <!-- VIEW: DOCS (戦略マニュアル画面)                -->
-    <!-- ========================================== -->
-    <div id="view-docs" class="hidden-tab mx-1 text-stone-300 pb-10">
-        <div class="bg-stone-900 p-4 sm:p-6 rounded-lg border border-stone-800 mb-6">
-            <h2 class="text-xl sm:text-2xl font-black text-white mb-2 border-l-4 border-cyan-500 pl-3">CANARY RADAR 戦略ドクトリン</h2>
-            <p class="text-sm sm:text-base leading-relaxed mb-4">
-                我々は、NVIDIAの株価やOpenAIの評価額を見てAIバブルを測るような素人ではない。
-                AIとはソフトウェアではなく、莫大な電力と冷却水、そして鉄とコンクリートを消費する<strong>「重厚長大な物理インフラ」</strong>である。
-                このレーダーは、最上流の「天然ガス」から最下流の「顧客データ」まで、資金の血流を全6階層（Tier）で監視し、バブルの限界点（カナリアの死）を数理的に検知するクオンツ・システムだ。
-            </p>
-        </div>
-
-        <h3 class="text-lg font-bold text-white mb-3 mt-8 border-b border-stone-700 pb-2">■ アーキテクチャ（各Tierの役割）</h3>
-        <div class="space-y-4">
-            <div class="bg-stone-900/50 p-4 border-l-2 border-purple-500 rounded">
-                <h4 class="font-bold text-purple-400">Tier -1: The Bedrock（岩盤）</h4>
-                <p class="text-xs text-stone-400 mb-2">監視対象: XLU(公益事業) / TLT(長期国債) 比率</p>
-                <p class="text-sm">電力会社が高騰しているのは、Big Techとの「20年間の電力買い取り契約（PPA）」という絶対的な信用があるからだ。この比率は、市場の「PPAへの過信」を測る心電図である。これがピークを打ち下落に転じた時、AIインフラの前提となる資金の岩盤が崩壊する。</p>
-            </div>
-            <div class="bg-stone-900/50 p-4 border-l-2 border-red-500 rounded">
-                <h4 class="font-bold text-red-500">Tier 0: Macro Energy（根源的エネルギー）</h4>
-                <p class="text-xs text-stone-400 mb-2">監視対象: UNG(期近ガス), UNL(遠月ガス), EQT等</p>
-                <p class="text-sm">データセンターを稼働させる「血」は天然ガスだ。数年先の遠月物ガス（UNL）が暴落するということは、市場が「将来のAI電力需要は消滅する（データセンターは建たない）」と冷酷に見切った証拠となる。最高の先行指標。</p>
-            </div>
-            <div class="bg-stone-900/50 p-4 border-l-2 border-cyan-500 rounded">
-                <h4 class="font-bold text-cyan-400">Tier 1: Foundation（物理基盤）</h4>
-                <p class="text-xs text-stone-400 mb-2">監視対象: CEG(原子力), VRT(冷却), EQIX(DC不動産)等</p>
-                <p class="text-sm">AIを物理的に支える電力網と冷却装置。ここの下落は、AIロードマップが「物理的な供給限界」にぶつかり、投資がストップしたことを意味する。</p>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-stone-900/50 p-4 border-l-2 border-fuchsia-500 rounded">
-                    <h4 class="font-bold text-fuchsia-400">Tier 2: Velocity（稼働）</h4>
-                    <p class="text-xs text-stone-400 mb-2">監視対象: AI特化型クラウド</p>
-                    <p class="text-sm">AIの計算力を切り売りするレイヤー。顧客のAIマネタイズ失敗により、最も早く需要が飽和する。</p>
-                </div>
-                <div class="bg-stone-900/50 p-4 border-l-2 border-orange-500 rounded">
-                    <h4 class="font-bold text-orange-400">Tier 3: Upstream（資源）</h4>
-                    <p class="text-xs text-stone-400 mb-2">監視対象: 銅, ウラン</p>
-                    <p class="text-sm">インフラを作るための素材。ここが高騰しすぎると、建設コストが限界を迎えインフラ企業が死滅する。</p>
-                </div>
-            </div>
-            <div class="bg-stone-900/50 p-4 border-l-2 border-emerald-500 rounded shadow-[0_0_10px_rgba(16,185,129,0.05)]">
-                <h4 class="font-bold text-emerald-400">Tier 4: True Asset（データ資源・関所）</h4>
-                <p class="text-xs text-stone-400 mb-2">監視対象: NOW, CRM, WDAY, SAP, MDB等（SaaS群）</p>
-                <p class="text-sm">「AIに駆逐される」と不当に売られてきたが、実は企業の顧客データとワークフローを独占しているデジタル空間の“現物資源”。インフラバブルが弾けた時、資金は必ずこの「最高利益率の要塞」へと逃避してくる。</p>
-            </div>
-        </div>
-
-        <h3 class="text-lg font-bold text-white mb-3 mt-10 border-b border-stone-700 pb-2">■ 判定ステータスと判断ロジック</h3>
-        <div class="space-y-3">
-            <div class="bg-black p-3 rounded border border-stone-800">
-                <div class="text-purple-400 font-black mb-1">🔴 【PPA岩盤崩壊】</div>
-                <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier-1(比率)急落 ＋ Tier 1下落</p>
-                <p class="text-sm mt-1">Big Techの電力契約に対する信用が収縮。借金まみれの電力インフラ株が金利の重力に引き戻される致命的シグナル。</p>
-            </div>
-            <div class="bg-black p-3 rounded border border-stone-800">
-                <div class="text-red-500 font-black mb-1">🔴 【需要幻滅の死】</div>
-                <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier 0(遠月ガス)急落 ＋ Tier 1下落</p>
-                <p class="text-sm mt-1">未来のデータセンター建設計画自体がキャンセルされている。インフラ株を即座に空売り（ショート）すべき局面。</p>
-            </div>
-            <div class="bg-black p-3 rounded border border-stone-800">
-                <div class="text-red-600 font-black mb-1">🔴 【真のパニック崩壊】</div>
-                <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier 1, 2 下落 ＋ Tier 4も下落</p>
-                <p class="text-sm mt-1">インフラだけでなく、避難先であるデータ資源(SaaS)すらも売られている。相関が1に近づく本物の金融ショック。</p>
-            </div>
-            <div class="bg-black p-3 rounded border border-stone-800">
-                <div class="text-emerald-400 font-black mb-1">🟢 【健全なローテーション】</div>
-                <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier 1, 2 下落 ＋ Tier 4上昇</p>
-                <p class="text-sm mt-1">AIインフラのポジションが解消され、SaaSへ資金が還流している。テクノロジー全体の死ではない。</p>
-            </div>
-        </div>
+    <!-- 物理レイヤーパネル -->
+    <div class="panel">
+        <h3>［2. 物理レイヤー］ PJM 実電力需要 Seasonality (過去5年レンジ vs 今年)</h3>
+        <canvas id="seasonalityChart"></canvas>
     </div>
 
     <script>
-        let bedrockChartInstance = null;
+        // ★ここにGCP Cloud FunctionsのデプロイURLを貼り付ける
+        const API_URL = "https://us-east1-canary-grid-2026.cloudfunctions.net/pjm-canary-crawler";
 
-        function switchTab(tabName) {
-            const radarView = document.getElementById('view-radar');
-            const docsView = document.getElementById('view-docs');
-            const btnRadar = document.getElementById('btn-radar');
-            const btnDocs = document.getElementById('btn-docs');
-
-            if (tabName === 'radar') {
-                radarView.classList.remove('hidden-tab');
-                docsView.classList.add('hidden-tab');
-                btnRadar.className = 'px-2 py-2 text-sm sm:text-base font-bold border-b-2 active-tab-btn transition-colors';
-                btnDocs.className = 'px-2 py-2 text-sm sm:text-base font-bold border-b-2 inactive-tab-btn hover:text-stone-300 transition-colors';
-            } else {
-                radarView.classList.add('hidden-tab');
-                docsView.classList.remove('hidden-tab');
-                btnDocs.className = 'px-2 py-2 text-sm sm:text-base font-bold border-b-2 active-tab-btn transition-colors';
-                btnRadar.className = 'px-2 py-2 text-sm sm:text-base font-bold border-b-2 inactive-tab-btn hover:text-stone-300 transition-colors';
+        async function fetchRadarData() {
+            try {
+                const response = await fetch(API_URL);
+                const result = await response.json();
+                
+                if(result.status === "success") {
+                    renderFinancialLayer(result.financial_forward_curve);
+                    renderPhysicalLayer(result.grid_physical_data);
+                } else {
+                    document.getElementById('signal-box').innerText = "バックエンド・エラー: " + result.message;
+                    document.getElementById('signal-box').className = "alert-box alert-danger";
+                }
+            } catch (error) {
+                document.getElementById('signal-box').innerText = "通信エラー：APIに到達できません。CORS設定等を確認してください。";
+                document.getElementById('signal-box').className = "alert-box alert-danger";
             }
         }
 
-        function getColorClass(val) {
-            if (val > 1.0) return 'text-emerald-400';
-            if (val > 0) return 'text-emerald-500';
-            if (val < -1.0) return 'text-rose-500';
-            if (val < 0) return 'text-rose-400';
-            return 'text-stone-300';
+        function renderFinancialLayer(data) {
+            const box = document.getElementById('signal-box');
+            box.innerText = data.signal;
+            
+            // スプレッドがマイナス（バックワーデーション）なら赤色のアラート
+            if(data.spread_delta < 0) {
+                box.className = "alert-box alert-danger";
+            } else {
+                box.className = "alert-box alert-normal";
+            }
+
+            document.getElementById('spread-details').innerHTML = 
+                `期近 契約 (${data.near_month_ticker}): <b>$${data.near_month_price}</b><br>` +
+                `期先 契約 (${data.far_month_ticker}): <b>$${data.far_month_price}</b><br>` +
+                `スプレッド (Δ): <b>$${data.spread_delta}</b>`;
         }
 
-        function renderBedrockChart(bedrockData) {
-            if (!bedrockData) return;
-            document.getElementById('bedrock-ratio').innerText = bedrockData.current_ratio.toFixed(3);
-            const chg = bedrockData.ratio_change;
-            document.getElementById('bedrock-change').innerText = `${chg > 0 ? '+' : ''}${chg.toFixed(2)}%`;
-            document.getElementById('bedrock-change').className = `text-xs font-bold ${getColorClass(chg)}`;
-
-            const ctx = document.getElementById('bedrockChart').getContext('2d');
-            if (bedrockChartInstance) bedrockChartInstance.destroy();
-
-            bedrockChartInstance = new Chart(ctx, {
+        function renderPhysicalLayer(data) {
+            const ctx = document.getElementById('seasonalityChart').getContext('2d');
+            
+            new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: bedrockData.dates,
+                    labels: data.labels,
                     datasets: [
-                        { label: 'XLU/TLT Ratio', data: bedrockData.ratio, borderColor: '#a855f7', borderWidth: 2, pointRadius: 0, tension: 0.1 },
-                        { label: 'Gravity (50 SMA)', data: bedrockData.sma, borderColor: 'rgba(255, 255, 255, 0.2)', borderWidth: 1, borderDash: [5, 5], pointRadius: 0, tension: 0.1 },
-                        { label: 'Bubble Limit (+2σ)', data: bedrockData.upper, borderColor: 'rgba(239, 68, 68, 0.5)', borderWidth: 1, borderDash: [2, 2], pointRadius: 0, tension: 0.1 }
+                        {
+                            label: '今年の実需要推移',
+                            data: data.current_year,
+                            borderColor: '#ff5252',
+                            backgroundColor: '#ff5252',
+                            borderWidth: 2,
+                            tension: 0.1,
+                            pointRadius: 1,
+                            order: 1
+                        },
+                        {
+                            label: '過去5年平均 (ベースライン)',
+                            data: data.historical_avg,
+                            borderColor: '#4fc3f7',
+                            borderDash: [5, 5],
+                            borderWidth: 2,
+                            tension: 0.1,
+                            pointRadius: 0,
+                            order: 2
+                        },
+                        {
+                            label: '過去5年最大',
+                            data: data.historical_max,
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            fill: '+1', // 次のデータセット（過去5年最小）までを塗りつぶす
+                            pointRadius: 0,
+                            tension: 0.1,
+                            order: 3
+                        },
+                        {
+                            label: '過去5年最小',
+                            data: data.historical_min,
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            fill: false,
+                            pointRadius: 0,
+                            tension: 0.1,
+                            order: 4
+                        }
                     ]
                 },
                 options: {
-                    responsive: true, maintainAspectRatio: false,
+                    responsive: true,
+                    maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
-                    plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleFont: { family: 'Courier New' } } },
                     scales: {
-                        x: { display: false },
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#78716c', font: { family: 'Courier New', size: 10 } } }
+                        y: { 
+                            title: { display: true, text: '電力需要 (MWh)', color: '#aaa' }, 
+                            grid: { color: '#333' },
+                            ticks: { color: '#aaa' }
+                        },
+                        x: { 
+                            grid: { color: '#333' },
+                            ticks: { color: '#aaa', maxTicksLimit: 12 }
+                        }
+                    },
+                    plugins: {
+                        legend: { labels: { color: '#e0e0e0' } },
+                        tooltip: { backgroundColor: 'rgba(0,0,0,0.8)' }
                     }
                 }
             });
         }
 
-        async function render() {
-            try {
-                const response = await fetch(`./dashboard_data.json?t=${new Date().getTime()}`);
-                const data = await response.json();
-                
-                document.getElementById('timestamp').innerText = `Last Updated: ${new Date(data.timestamp).toLocaleString()} (JST)`;
-                
-                const statusEl = document.getElementById('status-display');
-                statusEl.innerText = data.status;
-                statusEl.className = 'mb-4 mx-1 p-3 bg-stone-900 border-l-4 rounded shadow-lg text-sm sm:text-lg font-bold leading-tight ';
-                if(data.status.includes('🟢')) statusEl.classList.add('border-emerald-500', 'text-emerald-400');
-                else if(data.status.includes('🔴')) statusEl.classList.add('border-rose-500', 'text-rose-400', 'blink');
-                else if(data.status.includes('🟡') || data.status.includes('🟠')) statusEl.classList.add('border-amber-500', 'text-amber-400');
-                else statusEl.classList.add('border-stone-500', 'text-stone-300');
-
-                renderBedrockChart(data.bedrock);
-
-                const mapping = {
-                    'TIER_0': { list: 't0-list', avg: 't0-avg' },
-                    'TIER_1': { list: 't1-list', avg: 't1-avg' },
-                    'TIER_1_5': { list: 't15-list', avg: 't15-avg' },
-                    'TIER_2': { list: 't2-list', avg: 't2-avg' },
-                    'TIER_3': { list: 't3-list', avg: 't3-avg' },
-                    'TIER_4': { list: 't4-list', avg: 't4-avg' }
-                };
-
-                for (const [tier, ids] of Object.entries(mapping)) {
-                    const avgVal = data.layers[tier];
-                    document.getElementById(ids.avg).innerText = `${avgVal > 0 ? '+' : ''}${avgVal.toFixed(2)}%`;
-                    document.getElementById(ids.avg).className = `text-lg sm:text-xl font-black ${getColorClass(avgVal)}`;
-
-                    const container = document.getElementById(ids.list);
-                    container.innerHTML = '';
-                    
-                    data.config[tier].forEach(t => {
-                        const d = data.details[t];
-                        if (!d) return;
-                        
-                        const fullName = d.name || t;
-                        // NEW: ロール（セクター）情報の復活
-                        const roleDesc = d.role ? `<p class="text-[8px] sm:text-[9px] text-stone-500 truncate mt-0.5">${d.role}</p>` : '';
-                        const surgeIndicator = d.vol_surge > 1.5 ? `<span class="text-[8px] sm:text-[10px] bg-amber-500 text-stone-900 px-1 sm:px-1.5 py-0.5 rounded font-black ml-2 animate-pulse">VOL SURGE</span>` : '';
-
-                        container.innerHTML += `
-                            <div class="flex justify-between items-center p-2 bg-stone-950/70 rounded border border-stone-800">
-                                <div class="flex flex-col w-2/3 pr-2">
-                                    <div class="flex items-center">
-                                        <a href="https://finance.yahoo.com/quote/${t}" target="_blank" class="font-black text-xs sm:text-sm text-stone-100 hover:text-cyan-400 tracking-wide">${t}</a>
-                                        ${surgeIndicator}
-                                    </div>
-                                    <p class="text-[10px] sm:text-[11px] text-stone-300 font-bold truncate mt-0.5">${fullName}</p>
-                                    ${roleDesc}
-                                </div>
-                                <div class="flex flex-col items-end w-1/3">
-                                    <span class="${getColorClass(d.change)} font-mono text-xs sm:text-sm font-black">
-                                        ${d.change > 0 ? '+' : ''}${d.change.toFixed(2)}%
-                                    </span>
-                                </div>
-                            </div>`;
-                    });
-                }
-            } catch (e) { console.error(e); }
-        }
-        
-        render(); setInterval(render, 60000);
+        // 初期化実行
+        fetchRadarData();
     </script>
 </body>
 </html>
