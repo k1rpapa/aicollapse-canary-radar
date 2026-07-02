@@ -1,9 +1,9 @@
-import yfinance as yf
-import pandas as pd
-import json
-import datetime
 import os
+import json
 import requests
+from datetime import datetime
+from collections import defaultdict
+import yfinance as yf
 
 INFRA_TIERS = {
     'TIER_0': ['UNG', 'UNL', 'EQT', 'KMI'],
@@ -150,6 +150,100 @@ def main():
 
     with open('dashboard_data.json', 'w', encoding='utf-8') as f:
         json.dump(output_data, f, ensure_ascii=False, indent=2)
+
+def fetch_forward_curve():
+    """天然ガス先物の期近・期先スプレッドを取得"""
+    try:
+        tickers = yf.Tickers("NG=F NGZ27.NYM")
+        near_hist = tickers.tickers['NG=F'].history(period="1d")
+        far_hist = tickers.tickers['NGZ27.NYM'].history(period="1d")
         
+        if near_hist.empty or far_hist.empty:
+            return None
+            
+        near_price = float(near_hist['Close'].iloc[-1])
+        far_price = float(far_hist['Close'].iloc[-1])
+        spread = far_price - near_price
+        
+        signal = "🚨 【警報】バックワーデーション（バブル崩壊の兆候）" if spread < 0 else "✅ 【正常】コンタンゴ（順ざや維持）"
+            
+        return {
+            "near_month_ticker": "NG=F (Front Month)",
+            "near_month_price": round(near_price, 3),
+            "far_month_ticker": "NGZ27.NYM (Dec 2027)",
+            "far_month_price": round(far_price, 3),
+            "spread_delta": round(spread, 3),
+            "signal": signal
+        }
+    except Exception as e:
+        print(f"Forward Curve Error: {e}")
+        return None
+
+def fetch_physical_grid_data():
+    """EIA APIからPJMの物理的電力需要を取得"""
+    api_key = os.environ.get("EIA_API_KEY")
+    if not api_key:
+        print("Error: EIA_API_KEY is not set.")
+        return None
+
+    url = "https://api.eia.gov/v2/electricity/rto/daily-region-data/data/"
+    current_year = datetime.now().year
+    
+    params = {
+        "api_key": api_key,
+        "frequency": "daily",
+        "data[0]": "value",
+        "facets[respondent][]": "PJM",
+        "facets[timezone][]": "Eastern",
+        "facets[type][]": "D",
+        "start": f"{current_year - 5}-01-01",
+        "sort[0][column]": "period",
+        "sort[0][direction]": "asc",
+        "length": 5000
+    }
+
+    try:
+        res = requests.get(url, params=params, timeout=20)
+        res.raise_for_status()
+        records = res.json().get("response", {}).get("data", [])
+        
+        historical_data = defaultdict(list)
+        current_data_map = {}
+
+        for row in records:
+            period = row.get("period")
+            val = row.get("value")
+            if not period or val is None:
+                continue
+            try:
+                date_obj = datetime.strptime(period, "%Y-%m-%d")
+                mm_dd = date_obj.strftime("%m-%d")
+                if date_obj.year == current_year:
+                    current_data_map[mm_dd] = float(val)
+                else:
+                    historical_data[mm_dd].append(float(val))
+            except ValueError:
+                continue
+
+        labels, hist_min, hist_max, hist_avg, curr_year = [], [], [], [], []
+        for mm_dd in sorted(historical_data.keys()):
+            labels.append(mm_dd)
+            h_vals = historical_data[mm_dd]
+            hist_min.append(min(h_vals))
+            hist_max.append(max(h_vals))
+            hist_avg.append(round(sum(h_vals) / len(h_vals), 2))
+            curr_year.append(current_data_map.get(mm_dd, None))
+
+        return {
+            "labels": labels,
+            "historical_min": hist_min,
+            "historical_max": hist_max,
+            "historical_avg": hist_avg,
+            "current_year": curr_year
+        }
+    except Exception as e:
+        print(f"EIA API Error: {e}")
+        return None
+
 if __name__ == "__main__":
     main()
