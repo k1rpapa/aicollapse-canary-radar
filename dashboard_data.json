@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-07-02T23:53:03.091849+00:00",
+  "timestamp": "2026-07-02T23:55:42.799140+00:00",
   "config": {
     "TIER_0": [
       "UNG",
@@ -48,7 +48,7 @@
     "TIER_1": -1.7,
     "TIER_1_5": -2.77,
     "TIER_2": -5.26,
-    "TIER_3": 0.47,
+    "TIER_3": 0.44,
     "TIER_4": 1.98
   },
   "bedrock": {
@@ -979,11 +979,11 @@
       "role": "ウラン採掘・精製"
     },
     "URA": {
-      "price": 43.23,
-      "change": 0.12,
-      "vol_surge": 1.4,
-      "name": "Global X Uranium ETF",
-      "role": "ウラン・原子力ETF"
+      "price": 0.0,
+      "change": 0.0,
+      "vol_surge": 1.0,
+      "name": "URA",
+      "role": ""
     },
     "NOW": {
       "price": 106.32,
