@@ -47,10 +47,13 @@
         <div class="data-text" id="spread-details"></div>
     </div>
 
-    <!-- 物理レイヤーパネル -->
+<!-- 物理レイヤーパネル -->
     <div class="panel">
         <h3>［2. 物理レイヤー］ PJM 実電力需要 Seasonality (過去5年レンジ vs 今年)</h3>
-        <canvas id="seasonalityChart"></canvas>
+        <!-- 下記の div ラッパーを追加し、高さを強制する -->
+        <div style="position: relative; height: 50vh; min-height: 400px; width: 100%;">
+            <canvas id="seasonalityChart"></canvas>
+        </div>
     </div>
 
     <script>
