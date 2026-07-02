@@ -1,9 +1,10 @@
 import os
 import json
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
 from collections import defaultdict
 import yfinance as yf
+import pandas as pd
 
 INFRA_TIERS = {
     'TIER_0': ['UNG', 'UNL', 'EQT', 'KMI'],
@@ -140,7 +141,7 @@ def main():
     status_msg = run_diagnostic(tier_averages, bedrock_data)
 
     output_data = {
-        "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "config": INFRA_TIERS,
         "layers": tier_averages,
         "bedrock": bedrock_data,
