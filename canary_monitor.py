@@ -148,6 +148,10 @@ def main():
         "details": details
     }
 
+    # 既存の株式データ辞書（例: output_data）に新しいレイヤーを統合
+    output_data["financial_forward_curve"] = fetch_forward_curve()
+    output_data["grid_physical_data"] = fetch_physical_grid_data()
+
     with open('dashboard_data.json', 'w', encoding='utf-8') as f:
         json.dump(output_data, f, ensure_ascii=False, indent=2)
 
