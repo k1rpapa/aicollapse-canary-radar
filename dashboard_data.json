@@ -1,6 +1,6 @@
 {
-    "timestamp": "2026-07-03T04:05:08.091564+00:00",
-    "status": "🟢 【ローテーション】インフラ売却・データ資源買い",
+    "timestamp": "2026-07-03T04:15:50.347702+00:00",
+    "status": "🟢 【健全なローテーション】インフラ売却 ＋ データ資源(SaaS)買い",
     "config": {
         "TIER_0": [
             "UNG",
@@ -447,10 +447,10 @@
     },
     "financial_forward_curve": {
         "near_month_ticker": "NG=F (Front Month)",
-        "near_month_price": 3.217,
+        "near_month_price": 3.23,
         "far_month_ticker": "NGZ27.NYM (Dec 2027)",
         "far_month_price": 4.243,
-        "spread_delta": 1.026,
+        "spread_delta": 1.013,
         "signal": "✅ 【正常】コンタンゴ（順ざや維持）"
     },
     "grid_physical_data": {
