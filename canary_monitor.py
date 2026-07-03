@@ -250,6 +250,34 @@ def main():
     output_data["financial_forward_curve"] = fetch_forward_curve()
     output_data["grid_physical_data"] = fetch_physical_grid_data()
 
+# ==========================================
+    # 4-3.5 【自動化】相関分析とステータス判定（スタックトレース）
+    # ==========================================
+    print("[*] Analyzing Macro Correlations...")
+    
+    tier1_chg = output_data["layers"].get("TIER_1", 0.0)
+    tier2_chg = output_data["layers"].get("TIER_2", 0.0)
+    tier4_chg = output_data["layers"].get("TIER_4", 0.0)
+    bedrock_chg = output_data.get("bedrock", {}).get("ratio_change", 0.0)
+    gas_signal = output_data.get("financial_forward_curve", {}).get("signal", "")
+
+    # デフォルトステータス
+    current_status = "⚪ 【待機】有意なマクロシグナルなし"
+
+    # 判定ロジック（STRATEGY DOCSのドクトリンに準拠）
+    if "バックワーデーション" in gas_signal and tier1_chg < -1.0:
+        current_status = "🔴 【需要幻滅の死】遠月ガス急落 ＋ 物理基盤下落（即時ショート推奨）"
+    elif bedrock_chg < -1.0 and tier1_chg < -1.0:
+        current_status = "🔴 【PPA岩盤崩壊】信用プレミアム急落 ＋ 物理基盤下落"
+    elif tier1_chg < -1.0 and tier2_chg < -1.0 and tier4_chg < -1.0:
+        current_status = "🔴 【真のパニック崩壊】インフラ〜データ資源まで全面安（相関の崩壊）"
+    elif tier1_chg < -1.0 and tier4_chg > 0.0:
+        current_status = "🟢 【健全なローテーション】インフラ売却 ＋ データ資源(SaaS)買い"
+    elif tier1_chg > 1.0 and tier4_chg > 1.0:
+        current_status = "🟢 【バブル継続】全レイヤーへの過剰流動性流入"
+
+    output_data["status"] = current_status
+
     # 4-4. JSONの書き出し
     print("[*] Writing dashboard_data.json...")
     with open('dashboard_data.json', 'w', encoding='utf-8') as f:
