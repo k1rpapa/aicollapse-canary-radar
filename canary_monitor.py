@@ -47,6 +47,37 @@ TICKER_INFO = {
     'ADBE': {'name': 'Adobe', 'role': 'クリエイティブ・PDF規格'}
 }
 
+def send_line_alert(message):
+    """LINE Messaging API経由で致命的シグナルをプッシュ通知する"""
+    token = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN")
+    user_id = os.environ.get("LINE_USER_ID")
+
+    if not token or not user_id:
+        print("Warning: LINE credentials not found. Skipping alert push.")
+        return
+
+    url = "https://api.line.me/v2/bot/message/push"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {token}"
+    }
+    payload = {
+        "to": user_id,
+        "messages": [
+            {
+                "type": "text",
+                "text": message
+            }
+        ]
+    }
+
+    try:
+        res = requests.post(url, headers=headers, json=payload, timeout=10)
+        res.raise_for_status()
+        print("🟢 LINE Alert Executed Successfully.")
+    except Exception as e:
+        print(f"🔴 Failed to execute LINE Alert: {e}")
+
 # --- 新規追加: Tier -1 (岩盤) の時系列データ取得 ---
 def fetch_bedrock_data():
     print("[*] Fetching Tier -1 Bedrock Data (XLU / TLT)...")
@@ -156,33 +187,36 @@ def main():
     with open('dashboard_data.json', 'w', encoding='utf-8') as f:
         json.dump(output_data, f, ensure_ascii=False, indent=2)
 
-def fetch_forward_curve():
-    """天然ガス先物の期近・期先スプレッドを取得"""
+def send_line_alert(message):
+    """LINE Messaging API経由で致命的シグナルをプッシュ通知する"""
+    token = os.environ.get("LINE_CHANNEL_ACCESS_TOKEN")
+    user_id = os.environ.get("LINE_USER_ID")
+
+    if not token or not user_id:
+        print("Warning: LINE credentials not found. Skipping alert push.")
+        return
+
+    url = "https://api.line.me/v2/bot/message/push"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {token}"
+    }
+    payload = {
+        "to": user_id,
+        "messages": [
+            {
+                "type": "text",
+                "text": message
+            }
+        ]
+    }
+
     try:
-        tickers = yf.Tickers("NG=F NGZ27.NYM")
-        near_hist = tickers.tickers['NG=F'].history(period="1d")
-        far_hist = tickers.tickers['NGZ27.NYM'].history(period="1d")
-        
-        if near_hist.empty or far_hist.empty:
-            return None
-            
-        near_price = float(near_hist['Close'].iloc[-1])
-        far_price = float(far_hist['Close'].iloc[-1])
-        spread = far_price - near_price
-        
-        signal = "🚨 【警報】バックワーデーション（バブル崩壊の兆候）" if spread < 0 else "✅ 【正常】コンタンゴ（順ざや維持）"
-            
-        return {
-            "near_month_ticker": "NG=F (Front Month)",
-            "near_month_price": round(near_price, 3),
-            "far_month_ticker": "NGZ27.NYM (Dec 2027)",
-            "far_month_price": round(far_price, 3),
-            "spread_delta": round(spread, 3),
-            "signal": signal
-        }
+        res = requests.post(url, headers=headers, json=payload, timeout=10)
+        res.raise_for_status()
+        print("🟢 LINE Alert Executed Successfully.")
     except Exception as e:
-        print(f"Forward Curve Error: {e}")
-        return None
+        print(f"🔴 Failed to execute LINE Alert: {e}")
 
 def fetch_physical_grid_data():
     """EIA APIからPJMの物理的電力需要を取得"""
