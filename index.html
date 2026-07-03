@@ -193,7 +193,92 @@
                 このレーダーは、最上流の「天然ガス」から最下流の「顧客データ」まで、資金の血流を全6階層（Tier）で監視し、バブルの限界点（カナリアの死）を数理的に検知するクオンツ・システムだ。
             </p>
         </div>
-        <!-- 既存のドキュメント内容は維持 -->
+
+        <h3 class="text-lg font-bold text-white mb-3 mt-8 border-b border-stone-700 pb-2">■ 統合司令室アーキテクチャ（各タブの役割）</h3>
+        <div class="space-y-4 mb-8">
+            <div class="bg-stone-900/50 p-4 border-l-2 border-purple-500 rounded">
+                <h4 class="font-bold text-purple-400">1. RADAR VIEW（株式・Tier階層モニター）</h4>
+                <p class="text-sm">資金の血流を最上流（電力契約の岩盤）から最下流（SaaS）まで5つの階層に分け、株式市場のローテーションと崩壊の予兆を可視化する。「AIの建設（ハードウェア）」から「AIによる利益（ソフトウェア）」への資金逃避を検知する心電図。</p>
+            </div>
+            <div class="bg-stone-900/50 p-4 border-l-2 border-cyan-500 rounded">
+                <h4 class="font-bold text-cyan-400">2. PHYSICAL GRID（物理限界・ドミノ監視）</h4>
+                <p class="text-sm">金融の幻想を打ち砕く「物理的質量」のセクション。PJM送電網の実需要、天然ガスのフォワードカーブ、そしてWTI原油やコッパー（銅）へのマクロ波及（ドミノ効果）をリアルタイムでスタックトレースする。</p>
+            </div>
+            <div class="bg-stone-900/50 p-4 border-l-2 border-stone-500 rounded">
+                <h4 class="font-bold text-stone-400">3. STRATEGY DOCS（本画面）</h4>
+                <p class="text-sm">市場がパニックに陥った際、感情を排除し、システムが発するシグナルに従って「損切り」か「買い向かうか」を判断するための絶対的な行動規範（ドクトリン）。</p>
+            </div>
+        </div>
+
+        <h3 class="text-lg font-bold text-white mb-3 mt-8 border-b border-stone-700 pb-2">■ 各パネル（Tier）の監視対象と役割</h3>
+        <div class="space-y-4 mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="bg-stone-900/30 p-4 border border-stone-800 rounded">
+                    <h4 class="font-bold text-purple-400 text-sm mb-1">Tier -1: The Bedrock (岩盤)</h4>
+                    <p class="text-xs text-stone-400">監視対象: XLU(公益) / TLT(長期国債) 比率</p>
+                    <p class="text-xs mt-1">電力会社が高騰する根拠である「20年間のPPA(電力買取契約)」への過信を測る。これがピークアウトすれば、インフラ資金の前提が崩壊する。</p>
+                </div>
+                <div class="bg-stone-900/30 p-4 border border-stone-800 rounded">
+                    <h4 class="font-bold text-red-500 text-sm mb-1">Tier 0: Macro Energy (根源的エネルギー)</h4>
+                    <p class="text-xs text-stone-400">監視対象: UNG, UNL(遠月ガス), EQT 等</p>
+                    <p class="text-xs mt-1">データセンターの「血」。3年先のガス価格が暴落すれば、市場が「将来の電力需要は消滅する（建設計画の頓挫）」と見切った最高の先行指標となる。</p>
+                </div>
+                <div class="bg-stone-900/30 p-4 border border-stone-800 rounded">
+                    <h4 class="font-bold text-cyan-400 text-sm mb-1">Tier 1 & 1.5: Foundation / Compute</h4>
+                    <p class="text-xs text-stone-400">監視対象: CEG, VRT, SMCI, NVDA 等</p>
+                    <p class="text-xs mt-1">AIを物理的に支える電力網・冷却・サーバー。ここの下落は、AIロードマップが物理的な供給限界にぶつかったことを意味する。</p>
+                </div>
+                <div class="bg-stone-900/30 p-4 border border-stone-800 rounded">
+                    <h4 class="font-bold text-emerald-400 text-sm mb-1">Tier 4: True Asset (データ資源)</h4>
+                    <p class="text-xs text-stone-400">監視対象: NOW, CRM, SAP 等</p>
+                    <p class="text-xs mt-1">デジタル空間の“現物資源”。インフラバブル崩壊時、資金は必ずこの「最高利益率の要塞（顧客データの独占）」へと逃避する。</p>
+                </div>
+            </div>
+            <div class="bg-stone-900/30 p-4 border border-stone-800 rounded">
+                <h4 class="font-bold text-amber-500 text-sm mb-1">Tier 3 / ドミノ波及: コモディティ・スクイーズ</h4>
+                <p class="text-xs text-stone-400">監視対象: USO(WTI原油), FCX(銅), CCJ(ウラン)</p>
+                <p class="text-xs mt-1">PJM送電網がパンクした際、天然ガスの代替としての重油・ディーゼル需要（WTI高騰）と、送電網アップグレードの実需（コッパー高騰）へと資金が波及するタイムラグを捕捉する。</p>
+            </div>
+        </div>
+
+        <h3 class="text-lg font-bold text-white mb-3 mt-10 border-b border-stone-700 pb-2">■ 自律判定ステータスと迎撃システム（LINE発報）</h3>
+        <div class="space-y-3">
+            <div class="bg-black p-3 rounded border border-stone-800">
+                <div class="text-emerald-400 font-black mb-1">🟢 【健全なローテーション】</div>
+                <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier 1(基盤) 下落 ＋ Tier 4(SaaS) 上昇</p>
+                <p class="text-sm mt-1">AIインフラのポジションが解消され、SaaSへ資金が還流している。テクノロジー全体の死ではなく、理知的な資金移動。</p>
+            </div>
+            <div class="bg-black p-3 rounded border border-stone-800">
+                <div class="text-purple-400 font-black mb-1">🔴 【PPA岩盤崩壊】</div>
+                <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier-1(比率) 1%超急落 ＋ Tier 1(基盤) 下落</p>
+                <p class="text-sm mt-1">Big Techの電力契約に対する信用が収縮。借金まみれの電力インフラ株が金利の重力に引き戻される致命的シグナル。</p>
+            </div>
+            <div class="bg-black p-3 rounded border border-stone-800">
+                <div class="text-red-500 font-black mb-1">🔴 【需要幻滅の死】</div>
+                <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> 遠月ガス先物急落 ＋ Tier 1(基盤) 下落</p>
+                <p class="text-sm mt-1">未来のデータセンター建設計画自体がキャンセルされている。インフラ株を即座に空売り（ショート）すべき局面。</p>
+            </div>
+            <div class="bg-black p-3 rounded border border-stone-800">
+                <div class="text-red-600 font-black mb-1">🔴 【真のパニック崩壊】</div>
+                <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier 1(基盤), Tier 2(稼働) 下落 ＋ Tier 4(SaaS) 下落</p>
+                <p class="text-sm mt-1">インフラだけでなく、避難先であるデータ資源(SaaS)すらも売られている。相関が1に近づく本物の金融ショック。</p>
+            </div>
+
+            <!-- LINE発報トリガーの説明 -->
+            <div class="bg-stone-900 p-4 mt-6 border border-rose-900/50 shadow-[0_0_15px_rgba(225,29,72,0.2)] rounded relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-2 opacity-10 text-4xl">🎯</div>
+                <div class="text-rose-500 font-black mb-2 flex items-center text-lg">
+                    <span class="blink mr-2">🚨</span> 【最終迎撃トリガー】LINE通知発報条件
+                </div>
+                <p class="text-sm text-stone-300 mb-2 border-b border-stone-800 pb-2">
+                    <span class="font-bold text-white">発火条件:</span> 天然ガス先物スプレッド（期先 - 期近） < $0 （バックワーデーション転落）
+                </p>
+                <p class="text-sm leading-relaxed text-stone-400">
+                    マージナル・セッター（限界価格決定者）である天然ガスの期間構造が崩壊した瞬間、市場が「送電網の限界により、データセンターは物理的にこれ以上建たない」と冷酷に見切った決定的証拠となる。<br><br>
+                    バックエンド（<code class="text-rose-400">canary_monitor.py</code>）がこの歪みを検知したミリ秒後、君のスマートフォンへ緊急アラートがプッシュ送信される。この通知を受信した瞬間、WTI原油のスクイーズ（コール買い）と、ナスダック・インフラ群の空売りを実行せよ。
+                </p>
+            </div>
+        </div>
     </div>
 
     <script>
