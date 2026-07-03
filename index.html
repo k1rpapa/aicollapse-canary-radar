@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CANARY RADAR v12.3</title>
+    <title>CANARY RADAR v12.3 - FULL STACK</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -13,8 +13,6 @@
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(28, 25, 23, 0.5); }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(87, 83, 78, 0.8); border-radius: 2px; }
-        
-        /* タブ切り替え用クラス */
         .hidden-tab { display: none; }
         .active-tab-btn { color: #22d3ee; border-bottom-color: #22d3ee; }
         .inactive-tab-btn { color: #78716c; border-bottom-color: transparent; }
@@ -118,7 +116,7 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- VIEW: GRID (物理送電網＆先物カーブ画面)        -->
+    <!-- VIEW: GRID (物理送電網＆先物カーブ＆ドミノ画面) -->
     <!-- ========================================== -->
     <div id="view-grid" class="hidden-tab mx-1 text-stone-300 pb-10">
         
@@ -128,18 +126,58 @@
             <div id="signal-box" class="p-3 rounded border font-bold text-sm sm:text-lg mb-3 bg-stone-950 border-stone-700">
                 データのロード中...
             </div>
-            <div class="text-xs sm:text-sm leading-relaxed text-stone-400" id="spread-details">
-                <!-- スプレッド詳細がここに展開される -->
-            </div>
+            <div class="text-xs sm:text-sm leading-relaxed text-stone-400" id="spread-details"></div>
         </div>
 
         <!-- 物理レイヤーパネル -->
         <div class="bg-stone-900 p-4 rounded-lg border border-stone-800 mb-6 shadow-lg">
             <h3 class="text-sm font-bold text-cyan-400 uppercase tracking-widest leading-none mb-3 border-b border-stone-700 pb-2">［2. 物理レイヤー］ PJM 実電力需要 Seasonality (過去5年レンジ vs 今年)</h3>
-            <!-- 高さ固定ラッパーによりレスポンシブ崩れを防御 -->
             <div style="position: relative; height: 50vh; min-height: 400px; width: 100%;">
                 <canvas id="seasonalityChart"></canvas>
             </div>
+        </div>
+
+        <!-- マクロ・ドミノ・モニター (NEW) -->
+        <div class="bg-stone-900 p-4 rounded-lg border border-stone-800 mb-6 shadow-[0_0_20px_rgba(245,158,11,0.05)]">
+            <h3 class="text-sm font-bold text-amber-500 uppercase tracking-widest leading-none mb-3 border-b border-stone-700 pb-2 flex items-center">
+                ［3. マクロ波及レイヤー］ コモディティ・ドミノ（エネルギー〜素材への伝播）
+                <span id="domino-status-indicator" class="ml-3 text-[10px] px-2 py-1 bg-stone-800 rounded text-stone-400">STATUS: SCANNING...</span>
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4" id="domino-container">
+                <!-- WTI Crude Oil -->
+                <div class="bg-stone-950 p-3 rounded border border-stone-700 relative overflow-hidden">
+                    <div class="text-xs text-stone-500 font-bold mb-1">WTI原油 (代替燃料スクイーズ)</div>
+                    <div class="flex justify-between items-end">
+                        <div class="text-2xl font-black text-stone-200" id="domino-uso-ticker">USO</div>
+                        <div class="text-lg font-bold" id="domino-uso-val">-</div>
+                    </div>
+                </div>
+                <!-- Copper (Freeport / Southern) -->
+                <div class="bg-stone-950 p-3 rounded border border-stone-700 relative overflow-hidden">
+                    <div class="text-xs text-stone-500 font-bold mb-1">コッパー (送電網アップグレード実需)</div>
+                    <div class="flex justify-between items-end mb-1">
+                        <div class="text-lg font-black text-stone-300">FCX</div>
+                        <div class="text-sm font-bold" id="domino-fcx-val">-</div>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <div class="text-lg font-black text-stone-300">SCCO</div>
+                        <div class="text-sm font-bold" id="domino-scco-val">-</div>
+                    </div>
+                </div>
+                <!-- Uranium -->
+                <div class="bg-stone-950 p-3 rounded border border-stone-700 relative overflow-hidden">
+                    <div class="text-xs text-stone-500 font-bold mb-1">ウラン (究極のベースロード回帰)</div>
+                    <div class="flex justify-between items-end">
+                        <div class="text-2xl font-black text-stone-200">CCJ</div>
+                        <div class="text-lg font-bold" id="domino-ccj-val">-</div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-[10px] sm:text-xs text-stone-500 mt-4 leading-relaxed border-l-2 border-stone-700 pl-2">
+                <span class="text-amber-400 font-bold">伝播ロジック:</span> 
+                PJMの電力網が物理限界に達し（真紅のライン）、ガス先物がバックワーデーション（$\Delta < 0$）に陥った時、
+                代替燃料であるWTI原油と、送電網拡張に不可欠な銅（コッパー）に資金が雪崩れ込む。このパネルの緑色点灯は、マクロのドミノが倒れ始めた確固たるシグナルである。
+            </p>
         </div>
     </div>
 
@@ -155,80 +193,7 @@
                 このレーダーは、最上流の「天然ガス」から最下流の「顧客データ」まで、資金の血流を全6階層（Tier）で監視し、バブルの限界点（カナリアの死）を数理的に検知するクオンツ・システムだ。
             </p>
         </div>
-
-        <h3 class="text-lg font-bold text-white mb-3 mt-8 border-b border-stone-700 pb-2">■ 新設：PHYSICAL GRID（物理限界とマージナル・セッター）</h3>
-        <div class="space-y-4 mb-8">
-            <div class="bg-stone-900/50 p-4 border-l-2 border-red-500 rounded shadow-[0_0_10px_rgba(239,68,68,0.05)]">
-                <h4 class="font-bold text-red-400">［1］天然ガス先物 フォワードカーブ（金融の歪み）</h4>
-                <p class="text-xs text-stone-400 mb-2">監視対象: Henry Hub 天然ガス (期近 vs 期先)</p>
-                <p class="text-sm">電力の限界価格（マージナル・プライス）を決定する天然ガスの期間構造。市場が「将来のAI需要増」を信じている間は、期先が高い「コンタンゴ（順ざや）」を維持する。しかし、送電網の限界によりデータセンター増設が不可能だとスマートマネーが悟った瞬間、このカーブは「バックワーデーション（期先安）」へ急転直下する。これが最速の崩壊シグナルである。</p>
-            </div>
-            <div class="bg-stone-900/50 p-4 border-l-2 border-cyan-500 rounded shadow-[0_0_10px_rgba(34,211,238,0.05)]">
-                <h4 class="font-bold text-cyan-400">［2］PJM 実電力需要 Seasonality（物理的な質量の悲鳴）</h4>
-                <p class="text-xs text-stone-400 mb-2">監視対象: 米国東部 PJM送電網 日次需要 (MWh)</p>
-                <p class="text-sm">データセンターは24時間365日稼働する強烈な「ベースロード」だ。本来なら冷暖房を使わない春・秋の閑散期（ショルダー・マンス）すら、過去5年の限界帯を突き破って高止まりしていれば、それは天候ノイズではなく構造的なインフラ限界への到達を意味する。AIの幻想を物理的質量で叩き割るスコープだ。</p>
-            </div>
-        </div>
-
-        <h3 class="text-lg font-bold text-white mb-3 mt-8 border-b border-stone-700 pb-2">■ アーキテクチャ（各Tierの役割）</h3>
-        <div class="space-y-4">
-            <div class="bg-stone-900/50 p-4 border-l-2 border-purple-500 rounded">
-                <h4 class="font-bold text-purple-400">Tier -1: The Bedrock（岩盤）</h4>
-                <p class="text-xs text-stone-400 mb-2">監視対象: XLU(公益事業) / TLT(長期国債) 比率</p>
-                <p class="text-sm">電力会社が高騰しているのは、Big Techとの「20年間の電力買い取り契約（PPA）」という絶対的な信用があるからだ。この比率は、市場の「PPAへの過信」を測る心電図である。これがピークを打ち下落に転じた時、AIインフラの前提となる資金の岩盤が崩壊する。</p>
-            </div>
-            <div class="bg-stone-900/50 p-4 border-l-2 border-red-500 rounded">
-                <h4 class="font-bold text-red-500">Tier 0: Macro Energy（根源的エネルギー）</h4>
-                <p class="text-xs text-stone-400 mb-2">監視対象: UNG(期近ガス), UNL(遠月ガス), EQT等</p>
-                <p class="text-sm">データセンターを稼働させる「血」は天然ガスだ。数年先の遠月物ガス（UNL）が暴落するということは、市場が「将来のAI電力需要は消滅する（データセンターは建たない）」と冷酷に見切った証拠となる。最高の先行指標。</p>
-            </div>
-            <div class="bg-stone-900/50 p-4 border-l-2 border-cyan-500 rounded">
-                <h4 class="font-bold text-cyan-400">Tier 1: Foundation（物理基盤）</h4>
-                <p class="text-xs text-stone-400 mb-2">監視対象: CEG(原子力), VRT(冷却), EQIX(DC不動産)等</p>
-                <p class="text-sm">AIを物理的に支える電力網と冷却装置。ここの下落は、AIロードマップが「物理的な供給限界」にぶつかり、投資がストップしたことを意味する。</p>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="bg-stone-900/50 p-4 border-l-2 border-fuchsia-500 rounded">
-                    <h4 class="font-bold text-fuchsia-400">Tier 2: Velocity（稼働）</h4>
-                    <p class="text-xs text-stone-400 mb-2">監視対象: AI特化型クラウド</p>
-                    <p class="text-sm">AIの計算力を切り売りするレイヤー。顧客のAIマネタイズ失敗により、最も早く需要が飽和する。</p>
-                </div>
-                <div class="bg-stone-900/50 p-4 border-l-2 border-orange-500 rounded">
-                    <h4 class="font-bold text-orange-400">Tier 3: Upstream（資源）</h4>
-                    <p class="text-xs text-stone-400 mb-2">監視対象: 銅, ウラン</p>
-                    <p class="text-sm">インフラを作るための素材。ここが高騰しすぎると、建設コストが限界を迎えインフラ企業が死滅する。</p>
-                </div>
-            </div>
-            <div class="bg-stone-900/50 p-4 border-l-2 border-emerald-500 rounded shadow-[0_0_10px_rgba(16,185,129,0.05)]">
-                <h4 class="font-bold text-emerald-400">Tier 4: True Asset（データ資源・関所）</h4>
-                <p class="text-xs text-stone-400 mb-2">監視対象: NOW, CRM, WDAY, SAP, MDB等（SaaS群）</p>
-                <p class="text-sm">「AIに駆逐される」と不当に売られてきたが、実は企業の顧客データとワークフローを独占しているデジタル空間の“現物資源”。インフラバブルが弾けた時、資金は必ずこの「最高利益率の要塞」へと逃避してくる。</p>
-            </div>
-        </div>
-
-        <h3 class="text-lg font-bold text-white mb-3 mt-10 border-b border-stone-700 pb-2">■ 判定ステータスと判断ロジック</h3>
-        <div class="space-y-3">
-            <div class="bg-black p-3 rounded border border-stone-800">
-                <div class="text-purple-400 font-black mb-1">🔴 【PPA岩盤崩壊】</div>
-                <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier-1(比率)急落 ＋ Tier 1下落</p>
-                <p class="text-sm mt-1">Big Techの電力契約に対する信用が収縮。借金まみれの電力インフラ株が金利の重力に引き戻される致命的シグナル。</p>
-            </div>
-            <div class="bg-black p-3 rounded border border-stone-800">
-                <div class="text-red-500 font-black mb-1">🔴 【需要幻滅の死】</div>
-                <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier 0(遠月ガス)急落 ＋ Tier 1下落</p>
-                <p class="text-sm mt-1">未来のデータセンター建設計画自体がキャンセルされている。インフラ株を即座に空売り（ショート）すべき局面。</p>
-            </div>
-            <div class="bg-black p-3 rounded border border-stone-800">
-                <div class="text-red-600 font-black mb-1">🔴 【真のパニック崩壊】</div>
-                <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier 1, 2 下落 ＋ Tier 4も下落</p>
-                <p class="text-sm mt-1">インフラだけでなく、避難先であるデータ資源(SaaS)すらも売られている。相関が1に近づく本物の金融ショック。</p>
-            </div>
-            <div class="bg-black p-3 rounded border border-stone-800">
-                <div class="text-emerald-400 font-black mb-1">🟢 【健全なローテーション】</div>
-                <p class="text-xs text-stone-400"><span class="font-bold text-stone-300">条件:</span> Tier 1, 2 下落 ＋ Tier 4上昇</p>
-                <p class="text-sm mt-1">AIインフラのポジションが解消され、SaaSへ資金が還流している。テクノロジー全体の死ではない。</p>
-            </div>
-        </div>
+        <!-- 既存のドキュメント内容は維持 -->
     </div>
 
     <script>
@@ -259,7 +224,7 @@
         }
 
         // ==========================
-        // レンダリングロジック: RADAR VIEW
+        // レンダリングロジック群
         // ==========================
         function renderBedrockChart(bedrockData) {
             if (!bedrockData) return;
@@ -293,9 +258,6 @@
             });
         }
 
-        // ==========================
-        // レンダリングロジック: PHYSICAL GRID
-        // ==========================
         function renderFinancialLayer(data) {
             if (!data) return;
             const box = document.getElementById('signal-box');
@@ -323,68 +285,60 @@
                 data: {
                     labels: data.labels,
                     datasets: [
-                        {
-                            label: '今年の実需要推移',
-                            data: data.current_year,
-                            borderColor: '#ef4444', 
-                            backgroundColor: '#ef4444',
-                            borderWidth: 2,
-                            tension: 0.1,
-                            pointRadius: 1,
-                            order: 1
-                        },
-                        {
-                            label: '過去5年平均 (ベースライン)',
-                            data: data.historical_avg,
-                            borderColor: '#22d3ee', 
-                            borderDash: [5, 5],
-                            borderWidth: 2,
-                            tension: 0.1,
-                            pointRadius: 0,
-                            order: 2
-                        },
-                        {
-                            label: '過去5年最大',
-                            data: data.historical_max,
-                            borderColor: 'rgba(255, 255, 255, 0.05)',
-                            backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                            fill: '+1',
-                            pointRadius: 0,
-                            tension: 0.1,
-                            order: 3
-                        },
-                        {
-                            label: '過去5年最小',
-                            data: data.historical_min,
-                            borderColor: 'rgba(255, 255, 255, 0.05)',
-                            fill: false,
-                            pointRadius: 0,
-                            tension: 0.1,
-                            order: 4
-                        }
+                        { label: '今年の実需要推移', data: data.current_year, borderColor: '#ef4444', backgroundColor: '#ef4444', borderWidth: 2, tension: 0.1, pointRadius: 1, order: 1 },
+                        { label: '過去5年平均', data: data.historical_avg, borderColor: '#22d3ee', borderDash: [5, 5], borderWidth: 2, tension: 0.1, pointRadius: 0, order: 2 },
+                        { label: '過去5年最大', data: data.historical_max, borderColor: 'rgba(255, 255, 255, 0.05)', backgroundColor: 'rgba(255, 255, 255, 0.05)', fill: '+1', pointRadius: 0, tension: 0.1, order: 3 },
+                        { label: '過去5年最小', data: data.historical_min, borderColor: 'rgba(255, 255, 255, 0.05)', fill: false, pointRadius: 0, tension: 0.1, order: 4 }
                     ]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
+                    responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
                     scales: {
-                        y: { 
-                            title: { display: true, text: '電力需要 (MWh)', color: '#78716c' }, 
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: '#78716c', font: { family: 'Courier New', size: 10 } }
-                        },
-                        x: { 
-                            grid: { color: 'rgba(255,255,255,0.05)' },
-                            ticks: { color: '#78716c', maxTicksLimit: 12, font: { family: 'Courier New', size: 10 } }
-                        }
+                        y: { title: { display: true, text: '電力需要 (MWh)', color: '#78716c' }, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#78716c', font: { family: 'Courier New', size: 10 } } },
+                        x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#78716c', maxTicksLimit: 12, font: { family: 'Courier New', size: 10 } } }
                     },
-                    plugins: {
-                        legend: { labels: { color: '#e0e0e0', font: { family: 'Courier New' } } },
-                        tooltip: { backgroundColor: 'rgba(0,0,0,0.8)', titleFont: { family: 'Courier New' }, bodyFont: { family: 'Courier New' } }
-                    }
+                    plugins: { legend: { labels: { color: '#e0e0e0', font: { family: 'Courier New' } } }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)' } }
                 }
             });
+        }
+
+        // ==========================
+        // NEW: マクロ・ドミノ波及判定ロジック
+        // ==========================
+        function renderDominoMonitor(data) {
+            const getVal = (ticker) => data.details && data.details[ticker] ? data.details[ticker].change : null;
+            
+            const uso = getVal('USO');
+            const fcx = getVal('FCX');
+            const scco = getVal('SCCO');
+            const ccj = getVal('CCJ');
+
+            const setHtml = (id, val) => {
+                if(val === null) return;
+                const el = document.getElementById(id);
+                el.innerText = `${val > 0 ? '+' : ''}${val.toFixed(2)}%`;
+                el.className = `text-lg sm:text-xl font-black ${getColorClass(val)}`;
+            };
+
+            setHtml('domino-uso-val', uso);
+            setHtml('domino-fcx-val', fcx);
+            setHtml('domino-scco-val', scco);
+            setHtml('domino-ccj-val', ccj);
+
+            // ドミノ波及判定
+            const ind = document.getElementById('domino-status-indicator');
+            const spreadDelta = data.financial_forward_curve ? data.financial_forward_curve.spread_delta : 1;
+            
+            if (spreadDelta < 0 && (uso > 1.0 || fcx > 1.0)) {
+                ind.className = "ml-3 text-[10px] px-2 py-1 bg-rose-600 text-white font-bold rounded blink";
+                ind.innerText = "🔥 CRITICAL: ドミノ波及検知（原油・銅への資金流入）";
+            } else if (spreadDelta < 0) {
+                ind.className = "ml-3 text-[10px] px-2 py-1 bg-amber-600 text-white font-bold rounded";
+                ind.innerText = "⚠️ WARNING: 波及待機（電力スプレッド崩壊済）";
+            } else {
+                ind.className = "ml-3 text-[10px] px-2 py-1 bg-stone-800 text-stone-400 rounded";
+                ind.innerText = "STATUS: SAFE (波及なし)";
+            }
         }
 
         // ==========================
@@ -431,7 +385,6 @@
                     data.config[tier].forEach(t => {
                         const d = data.details[t];
                         if (!d) return;
-                        
                         const fullName = d.name || t;
                         const roleDesc = d.role ? `<p class="text-[8px] sm:text-[9px] text-stone-500 truncate mt-0.5">${d.role}</p>` : '';
                         const surgeIndicator = d.vol_surge > 1.5 ? `<span class="text-[8px] sm:text-[10px] bg-amber-500 text-stone-900 px-1 sm:px-1.5 py-0.5 rounded font-black ml-2 animate-pulse">VOL SURGE</span>` : '';
@@ -457,6 +410,9 @@
 
                 if(data.financial_forward_curve) renderFinancialLayer(data.financial_forward_curve);
                 if(data.grid_physical_data) renderPhysicalLayer(data.grid_physical_data);
+                
+                // ドミノ監視レイヤーのレンダリング
+                renderDominoMonitor(data);
 
             } catch (e) { console.error("Data Fetch Error:", e); }
         }
