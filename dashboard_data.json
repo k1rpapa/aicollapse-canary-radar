@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-07-03T13:53:54.320237+00:00",
+    "timestamp": "2026-07-03T20:11:45.836400+00:00",
     "status": "🟢 【健全なローテーション】インフラ売却 ＋ データ資源(SaaS)買い",
     "config": {
         "TIER_0": [
@@ -44,7 +44,7 @@
             "name": "US Natural Gas Fund",
             "role": "ガス期近・天候ノイズ",
             "change": 0.52,
-            "vol_surge": 0.86
+            "vol_surge": 0.87
         },
         "UNL": {
             "name": "US 12-Month NatGas",
@@ -152,7 +152,7 @@
             "name": "US Oil Fund (WTI)",
             "role": "WTI原油 ETF",
             "change": 0.69,
-            "vol_surge": 0.5
+            "vol_surge": 0.51
         },
         "CCJ": {
             "name": "Cameco (Uranium)",
@@ -164,7 +164,7 @@
             "name": "ServiceNow",
             "role": "ITワークフロー独占",
             "change": 0.49,
-            "vol_surge": 0.85
+            "vol_surge": 0.86
         },
         "CRM": {
             "name": "Salesforce",
@@ -447,10 +447,10 @@
     },
     "financial_forward_curve": {
         "near_month_ticker": "NG=F (Front Month)",
-        "near_month_price": 3.256,
+        "near_month_price": 3.245,
         "far_month_ticker": "NGZ27.NYM (Dec 2027)",
-        "far_month_price": 4.247,
-        "spread_delta": 0.991,
+        "far_month_price": 4.235,
+        "spread_delta": 0.99,
         "signal": "✅ 【正常】コンタンゴ（順ざや維持）"
     },
     "grid_physical_data": {
