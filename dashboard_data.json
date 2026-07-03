@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-07-02T23:55:42.799140+00:00",
+  "timestamp": "2026-07-03T02:34:08.829739+00:00",
   "config": {
     "TIER_0": [
       "UNG",
@@ -48,7 +48,7 @@
     "TIER_1": -1.7,
     "TIER_1_5": -2.77,
     "TIER_2": -5.26,
-    "TIER_3": 0.44,
+    "TIER_3": 0.47,
     "TIER_4": 1.98
   },
   "bedrock": {
@@ -979,11 +979,11 @@
       "role": "ウラン採掘・精製"
     },
     "URA": {
-      "price": 0.0,
-      "change": 0.0,
-      "vol_surge": 1.0,
-      "name": "URA",
-      "role": ""
+      "price": 43.23,
+      "change": 0.12,
+      "vol_surge": 1.4,
+      "name": "Global X Uranium ETF",
+      "role": "ウラン・原子力ETF"
     },
     "NOW": {
       "price": 106.32,
@@ -1079,10 +1079,10 @@
   },
   "financial_forward_curve": {
     "near_month_ticker": "NG=F (Front Month)",
-    "near_month_price": 3.207,
+    "near_month_price": 3.215,
     "far_month_ticker": "NGZ27.NYM (Dec 2027)",
     "far_month_price": 4.244,
-    "spread_delta": 1.037,
+    "spread_delta": 1.029,
     "signal": "✅ 【正常】コンタンゴ（順ざや維持）"
   },
   "grid_physical_data": {
