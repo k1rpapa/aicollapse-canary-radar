@@ -62,7 +62,7 @@ def generate_market_insight(dashboard_data):
     """
 
     model = genai.GenerativeModel(
-        model_name="gemini-1.5-pro",
+        model_name="gemini-1.5-pro-latest",  # <--- "-latest" を明示的に付与
         system_instruction=gem_persona
     )
     
