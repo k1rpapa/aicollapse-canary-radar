@@ -27,10 +27,12 @@ def send_line_alert(message):
         print(f"🔴 Failed to execute LINE Alert: {e}")
 
 # ==========================================
-# 1.5. 【NEW】Insight Generator（自律思考モジュール）
+# 1.5. Insight Generator（自律思考モジュール）
 # ==========================================
 def generate_market_insight(dashboard_data):
     """君の与えた魂（システムプロンプト）を用いて、ダッシュボードデータから相場解説を生成する"""
+    import google.generativeai as genai
+    
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         print("[!] Warning: GEMINI_API_KEY is not set. Skipping Insight generation.")
@@ -44,7 +46,7 @@ def generate_market_insight(dashboard_data):
     あなたは世界的な商品先物トレーダーであり、マクロ経済学と電力グリッド（送電網）の物理的需給に精通した冷徹なシニア・アナリストでありながらGoogleプラットフォームを知り尽くしたエンジニアでもあります。AIバブルの命運を握る「卸売電力先物（特に米PJM市場やMISO市場等）」のフォワードカーブ（期日別価格曲線）の歪みを監視・デバッグし、ユーザー（相棒）の投資戦略をサポートする防衛システムを構築します。
 
     # Background & Core Philosophy
-    テック大手がどれだけ「AIの未来」を喧伝しようが、AIデータセンター（AIDC）を動かすための「物理的な電力（質量）」の調達嘘はつけない。2〜3年先（遠月物）の電力先物価格の動向こそが、AIバブル崩壊を数ヶ月前に検知する「最強のカナリア」であるという思想に基づき、すべての市場データを解剖する。
+    テック大手がどれだけ「AIの未来」を喧伝しようが、AIデータセンター（AIDC）を動かすための「物理的な電力（質量）」の調達に嘘はつけない。2〜3年先（遠月物）の電力先物価格の動向こそが、AIバブル崩壊を数ヶ月前に検知する「最強のカナリア」であるという思想に基づき、すべての市場データを解剖する。
 
     # Objectives
     1. 2年先〜3年先の卸売電力先物（テナー）の価格・出来高の推移をトラッキングする。
@@ -61,21 +63,39 @@ def generate_market_insight(dashboard_data):
     3. 【司令官への進言】(今後の具体的な投資アクション)
     """
 
-    model = genai.GenerativeModel(
-        model_name="gemini-1.5-pro-001",
-        system_instruction=gem_persona
-    )
+    # フェイルセーフ（二段構え）のアーキテクチャ
+    primary_model = "gemini-1.5-pro"
+    fallback_model = "gemini-1.5-flash"
     
     prompt = f"以下の最新の司令室（ダッシュボード）データ・JSONを解析し、最新のニュース、発表指標も絡めた本日の相場解説を生成しろ。最後にAIバブル崩壊に対する現時点での君の見解も添えてくれ。\n\nデータ: {json.dumps(dashboard_data, ensure_ascii=False)}"
 
     try:
-        print("[*] Generative AI (Pro) is thinking...")
+        # 第一段階：Proモデルへのマウントを試みる
+        print(f"[*] Attempting to mount AI core: {primary_model}...")
+        model = genai.GenerativeModel(
+            model_name=primary_model,
+            system_instruction=gem_persona
+        )
         response = model.generate_content(prompt)
         return response.text
-    except Exception as e:
-        print(f"[!] Gemini API Error: {e}")
-        return f"⚠️ 相場解説の生成中にシステムエラーが発生しました: {e}"
 
+    except Exception as e_pro:
+        print(f"[!] Primary core ({primary_model}) rejected: {e_pro}")
+        print(f"[*] Switching to fallback core: {fallback_model}...")
+        
+        try:
+            # 第二段階：権限エラー(404等)の場合は、制限の緩いFlashモデルへ自律的に切り替え
+            model_fallback = genai.GenerativeModel(
+                model_name=fallback_model,
+                system_instruction=gem_persona
+            )
+            response_fallback = model_fallback.generate_content(prompt)
+            return response_fallback.text
+            
+        except Exception as e_flash:
+            print(f"[!] Fallback core also failed: {e_flash}")
+            return f"⚠️ 相場解説の生成中に致命的なシステムエラーが発生しました: {e_flash}"
+            
 # ==========================================
 # 2. 金融レイヤー：マージナル・セッター（天然ガス）監視
 # ==========================================
