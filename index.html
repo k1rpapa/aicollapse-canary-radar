@@ -42,6 +42,18 @@
             データロード中...
         </div>
 
+        <!-- NEW: 思考する司令室 (MARKET INSIGHT パネル) -->
+        <div id="insight-panel" class="mb-6 mx-1 bg-stone-900/40 p-4 sm:p-5 rounded-lg border border-amber-900/50 shadow-[0_0_15px_rgba(245,158,11,0.05)] relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-3 opacity-10 text-4xl">👁️</div>
+            <h2 class="text-xs sm:text-sm font-black text-amber-500 mb-3 flex items-center border-b border-stone-800 pb-2">
+                <span class="w-2 h-2 bg-amber-500 rounded-full animate-pulse mr-2"></span>
+                DAILY MARKET INSIGHT (from Canary AI)
+            </h2>
+            <div id="insight-content" class="text-xs sm:text-sm text-stone-300 leading-relaxed whitespace-pre-wrap font-sans">
+                Connecting to AI core...
+            </div>
+        </div>
+
         <!-- Tier -1 & Tier 0 -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mx-1 mb-4">
             <div class="lg:col-span-2 bg-stone-900/80 p-3 rounded border border-purple-900/50 relative">
@@ -71,9 +83,9 @@
             </div>
         </div>
 
-        <!-- 5列グリッドへ拡張 (Tier 0.5, 1, 1.5, 2, 3) -->
+        <!-- 5列グリッド (Tier 0.5, 1, 1.5, 2, 3) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mx-1 mb-4">
-            <!-- Tier 0.5: Shadow Leverage (NEW) -->
+            <!-- Tier 0.5: Shadow Leverage -->
             <div class="bg-stone-900 p-3 rounded border border-pink-900/40 shadow-[0_0_10px_rgba(236,72,153,0.05)]">
                 <div class="flex justify-between items-center mb-3 border-b border-stone-800 pb-1">
                     <h2 class="text-xs font-bold text-pink-400 uppercase tracking-widest leading-none">Tier 0.5: Shadow Leverage</h2>
@@ -163,11 +175,10 @@
         </div>
     </div>
 
-<!-- ========================================== -->
+    <!-- ========================================== -->
     <!-- VIEW: DOCS (戦略マニュアル画面) - 完全構造化 -->
     <!-- ========================================== -->
     <div id="view-docs" class="hidden-tab mx-1 text-stone-300 pb-10">
-        
         <div class="bg-stone-900 p-4 sm:p-6 rounded-lg border border-stone-800 mb-8 shadow-lg">
             <h2 class="text-xl sm:text-2xl font-black text-white mb-2 border-l-4 border-cyan-500 pl-3">CANARY RADAR 戦略ドクトリン</h2>
             <p class="text-sm sm:text-base leading-relaxed">
@@ -215,7 +226,6 @@
                 </div>
             </div>
 
-            <!-- Tier 説明パネル -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
                 <div class="bg-stone-900/30 p-3 border-l-2 border-purple-500 rounded">
                     <h4 class="font-bold text-purple-400 text-sm">Tier -1: The Bedrock (岩盤)</h4>
@@ -281,7 +291,7 @@
             </p>
         </div>
     </div>
-    
+
     <script>
         let bedrockChartInstance = null;
         let seasonalityChartInstance = null; 
@@ -426,6 +436,11 @@
                     else if(data.status.includes('🔴')) statusEl.classList.add('border-rose-500', 'text-rose-400', 'blink');
                     else if(data.status.includes('🟡') || data.status.includes('🟠')) statusEl.classList.add('border-amber-500', 'text-amber-400');
                     else statusEl.classList.add('border-stone-500', 'text-stone-300');
+                }
+
+                // NEW: Insight injection
+                if (data.insight) {
+                    document.getElementById('insight-content').innerText = data.insight;
                 }
 
                 if (data.bedrock) renderBedrockChart(data.bedrock);
