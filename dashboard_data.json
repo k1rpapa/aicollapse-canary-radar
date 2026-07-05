@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-07-05T08:10:12.998134+00:00",
+    "timestamp": "2026-07-05T08:22:59.254577+00:00",
     "status": "🟢 【健全なローテーション】インフラ売却 ＋ データ資源(SaaS)買い",
     "config": {
         "TIER_0": [
@@ -2319,5 +2319,5 @@
             null
         ]
     },
-    "insight": "⚠️ エラー: GEMINI_API_KEYが設定されていないため、相場解説を生成できません。GitHub Secretsを確認してください。"
+    "insight": "⚠️ 相場解説の生成中にシステムエラーが発生しました: 404 models/gemini-1.5-pro is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods."
 }
