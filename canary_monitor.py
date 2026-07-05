@@ -5,7 +5,6 @@ from datetime import datetime, timezone
 from collections import defaultdict
 import yfinance as yf
 import pandas as pd
-import google.generativeai as genai
 
 # ==========================================
 # 1. アラート発報モジュール（LINE Messaging API）
@@ -27,80 +26,63 @@ def send_line_alert(message):
         print(f"🔴 Failed to execute LINE Alert: {e}")
 
 # ==========================================
-# 1.5. Insight Generator（自律思考モジュール - 究極生存版）
+# 1.5. Insight Generator（自律思考モジュール）
 # ==========================================
 def generate_market_insight(dashboard_data):
-    """君の与えた魂（システムプロンプト）を用いて、ダッシュボードデータから相場解説を生成する"""
     import google.generativeai as genai
-    
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        print("[!] Warning: GEMINI_API_KEY is not set.")
-        return "⚠️ エラー: GEMINI_API_KEYが設定されていないため、相場解説を生成できません。"
+        print("[!] Warning: GEMINI_API_KEY is not set. Skipping Insight generation.")
+        return "⚠️ エラー: GEMINI_API_KEYが設定されていないため、相場解説を生成できません。GitHub Secretsを確認してください。"
 
     genai.configure(api_key=api_key)
 
-    # 相棒（君）が定義した「魂」
     gem_persona = """
     # Role and Persona
     あなたは世界的な商品先物トレーダーであり、マクロ経済学と電力グリッド（送電網）の物理的需給に精通した冷徹なシニア・アナリストでありながらGoogleプラットフォームを知り尽くしたエンジニアでもあります。AIバブルの命運を握る「卸売電力先物（特に米PJM市場やMISO市場等）」のフォワードカーブ（期日別価格曲線）の歪みを監視・デバッグし、ユーザー（相棒）の投資戦略をサポートする防衛システムを構築します。
 
     # Background & Core Philosophy
     テック大手がどれだけ「AIの未来」を喧伝しようが、AIデータセンター（AIDC）を動かすための「物理的な電力（質量）」の調達に嘘はつけない。2〜3年先（遠月物）の電力先物価格の動向こそが、AIバブル崩壊を数ヶ月前に検知する「最強のカナリア」であるという思想に基づき、すべての市場データを解剖する。
+    また、シャドーバンキングやプライベート・クレジットの目詰まりを映す「信用心電図（HYG/TLT）」の急変動は、流動性ショックの波及速度を測る極めて重要なマクロ指標である。
 
     # Objectives
     1. 2年先〜3年先の卸売電力先物（テナー）の価格・出来高の推移をトラッキングする。
     2. 遠月物の「コンタンゴ化（期先安）」や「出来高急減」という【カナリアの死（バブル崩壊サイン）】を即座に検出する。
-    3. 電力市場の歪みが、WTI原油、天然ガス、コッパー（銅）、ナスダック指数へどう波及するか（マクロの因果チェーン）をスタックトレースする。
+    3. 電力市場の歪みやシャドー流動性の枯渇が、WTI原油、天然ガス、コッパー（銅）、ナスダック指数へどう波及するか（マクロの因果チェーン）をスタックトレースする。
 
     # Analysis Logic
-    3年先までの卸売電力先物データ（PJM先物、マンスリー価格、出来高など）を元にAIバブルの現在地を示すとともに、崩壊のシグナルを発報する。
+    3年先までの卸売電力先物データや、HYG/TLT比率（信用重力）を元にAIバブルの現在地を示すとともに、崩壊のシグナルを発報する。
     
     # Output Format (厳守事項)
     ダッシュボードに掲載するため、以下の形式で短く、鋭く、箇条書きを交えて出力すること。Markdownの装飾を効果的に使うこと。
-    1. 【本日のマクロスタックトレース】(現状の相関の冷徹な分析)
+    1. 【本日のマクロスタックトレース】(現状の相関の冷徹な分析、HYG/TLTの動向含む)
     2. 【監視グリッドの特異点】(物理・金融レイヤーで発生している異常値や注目ポイント)
     3. 【司令官への進言】(今後の具体的な投資アクション)
     """
 
     try:
-        # 【動的探索】Googleのインフラに「この鍵で使えるモデルはどれだ？」と直接尋ねる
         available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-        
-        if not available_models:
-            return "⚠️ エラー: APIキーは有効ですが、利用可能な生成モデルが見つかりません。GCPの設定を確認してください。"
-        
-        # 最強の推論モデルから順にフォールバック探索（見つかったものを採用する）
         preferred_order = [
-            "models/gemini-1.5-pro-latest",
-            "models/gemini-1.5-pro",
-            "models/gemini-1.5-flash-latest",
-            "models/gemini-1.5-flash",
-            "models/gemini-pro"  # 最終防衛線 (Gemini 1.0)
+            "models/gemini-1.5-pro-latest", "models/gemini-1.5-pro",
+            "models/gemini-1.5-flash-latest", "models/gemini-1.5-flash", "models/gemini-pro"
         ]
-        
         target_model = None
         for pref in preferred_order:
             if pref in available_models:
                 target_model = pref.replace("models/", "")
                 break
-                
         if not target_model:
-            target_model = available_models[0].replace("models/", "") # リストの先頭を強制採用
+            target_model = available_models[0].replace("models/", "")
 
         print(f"[*] Dynamic Model Discovery: AI Core '{target_model}' Engaged.")
-
-        # 古いモデルでも絶対にエラーを吐かせないため、魂（人格）をプロンプト本体に直接マージする絶対安全設計
-        full_prompt = f"{gem_persona}\n\n上記の指示・人格に完全に同化し、以下の最新データを解析し、最新のニュース、発表指標も絡めた本日の相場解説を生成しろ。最後にAIバブル崩壊に対する現時点での君の見解も添えてくれ。\n\nデータ: {json.dumps(dashboard_data, ensure_ascii=False)}"
-
+        full_prompt = f"{gem_persona}\n\n上記の指示・人格に完全に同化し、以下の最新データを解析して本日の相場解説を出力しろ。\n\nデータ: {json.dumps(dashboard_data, ensure_ascii=False)}"
         model = genai.GenerativeModel(model_name=target_model)
         response = model.generate_content(full_prompt)
         return response.text
-
     except Exception as e:
         print(f"[!] Critical AI Core Error: {e}")
         return f"⚠️ 相場解説の生成中に致命的なシステムエラーが発生しました: {e}"
-        
+
 # ==========================================
 # 2. 金融レイヤー：マージナル・セッター（天然ガス）監視
 # ==========================================
@@ -110,30 +92,27 @@ def fetch_forward_curve():
         tickers = yf.Tickers("NG=F NGZ27.NYM")
         near_hist = tickers.tickers['NG=F'].history(period="5d")
         far_hist = tickers.tickers['NGZ27.NYM'].history(period="5d")
-        
         if near_hist.empty or far_hist.empty:
             return {
                 "near_month_ticker": "NG=F", "near_month_price": 0.0,
                 "far_month_ticker": "NGZ27.NYM", "far_month_price": 0.0,
                 "spread_delta": 0.0, "signal": "⚪ 【待機】先物データ取得不可（週末・休場）"
             }
-            
         near_price = float(near_hist['Close'].iloc[-1])
         far_price = float(far_hist['Close'].iloc[-1])
         spread = far_price - near_price
-        
         if spread < 0:
             signal = "🚨 【警報】バックワーデーション（バブル崩壊の兆候）"
             alert_msg = (
                 "⚠️ 【CanaryInTheGrid 限界突破アラート】\n\n"
                 "マージナル・セッターの期間構造が崩壊しました。\n"
-                f"期近: ${round(near_price, 3)} / 期先: ${round(far_price, 3)} / Δ: ${round(spread, 3)}\n\n"
+                f"期近: ${round(near_price, 3)} / 期先: ${round(far_price, 3)} / Δ: ${round(spread, 3)}
+\n"
                 "直ちにダッシュボードを確認し、WTI及びコッパーのポジションを再評価してください。"
             )
             send_line_alert(alert_msg)
         else:
             signal = "✅ 【正常】コンタンゴ（順ざや維持）"
-            
         return {
             "near_month_ticker": "NG=F (Front Month)", "near_month_price": round(near_price, 3),
             "far_month_ticker": "NGZ27.NYM (Dec 2027)", "far_month_price": round(far_price, 3),
@@ -240,7 +219,7 @@ def main():
             output_data["layers"][tier_name] = round(sum(tier_changes)/len(tier_changes), 2) if tier_changes else 0.0
     except Exception as e: print(f"[!] yfinance Error: {e}")
 
-    print("[*] Fetching Bedrock Data...")
+    print("[*] Fetching Bedrock Data (XLU/TLT)...")
     try:
         bedrock_data = yf.download(["XLU", "TLT"], period="6mo", interval="1d", progress=False)['Close'].dropna()
         if not bedrock_data.empty and len(bedrock_data) >= 2:
@@ -257,24 +236,45 @@ def main():
             }
     except Exception as e: print(f"[!] Bedrock Data Error: {e}")
 
+    # ==========================================
+    # 【NEW】信用心電図レイヤー（HYG / TLT Ratio）の追加
+    # ==========================================
+    print("[*] Fetching Credit Heartbeat Data (HYG/TLT)...")
+    try:
+        credit_data = yf.download(["HYG", "TLT"], period="6mo", interval="1d", progress=False)['Close'].dropna()
+        if not credit_data.empty and len(credit_data) >= 2:
+            c_ratio = credit_data['HYG'] / credit_data['TLT']
+            c_sma_50 = c_ratio.rolling(window=50).mean()
+            c_std_50 = c_ratio.rolling(window=50).std()
+            c_chg = ((c_ratio.iloc[-1] - c_ratio.iloc[-2]) / c_ratio.iloc[-2]) * 100
+            output_data["credit_heartbeat"] = {
+                "dates": [d.strftime('%Y-%m-%d') for d in c_ratio.index[-60:]],
+                "ratio": [round(x, 3) if not pd.isna(x) else None for x in c_ratio.values[-60:]],
+                "sma": [round(x, 3) if not pd.isna(x) else None for x in c_sma_50.values[-60:]],
+                "lower": [round(x, 3) if not pd.isna(x) else None for x in (c_sma_50 - 2*c_std_50).values[-60:]],
+                "current_ratio": round(c_ratio.iloc[-1], 3), "ratio_change": round(c_chg, 2)
+            }
+    except Exception as e: print(f"[!] Credit Heartbeat Data Error: {e}")
+
     output_data["financial_forward_curve"] = fetch_forward_curve()
     output_data["grid_physical_data"] = fetch_physical_grid_data()
 
     print("[*] Analyzing Macro Correlations...")
     t05, t1, t2, t4 = output_data["layers"].get("TIER_0_5", 0), output_data["layers"].get("TIER_1", 0), output_data["layers"].get("TIER_2", 0), output_data["layers"].get("TIER_4", 0)
     bedrock = output_data.get("bedrock", {}).get("ratio_change", 0.0)
+    credit_chg = output_data.get("credit_heartbeat", {}).get("ratio_change", 0.0)
     gas_sig = (output_data.get("financial_forward_curve") or {}).get("signal", "")
 
     status = "⚪ 【待機】有意なマクロシグナルなし"
     if "バックワーデーション" in gas_sig and t1 < -1.0: status = "🔴 【需要幻滅の死】遠月ガス急落 ＋ 物理基盤下落"
     elif t05 < -2.0 and t1 < -1.0: status = "🔴 【影の流動性枯渇】PE・シャドークレジット急落 ＋ インフラ下落"
+    elif credit_chg < -1.5 and t1 < -1.0: status = "🔴 【流動性津波】信用心電図急落 ＋ インフラ下落（全面リスクオフ）"
     elif bedrock < -1.0 and t1 < -1.0: status = "🔴 【PPA岩盤崩壊】信用プレミアム急落 ＋ 物理基盤下落"
     elif t1 < -1.0 and t2 < -1.0 and t4 < -1.0: status = "🔴 【真のパニック崩壊】インフラ〜データ資源まで全面安"
     elif t1 < -1.0 and t4 > 0.0: status = "🟢 【健全なローテーション】インフラ売却 ＋ データ資源(SaaS)買い"
     elif t1 > 1.0 and t4 > 1.0: status = "🟢 【バブル継続】全レイヤーへの過剰流動性流入"
     output_data["status"] = status
 
-    # 【NEW】ダッシュボードデータが組み上がった直後に、Geminiへ解釈を依頼する
     print("[*] Generating Daily Market Insight via Gemini API...")
     output_data["insight"] = generate_market_insight(output_data)
 
