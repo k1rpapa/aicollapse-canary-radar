@@ -43,11 +43,21 @@ def fetch_forward_curve():
     print("[*] Fetching Forward Curve Data...")
     try:
         tickers = yf.Tickers("NG=F NGZ27.NYM")
-        near_hist = tickers.tickers['NG=F'].history(period="1d")
-        far_hist = tickers.tickers['NGZ27.NYM'].history(period="1d")
+        # 【修正】週末や休場日を考慮し、過去5日分を取得して最後の有効行を参照する
+        near_hist = tickers.tickers['NG=F'].history(period="5d")
+        far_hist = tickers.tickers['NGZ27.NYM'].history(period="5d")
         
         if near_hist.empty or far_hist.empty:
-            return None
+            print("[!] Warning: Could not fetch price data for NG=F or NGZ27.NYM. Market might be closed or tickers delisted.")
+            # 【修正】Noneを返さず、フェイルセーフ用のデフォルト辞書を返す
+            return {
+                "near_month_ticker": "NG=F (Front Month)",
+                "near_month_price": 0.0,
+                "far_month_ticker": "NGZ27.NYM (Dec 2027)",
+                "far_month_price": 0.0,
+                "spread_delta": 0.0,
+                "signal": "⚪ 【待機】先物データ取得不可（週末・休場・API制限）"
+            }
             
         near_price = float(near_hist['Close'].iloc[-1])
         far_price = float(far_hist['Close'].iloc[-1])
@@ -79,7 +89,11 @@ def fetch_forward_curve():
         }
     except Exception as e:
         print(f"[!] Forward Curve Error: {e}")
-        return None
+        return {
+            "near_month_ticker": "NG=F", "near_month_price": 0.0,
+            "far_month_ticker": "NGZ27.NYM", "far_month_price": 0.0,
+            "spread_delta": 0.0, "signal": f"⚪ 【待機】先物データエラー: {e}"
+        }
 
 # ==========================================
 # 3. 物理レイヤー：PJM実需オーバーシュート監視
@@ -157,7 +171,6 @@ def fetch_physical_grid_data():
 def main():
     print("=== CANARY RADAR DATA PIPELINE STARTED ===")
     
-    # 監視対象銘柄群（新レイヤー TIER_0_5: Shadow Leverage の統合）
     TIERS = {
         "TIER_0": {"UNG": "US Natural Gas Fund", "UNL": "US 12-Month NatGas", "EQT": "EQT Corp", "KMI": "Kinder Morgan"},
         "TIER_0_5": {"OWL": "Blue Owl Capital", "BX": "Blackstone Inc.", "APO": "Apollo Global Mgmt"},
@@ -190,6 +203,7 @@ def main():
     print("[*] Fetching Tiers Data...")
     all_tickers = [ticker for tier in TIERS.values() for ticker in tier.keys()]
     try:
+        # 株式データも週末の空振りを防ぐため 5d に設定
         data = yf.download(all_tickers, period="5d", interval="1d", group_by="ticker", progress=False)
         for tier_name, tickers in TIERS.items():
             tier_changes = []
@@ -223,28 +237,29 @@ def main():
     print("[*] Fetching Tier -1 Bedrock Data (XLU / TLT)...")
     try:
         bedrock_data = yf.download(["XLU", "TLT"], period="6mo", interval="1d", progress=False)['Close'].dropna()
-        ratio = bedrock_data['XLU'] / bedrock_data['TLT']
-        sma_50 = ratio.rolling(window=50).mean()
-        std_50 = ratio.rolling(window=50).std()
-        upper_band = sma_50 + (2 * std_50)
-        
-        dates_str = [d.strftime('%Y-%m-%d') for d in ratio.index[-60:]]
-        ratio_vals = ratio.values[-60:].tolist()
-        sma_vals = sma_50.values[-60:].tolist()
-        upper_vals = upper_band.values[-60:].tolist()
-        
-        current_r = ratio_vals[-1]
-        prev_r = ratio_vals[-2]
-        chg = ((current_r - prev_r) / prev_r) * 100
+        if not bedrock_data.empty and len(bedrock_data) >= 2:
+            ratio = bedrock_data['XLU'] / bedrock_data['TLT']
+            sma_50 = ratio.rolling(window=50).mean()
+            std_50 = ratio.rolling(window=50).std()
+            upper_band = sma_50 + (2 * std_50)
+            
+            dates_str = [d.strftime('%Y-%m-%d') for d in ratio.index[-60:]]
+            ratio_vals = ratio.values[-60:].tolist()
+            sma_vals = sma_50.values[-60:].tolist()
+            upper_vals = upper_band.values[-60:].tolist()
+            
+            current_r = ratio_vals[-1]
+            prev_r = ratio_vals[-2]
+            chg = ((current_r - prev_r) / prev_r) * 100
 
-        output_data["bedrock"] = {
-            "dates": dates_str,
-            "ratio": [round(x, 3) if not pd.isna(x) else None for x in ratio_vals],
-            "sma": [round(x, 3) if not pd.isna(x) else None for x in sma_vals],
-            "upper": [round(x, 3) if not pd.isna(x) else None for x in upper_vals],
-            "current_ratio": round(current_r, 3),
-            "ratio_change": round(chg, 2)
-        }
+            output_data["bedrock"] = {
+                "dates": dates_str,
+                "ratio": [round(x, 3) if not pd.isna(x) else None for x in ratio_vals],
+                "sma": [round(x, 3) if not pd.isna(x) else None for x in sma_vals],
+                "upper": [round(x, 3) if not pd.isna(x) else None for x in upper_vals],
+                "current_ratio": round(current_r, 3),
+                "ratio_change": round(chg, 2)
+            }
     except Exception as e:
         print(f"[!] Bedrock Data Error: {e}")
 
@@ -261,7 +276,10 @@ def main():
     tier2_chg = output_data["layers"].get("TIER_2", 0.0)
     tier4_chg = output_data["layers"].get("TIER_4", 0.0)
     bedrock_chg = output_data.get("bedrock", {}).get("ratio_change", 0.0)
-    gas_signal = output_data.get("financial_forward_curve", {}).get("signal", "")
+    
+    # 【修正】financial_forward_curve が None にならないよう設計したが、念のための安全アクセス
+    f_curve = output_data.get("financial_forward_curve") or {}
+    gas_signal = f_curve.get("signal", "")
 
     current_status = "⚪ 【待機】有意なマクロシグナルなし"
 
@@ -277,7 +295,7 @@ def main():
     elif tier1_chg < -1.0 and tier4_chg > 0.0:
         current_status = "🟢 【健全なローテーション】インフラ売却 ＋ データ資源(SaaS)買い"
     elif tier1_chg > 1.0 and tier4_chg > 1.0:
-        current_status = "🟢 【バブル継続】全レイヤーへの过剰流動性流入"
+        current_status = "🟢 【バブル継続】全レイヤーへの過剰流動性流入"
 
     output_data["status"] = current_status
 
