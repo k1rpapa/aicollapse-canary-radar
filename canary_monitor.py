@@ -1,7 +1,7 @@
 import os
 import json
 import requests
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from collections import defaultdict
 import yfinance as yf
 import pandas as pd
@@ -157,9 +157,10 @@ def fetch_physical_grid_data():
 def main():
     print("=== CANARY RADAR DATA PIPELINE STARTED ===")
     
-    # 監視対象銘柄群（WTI/コッパーの波及監視もここに統合済み）
+    # 監視対象銘柄群（新レイヤー TIER_0_5: Shadow Leverage の統合）
     TIERS = {
         "TIER_0": {"UNG": "US Natural Gas Fund", "UNL": "US 12-Month NatGas", "EQT": "EQT Corp", "KMI": "Kinder Morgan"},
+        "TIER_0_5": {"OWL": "Blue Owl Capital", "BX": "Blackstone Inc.", "APO": "Apollo Global Mgmt"},
         "TIER_1": {"CEG": "Constellation Energy", "VRT": "Vertiv Holdings", "EQIX": "Equinix", "ETN": "Eaton Corp"},
         "TIER_1_5": {"SMCI": "Super Micro Computer", "ANET": "Arista Networks", "NVDA": "NVIDIA", "AMD": "AMD"},
         "TIER_2": {"AMZN": "Amazon (AWS)", "MSFT": "Microsoft (Azure)", "GOOGL": "Alphabet (GCP)", "META": "Meta"},
@@ -169,6 +170,7 @@ def main():
     
     ROLES = {
         "UNG": "ガス期近・天候ノイズ", "UNL": "ガス遠月・構造需要", "EQT": "天然ガス生産最大手", "KMI": "ガスパイプライン網",
+        "OWL": "シャドークレジット直接融資", "BX": "巨大AIDC不動産・QTS保有", "APO": "エネルギーインフラ融資",
         "CEG": "原子力発電・電力", "VRT": "DC冷却・熱管理", "EQIX": "DC不動産(REIT)", "ETN": "配電・電力制御",
         "SMCI": "高密度AIサーバー", "ANET": "超高速ネットワーク", "NVDA": "AI半導体・独占", "AMD": "AI半導体・対抗",
         "AMZN": "ハイパースケーラー", "MSFT": "ハイパースケーラー", "GOOGL": "ハイパースケーラー", "META": "内製AIインフラ",
@@ -178,7 +180,7 @@ def main():
 
     output_data = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
-        "status": "🟢 【ローテーション】インフラ売却・データ資源買い",
+        "status": "⚪ 【待機】シグナル解析中...",
         "config": {k: list(v.keys()) for k, v in TIERS.items()},
         "details": {},
         "layers": {}
@@ -250,23 +252,24 @@ def main():
     output_data["financial_forward_curve"] = fetch_forward_curve()
     output_data["grid_physical_data"] = fetch_physical_grid_data()
 
-# ==========================================
-    # 4-3.5 【自動化】相関分析とステータス判定（スタックトレース）
+    # ==========================================
+    # 4-3.5 【自動化】相関分析とステータス判定
     # ==========================================
     print("[*] Analyzing Macro Correlations...")
-    
+    tier05_chg = output_data["layers"].get("TIER_0_5", 0.0)
     tier1_chg = output_data["layers"].get("TIER_1", 0.0)
     tier2_chg = output_data["layers"].get("TIER_2", 0.0)
     tier4_chg = output_data["layers"].get("TIER_4", 0.0)
     bedrock_chg = output_data.get("bedrock", {}).get("ratio_change", 0.0)
     gas_signal = output_data.get("financial_forward_curve", {}).get("signal", "")
 
-    # デフォルトステータス
     current_status = "⚪ 【待機】有意なマクロシグナルなし"
 
-    # 判定ロジック（STRATEGY DOCSのドクトリンに準拠）
+    # 判定ロジック（STRATEGY DOCSのドクトリンに完全準拠）
     if "バックワーデーション" in gas_signal and tier1_chg < -1.0:
         current_status = "🔴 【需要幻滅の死】遠月ガス急落 ＋ 物理基盤下落（即時ショート推奨）"
+    elif tier05_chg < -2.0 and tier1_chg < -1.0:
+        current_status = "🔴 【影の流動性枯渇】PE・シャドークレジット急落 ＋ インフラ下落"
     elif bedrock_chg < -1.0 and tier1_chg < -1.0:
         current_status = "🔴 【PPA岩盤崩壊】信用プレミアム急落 ＋ 物理基盤下落"
     elif tier1_chg < -1.0 and tier2_chg < -1.0 and tier4_chg < -1.0:
@@ -274,7 +277,7 @@ def main():
     elif tier1_chg < -1.0 and tier4_chg > 0.0:
         current_status = "🟢 【健全なローテーション】インフラ売却 ＋ データ資源(SaaS)買い"
     elif tier1_chg > 1.0 and tier4_chg > 1.0:
-        current_status = "🟢 【バブル継続】全レイヤーへの過剰流動性流入"
+        current_status = "🟢 【バブル継続】全レイヤーへの过剰流動性流入"
 
     output_data["status"] = current_status
 
