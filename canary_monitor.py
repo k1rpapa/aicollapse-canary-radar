@@ -106,8 +106,7 @@ def fetch_forward_curve():
             alert_msg = (
                 "⚠️ 【CanaryInTheGrid 限界突破アラート】\n\n"
                 "マージナル・セッターの期間構造が崩壊しました。\n"
-                f"期近: ${round(near_price, 3)} / 期先: ${round(far_price, 3)} / Δ: ${round(spread, 3)}
-\n"
+                f"期近: ${round(near_price, 3)} / 期先: ${round(far_price, 3)} / Δ: ${round(spread, 3)}\n\n"
                 "直ちにダッシュボードを確認し、WTI及びコッパーのポジションを再評価してください。"
             )
             send_line_alert(alert_msg)
