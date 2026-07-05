@@ -27,7 +27,7 @@ def send_line_alert(message):
         print(f"🔴 Failed to execute LINE Alert: {e}")
 
 # ==========================================
-# 1.5. Insight Generator（自律思考モジュール）
+# 1.5. Insight Generator（自律思考モジュール - 究極生存版）
 # ==========================================
 def generate_market_insight(dashboard_data):
     """君の与えた魂（システムプロンプト）を用いて、ダッシュボードデータから相場解説を生成する"""
@@ -35,12 +35,12 @@ def generate_market_insight(dashboard_data):
     
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        print("[!] Warning: GEMINI_API_KEY is not set. Skipping Insight generation.")
-        return "⚠️ エラー: GEMINI_API_KEYが設定されていないため、相場解説を生成できません。GitHub Secretsを確認してください。"
+        print("[!] Warning: GEMINI_API_KEY is not set.")
+        return "⚠️ エラー: GEMINI_API_KEYが設定されていないため、相場解説を生成できません。"
 
     genai.configure(api_key=api_key)
 
-    # 相棒（君）が定義した「魂」の完全実装
+    # 相棒（君）が定義した「魂」
     gem_persona = """
     # Role and Persona
     あなたは世界的な商品先物トレーダーであり、マクロ経済学と電力グリッド（送電網）の物理的需給に精通した冷徹なシニア・アナリストでありながらGoogleプラットフォームを知り尽くしたエンジニアでもあります。AIバブルの命運を握る「卸売電力先物（特に米PJM市場やMISO市場等）」のフォワードカーブ（期日別価格曲線）の歪みを監視・デバッグし、ユーザー（相棒）の投資戦略をサポートする防衛システムを構築します。
@@ -63,39 +63,44 @@ def generate_market_insight(dashboard_data):
     3. 【司令官への進言】(今後の具体的な投資アクション)
     """
 
-    # フェイルセーフ（二段構え）のアーキテクチャ
-    primary_model = "gemini-1.5-pro"
-    fallback_model = "gemini-1.5-flash"
-    
-    prompt = f"以下の最新の司令室（ダッシュボード）データ・JSONを解析し、最新のニュース、発表指標も絡めた本日の相場解説を生成しろ。最後にAIバブル崩壊に対する現時点での君の見解も添えてくれ。\n\nデータ: {json.dumps(dashboard_data, ensure_ascii=False)}"
-
     try:
-        # 第一段階：Proモデルへのマウントを試みる
-        print(f"[*] Attempting to mount AI core: {primary_model}...")
-        model = genai.GenerativeModel(
-            model_name=primary_model,
-            system_instruction=gem_persona
-        )
-        response = model.generate_content(prompt)
+        # 【動的探索】Googleのインフラに「この鍵で使えるモデルはどれだ？」と直接尋ねる
+        available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+        
+        if not available_models:
+            return "⚠️ エラー: APIキーは有効ですが、利用可能な生成モデルが見つかりません。GCPの設定を確認してください。"
+        
+        # 最強の推論モデルから順にフォールバック探索（見つかったものを採用する）
+        preferred_order = [
+            "models/gemini-1.5-pro-latest",
+            "models/gemini-1.5-pro",
+            "models/gemini-1.5-flash-latest",
+            "models/gemini-1.5-flash",
+            "models/gemini-pro"  # 最終防衛線 (Gemini 1.0)
+        ]
+        
+        target_model = None
+        for pref in preferred_order:
+            if pref in available_models:
+                target_model = pref.replace("models/", "")
+                break
+                
+        if not target_model:
+            target_model = available_models[0].replace("models/", "") # リストの先頭を強制採用
+
+        print(f"[*] Dynamic Model Discovery: AI Core '{target_model}' Engaged.")
+
+        # 古いモデルでも絶対にエラーを吐かせないため、魂（人格）をプロンプト本体に直接マージする絶対安全設計
+        full_prompt = f"{gem_persona}\n\n上記の指示・人格に完全に同化し、以下の最新データを解析し、最新のニュース、発表指標も絡めた本日の相場解説を生成しろ。最後にAIバブル崩壊に対する現時点での君の見解も添えてくれ。\n\nデータ: {json.dumps(dashboard_data, ensure_ascii=False)}"
+
+        model = genai.GenerativeModel(model_name=target_model)
+        response = model.generate_content(full_prompt)
         return response.text
 
-    except Exception as e_pro:
-        print(f"[!] Primary core ({primary_model}) rejected: {e_pro}")
-        print(f"[*] Switching to fallback core: {fallback_model}...")
+    except Exception as e:
+        print(f"[!] Critical AI Core Error: {e}")
+        return f"⚠️ 相場解説の生成中に致命的なシステムエラーが発生しました: {e}"
         
-        try:
-            # 第二段階：権限エラー(404等)の場合は、制限の緩いFlashモデルへ自律的に切り替え
-            model_fallback = genai.GenerativeModel(
-                model_name=fallback_model,
-                system_instruction=gem_persona
-            )
-            response_fallback = model_fallback.generate_content(prompt)
-            return response_fallback.text
-            
-        except Exception as e_flash:
-            print(f"[!] Fallback core also failed: {e_flash}")
-            return f"⚠️ 相場解説の生成中に致命的なシステムエラーが発生しました: {e_flash}"
-            
 # ==========================================
 # 2. 金融レイヤー：マージナル・セッター（天然ガス）監視
 # ==========================================
