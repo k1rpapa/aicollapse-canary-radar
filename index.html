@@ -42,9 +42,8 @@
             データロード中...
         </div>
 
-        <!-- NEW: 思考する司令室 (MARKET INSIGHT パネル - トグル実装版) -->
+        <!-- 思考する司令室 (MARKET INSIGHT パネル - トグル実装版) -->
         <div id="insight-panel" class="mb-6 mx-1 bg-stone-900/40 rounded-lg border border-amber-900/50 shadow-[0_0_15px_rgba(245,158,11,0.05)] relative overflow-hidden transition-all duration-300">
-            <!-- ヘッダー部分（クリックで開閉） -->
             <div class="p-3 sm:p-4 cursor-pointer hover:bg-stone-800/60 transition-colors flex justify-between items-center group" onclick="toggleInsight()">
                 <h2 class="text-xs sm:text-sm font-black text-amber-500 flex items-center">
                     <span id="insight-indicator" class="w-2 h-2 bg-amber-500 rounded-full animate-pulse mr-2"></span>
@@ -56,8 +55,6 @@
                     <button id="insight-toggle-btn" class="text-amber-500 font-mono text-sm sm:text-base focus:outline-none group-hover:text-amber-400 transition-colors">[ + ]</button>
                 </div>
             </div>
-            
-            <!-- コンテンツ部分（初期状態は hidden で隠す） -->
             <div id="insight-body" class="hidden px-4 sm:px-5 pb-5 border-t border-stone-800/50 pt-4">
                 <div id="insight-content" class="text-[10px] sm:text-xs text-stone-300 leading-relaxed whitespace-pre-wrap font-sans">
                     Connecting to AI core...
@@ -65,38 +62,57 @@
             </div>
         </div>
 
-        <!-- Tier -1 & Tier 0 -->
+        <!-- 二大マクログラビティチャート (Tier -1 & Credit Heartbeat) -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3 mx-1 mb-4">
-            <div class="lg:col-span-2 bg-stone-900/80 p-3 rounded border border-purple-900/50 relative">
+            <!-- パネル1: PPA信用プレミアム (XLU/TLT) -->
+            <div class="bg-stone-900/80 p-3 rounded border border-purple-900/50 relative">
                 <div class="flex justify-between items-center mb-2 border-b border-stone-800 pb-1">
                     <div>
-                        <h2 class="text-sm font-bold text-purple-400 uppercase tracking-widest leading-none">Tier -1: The Bedrock</h2>
-                        <p class="text-[10px] text-stone-500 mt-1">PPA信用プレミアム (XLU/TLT Ratio)</p>
+                        <h2 class="text-xs font-bold text-purple-400 uppercase tracking-widest leading-none">Tier -1: The Bedrock</h2>
+                        <p class="text-[9px] text-stone-500 mt-1">PPA信用プレミアム (XLU/TLT Ratio)</p>
                     </div>
                     <div class="text-right">
-                        <div id="bedrock-ratio" class="text-xl font-black text-purple-300">-</div>
-                        <div id="bedrock-change" class="text-xs font-bold">-</div>
+                        <div id="bedrock-ratio" class="text-lg font-black text-purple-300">-</div>
+                        <div id="bedrock-change" class="text-[10px] font-bold">-</div>
                     </div>
                 </div>
-                <div class="w-full h-36 relative">
+                <div class="w-full h-32 relative">
                     <canvas id="bedrockChart"></canvas>
                 </div>
             </div>
+
+            <!-- パネル2: 信用心電図 (HYG/TLT) 【NEW】 -->
+            <div class="bg-stone-900/80 p-3 rounded border border-pink-900/50 relative">
+                <div class="flex justify-between items-center mb-2 border-b border-stone-800 pb-1">
+                    <div>
+                        <h2 class="text-xs font-bold text-pink-400 uppercase tracking-widest leading-none">Credit Heartbeat</h2>
+                        <p class="text-[9px] text-stone-500 mt-1">シャドー流動性心電図 (HYG/TLT Ratio)</p>
+                    </div>
+                    <div class="text-right">
+                        <div id="credit-ratio" class="text-lg font-black text-pink-300">-</div>
+                        <div id="credit-change" class="text-[10px] font-bold">-</div>
+                    </div>
+                </div>
+                <div class="w-full h-32 relative">
+                    <canvas id="creditChart"></canvas>
+                </div>
+            </div>
+
+            <!-- パネル3: 根源的エネルギー -->
             <div class="bg-stone-900/80 p-3 rounded border border-red-900/50">
                 <div class="flex justify-between items-center mb-2 border-b border-stone-800 pb-1">
                     <div>
-                        <h2 class="text-sm font-bold text-red-500 uppercase tracking-widest leading-none">Tier 0: Macro Energy</h2>
-                        <p class="text-[10px] text-stone-500 mt-1">根源的エネルギー・ガス先物</p>
+                        <h2 class="text-xs font-bold text-red-500 uppercase tracking-widest leading-none">Tier 0: Macro Energy</h2>
+                        <p class="text-[9px] text-stone-500 mt-1">根源的エネルギー・ガス先物</p>
                     </div>
                     <div id="t0-avg" class="text-lg font-black">-</div>
                 </div>
-                <div id="t0-list" class="space-y-1 overflow-y-auto max-h-36 pr-1 custom-scrollbar"></div>
+                <div id="t0-list" class="space-y-1 overflow-y-auto max-h-32 pr-1 custom-scrollbar"></div>
             </div>
         </div>
 
         <!-- 5列グリッド (Tier 0.5, 1, 1.5, 2, 3) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mx-1 mb-4">
-            <!-- Tier 0.5: Shadow Leverage -->
             <div class="bg-stone-900 p-3 rounded border border-pink-900/40 shadow-[0_0_10px_rgba(236,72,153,0.05)]">
                 <div class="flex justify-between items-center mb-3 border-b border-stone-800 pb-1">
                     <h2 class="text-xs font-bold text-pink-400 uppercase tracking-widest leading-none">Tier 0.5: Shadow Leverage</h2>
@@ -243,6 +259,10 @@
                     <p class="text-xs text-stone-400 mt-1">XLU/TLT比率。インフラ投資の根拠である「20年間の電力買取契約」への過信（プレミアム）を測る。</p>
                 </div>
                 <div class="bg-stone-900/30 p-3 border-l-2 border-pink-500 rounded">
+                    <h4 class="font-bold text-pink-400 text-sm">Credit Heartbeat (信用心電図)</h4>
+                    <p class="text-xs text-stone-400 mt-1">HYG/TLT比率。シャドーバンキング全体の目詰まりとリスクオフの「伝播速度」をリアルタイムで測る波形モニター。</p>
+                </div>
+                <div class="bg-stone-900/30 p-3 border-l-2 border-pink-500 rounded">
                     <h4 class="font-bold text-pink-400 text-sm">Tier 0.5: Shadow Leverage</h4>
                     <p class="text-xs text-stone-400 mt-1">OWL, BX等。AI企業に高利で直接融資を行う「影の金主」。彼らの株価急落は、AIDC増設資金の即時枯渇を意味する。</p>
                 </div>
@@ -298,16 +318,16 @@
         </h3>
         <div class="pl-0 sm:pl-4 mb-4">
             <p class="text-sm text-stone-400">
-                パニック時に感情を完全に排除し、グリッドの物理データと相関アルゴリズムが弾き出したシグナルのみに従って冷徹に行動するための絶対的規範。我々のアンカー（拠り所）である。
+                パニック時に感情を完全に排除し、グリッドの物理データと相関アルゴリズムが弾き出したシグナルのみに従って冷徹行動するための絶対的規範。我々のアンカー（拠り所）である。
             </p>
         </div>
     </div>
 
     <script>
         let bedrockChartInstance = null;
+        let creditChartInstance = null; 
         let seasonalityChartInstance = null; 
 
-        // MARKET INSIGHTパネルの開閉トグル制御
         function toggleInsight() {
             const body = document.getElementById('insight-body');
             const btn = document.getElementById('insight-toggle-btn');
@@ -348,7 +368,7 @@
             document.getElementById('bedrock-ratio').innerText = bedrockData.current_ratio.toFixed(3);
             const chg = bedrockData.ratio_change;
             document.getElementById('bedrock-change').innerText = `${chg > 0 ? '+' : ''}${chg.toFixed(2)}%`;
-            document.getElementById('bedrock-change').className = `text-xs font-bold ${getTierColorClass('BEDROCK', chg)}`;
+            document.getElementById('bedrock-change').className = `text-[10px] font-bold ${getTierColorClass('BEDROCK', chg)}`;
 
             const ctx = document.getElementById('bedrockChart').getContext('2d');
             if (bedrockChartInstance) bedrockChartInstance.destroy();
@@ -359,18 +379,43 @@
                     labels: bedrockData.dates,
                     datasets: [
                         { label: 'XLU/TLT Ratio', data: bedrockData.ratio, borderColor: '#a855f7', borderWidth: 2, pointRadius: 0, tension: 0.1 },
-                        { label: 'Gravity (50 SMA)', data: bedrockData.sma, borderColor: 'rgba(255, 255, 255, 0.2)', borderWidth: 1, borderDash: [5, 5], pointRadius: 0, tension: 0.1 },
-                        { label: 'Bubble Limit (+2σ)', data: bedrockData.upper, borderColor: 'rgba(239, 68, 68, 0.5)', borderWidth: 1, borderDash: [2, 2], pointRadius: 0, tension: 0.1 }
+                        { label: '50 SMA', data: bedrockData.sma, borderColor: 'rgba(255, 255, 255, 0.2)', borderWidth: 1, borderDash: [5, 5], pointRadius: 0, tension: 0.1 },
+                        { label: '+2σ Limit', data: bedrockData.upper, borderColor: 'rgba(239, 68, 68, 0.5)', borderWidth: 1, borderDash: [2, 2], pointRadius: 0, tension: 0.1 }
                     ]
                 },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: { legend: { display: false }, tooltip: { backgroundColor: 'rgba(0,0,0,0.8)' } },
-                    scales: {
-                        x: { display: false },
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#78716c', font: { family: 'Courier New', size: 10 } } }
-                    }
+                    plugins: { legend: { display: false } },
+                    scales: { x: { display: false }, y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#78716c', font: { family: 'Courier New', size: 9 } } } }
+                }
+            });
+        }
+
+        // 【NEW】信用心電図チャートのレンダリング
+        function renderCreditChart(creditData) {
+            if (!creditData) return;
+            document.getElementById('credit-ratio').innerText = creditData.current_ratio.toFixed(3);
+            const chg = creditData.ratio_change;
+            document.getElementById('credit-change').innerText = `${chg > 0 ? '+' : ''}${chg.toFixed(2)}%`;
+            document.getElementById('credit-change').className = `text-[10px] font-bold ${getTierColorClass('CREDIT', chg)}`;
+
+            const ctx = document.getElementById('creditChart').getContext('2d');
+            if (creditChartInstance) creditChartInstance.destroy();
+
+            creditChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: creditData.dates,
+                    datasets: [
+                        { label: 'HYG/TLT Ratio', data: creditData.ratio, borderColor: '#ec4899', borderWidth: 2, pointRadius: 0, tension: 0.1 },
+                        { label: '50 SMA', data: creditData.sma, borderColor: 'rgba(255, 255, 255, 0.2)', borderWidth: 1, borderDash: [5, 5], pointRadius: 0, tension: 0.1 },
+                        { label: '-2σ Limit', data: creditData.lower, borderColor: 'rgba(239, 68, 68, 0.5)', borderWidth: 1, borderDash: [2, 2], pointRadius: 0, tension: 0.1 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { display: false }, y: { grid: { color: 'rgba(255,255,255,0.03)' }, ticks: { color: '#78716c', font: { family: 'Courier New', size: 9 } } } }
                 }
             });
         }
@@ -462,7 +507,6 @@
                     else statusEl.classList.add('border-stone-500', 'text-stone-300');
                 }
 
-                // NEW: Insight injection (トグル仕様)
                 if (data.insight) {
                     document.getElementById('insight-content').innerText = data.insight;
                     document.getElementById('insight-status-text').innerText = "ANALYSIS READY";
@@ -471,6 +515,7 @@
                 }
 
                 if (data.bedrock) renderBedrockChart(data.bedrock);
+                if (data.credit_heartbeat) renderCreditChart(data.credit_heartbeat);
 
                 const mapping = {
                     'TIER_0': { list: 't0-list', avg: 't0-avg' },
