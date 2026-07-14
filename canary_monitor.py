@@ -39,25 +39,22 @@ def generate_market_insight(dashboard_data):
 
     gem_persona = """
     # Role and Persona
-    あなたは世界的な商品先物トレーダーであり、マクロ経済学と電力グリッド（送電網）の物理的需給に精通した冷徹なシニア・アナリストでありながらGoogleプラットフォームを知り尽くしたエンジニアでもあります。AIバブルの命運を握る「卸売電力先物（特に米PJM市場やMISO市場等）」のフォワードカーブ（期日別価格曲線）の歪みを監視・デバッグし、ユーザー（相棒）の投資戦略をサポートする防衛システムを構築します。
+    あなたは世界的な商品先物トレーダーであり、マクロ経済学と電力グリッド（送電網）の物理的需給に精通した冷徹なシニア・アナリストでありながらGoogleプラットフォームを知り尽くしたエンジニアでもあります。
 
     # Background & Core Philosophy
-    テック大手がどれだけ「AIの未来」を喧伝しようが、AIデータセンター（AIDC）を動かすための「物理的な電力（質量）」の調達に嘘はつけない。2〜3年先（遠月物）の電力先物価格の動向こそが、AIバブル崩壊を数ヶ月前に検知する「最強のカナリア」であるという思想に基づき、すべての市場データを解剖する。
-    また、シャドーバンキングやプライベート・クレジットの目詰まりを映す「信用心電図（HYG/TLT）」の急変動は、流動性ショックの波及速度を測る極めて重要なマクロ指標である。
+    AIとはソフトウェアではなく、莫大な電力と冷却水、そして鉄とコンクリートを消費する「重厚長大な物理インフラ」である。
+    ニューヨーク州のデータセンター凍結に見られるような、物理的限界（送電網・水不足）に直面するネオクラウド（CRWV, NBIS, ORCL）の逆行安や、それらを裏で支えるシャドークレジット（OWL, BX）の信用収縮こそが、ペーパーバブル崩壊の最速シグナルであるという思想に基づき、すべての市場データを解剖する。
 
     # Objectives
-    1. 2年先〜3年先の卸売電力先物（テナー）の価格・出来高の推移をトラッキングする。
-    2. 遠月物の「コンタンゴ化（期先安）」や「出来高急減」という【カナリアの死（バブル崩壊サイン）】を即座に検出する。
-    3. 電力市場の歪みやシャドー流動性の枯渇が、WTI原油、天然ガス、コッパー（銅）、ナスダック指数へどう波及するか（マクロの因果チェーン）をスタックトレースする。
+    1. 2年先〜3年先の卸売電力先物（テナー）の価格・出来高の推移、およびネオクラウド・セクターの窒息度合いをトラッキングする。
+    2. 遠月物の「コンタンゴ化（期先安）」や、Tier 0.5（影の金主）の下落という【カナリアの死（バブル崩壊サイン）】を即座に検出する。
+    3. 電力市場の歪みやシャドー流動性の枯渇が、WTI原油、天然ガス、コッパー（銅）、ウラン等の実需（リアルアセット）へどう波及するか（マクロの因果チェーン）をスタックトレースする。
 
-    # Analysis Logic
-    3年先までの卸売電力先物データや、HYG/TLT比率（信用重力）を元にAIバブルの現在地を示すとともに、崩壊のシグナルを発報する。
-    
     # Output Format (厳守事項)
     ダッシュボードに掲載するため、以下の形式で短く、鋭く、箇条書きを交えて出力すること。Markdownの装飾を効果的に使うこと。
-    1. 【本日のマクロスタックトレース】(現状の相関の冷徹な分析、HYG/TLTの動向含む)
+    1. 【本日のマクロスタックトレース】(ネオクラウドの動向と、HYG/TLTの信用重力を含む現状分析)
     2. 【監視グリッドの特異点】(物理・金融レイヤーで発生している異常値や注目ポイント)
-    3. 【司令官への進言】(今後の具体的な投資アクション)
+    3. 【司令官への進言】(今後の具体的な投資アクション。平行チャネルの中心線や因縁の水平線でのコンフリューエンスに言及すること)
     """
 
     try:
@@ -177,7 +174,7 @@ def main():
         "TIER_0": {"UNG": "US Natural Gas Fund", "UNL": "US 12-Month NatGas", "EQT": "EQT Corp", "KMI": "Kinder Morgan"},
         "TIER_0_5": {"OWL": "Blue Owl Capital", "BX": "Blackstone Inc.", "APO": "Apollo Global Mgmt"},
         "TIER_1": {"CEG": "Constellation Energy", "VRT": "Vertiv Holdings", "EQIX": "Equinix", "ETN": "Eaton Corp"},
-        "TIER_1_5": {"SMCI": "Super Micro Computer", "ANET": "Arista Networks", "NVDA": "NVIDIA", "AMD": "AMD"},
+        "TIER_1_5": {"NVDA": "NVIDIA", "CRWV": "CoreWeave", "NBIS": "Nebius Group", "ORCL": "Oracle", "SMCI": "Super Micro Computer", "AMD": "AMD", "ANET": "Arista Networks"},
         "TIER_2": {"AMZN": "Amazon (AWS)", "MSFT": "Microsoft (Azure)", "GOOGL": "Alphabet (GCP)", "META": "Meta"},
         "TIER_3": {"FCX": "Freeport-McMoRan (Copper)", "SCCO": "Southern Copper", "USO": "US Oil Fund (WTI)", "CCJ": "Cameco (Uranium)"},
         "TIER_4": {"NOW": "ServiceNow", "CRM": "Salesforce", "WDAY": "Workday", "SAP": "SAP"}
@@ -186,7 +183,7 @@ def main():
         "UNG": "ガス期近", "UNL": "ガス遠月", "EQT": "天然ガス生産", "KMI": "ガスパイプライン",
         "OWL": "シャドークレジット", "BX": "AIDC不動産", "APO": "インフラ融資",
         "CEG": "原子力発電", "VRT": "DC冷却", "EQIX": "DC不動産", "ETN": "配電・電力制御",
-        "SMCI": "高密度サーバー", "ANET": "ネットワーク", "NVDA": "AI半導体", "AMD": "AI半導体",
+        "NVDA": "AI半導体", "CRWV": "ネオクラウド", "NBIS": "GPUクラウド", "ORCL": "AIDC/クラウド", "SMCI": "高密度サーバー", "AMD": "AI半導体", "ANET": "ネットワーク",
         "AMZN": "AWS", "MSFT": "Azure", "GOOGL": "GCP", "META": "内製インフラ",
         "FCX": "銅生産", "SCCO": "銅生産", "USO": "WTI原油", "CCJ": "ウラン",
         "NOW": "ITワークフロー", "CRM": "顧客データ", "WDAY": "人事・財務", "SAP": "基幹システム"
@@ -235,9 +232,6 @@ def main():
             }
     except Exception as e: print(f"[!] Bedrock Data Error: {e}")
 
-    # ==========================================
-    # 【NEW】信用心電図レイヤー（HYG / TLT Ratio）の追加
-    # ==========================================
     print("[*] Fetching Credit Heartbeat Data (HYG/TLT)...")
     try:
         credit_data = yf.download(["HYG", "TLT"], period="6mo", interval="1d", progress=False)['Close'].dropna()
@@ -259,19 +253,26 @@ def main():
     output_data["grid_physical_data"] = fetch_physical_grid_data()
 
     print("[*] Analyzing Macro Correlations...")
-    t05, t1, t2, t4 = output_data["layers"].get("TIER_0_5", 0), output_data["layers"].get("TIER_1", 0), output_data["layers"].get("TIER_2", 0), output_data["layers"].get("TIER_4", 0)
+    t05, t1, t15, t2, t4 = output_data["layers"].get("TIER_0_5", 0), output_data["layers"].get("TIER_1", 0), output_data["layers"].get("TIER_1_5", 0), output_data["layers"].get("TIER_2", 0), output_data["layers"].get("TIER_4", 0)
     bedrock = output_data.get("bedrock", {}).get("ratio_change", 0.0)
     credit_chg = output_data.get("credit_heartbeat", {}).get("ratio_change", 0.0)
     gas_sig = (output_data.get("financial_forward_curve") or {}).get("signal", "")
 
     status = "⚪ 【待機】有意なマクロシグナルなし"
-    if "バックワーデーション" in gas_sig and t1 < -1.0: status = "🔴 【需要幻滅の死】遠月ガス急落 ＋ 物理基盤下落"
-    elif t05 < -2.0 and t1 < -1.0: status = "🔴 【影の流動性枯渇】PE・シャドークレジット急落 ＋ インフラ下落"
-    elif credit_chg < -1.5 and t1 < -1.0: status = "🔴 【流動性津波】信用心電図急落 ＋ インフラ下落（全面リスクオフ）"
-    elif bedrock < -1.0 and t1 < -1.0: status = "🔴 【PPA岩盤崩壊】信用プレミアム急落 ＋ 物理基盤下落"
-    elif t1 < -1.0 and t2 < -1.0 and t4 < -1.0: status = "🔴 【真のパニック崩壊】インフラ〜データ資源まで全面安"
-    elif t1 < -1.0 and t4 > 0.0: status = "🟢 【健全なローテーション】インフラ売却 ＋ データ資源(SaaS)買い"
-    elif t1 > 1.0 and t4 > 1.0: status = "🟢 【バブル継続】全レイヤーへの過剰流動性流入"
+    if "バックワーデーション" in gas_sig and t1 < -1.0: 
+        status = "🔴 【需要幻滅の死】遠月ガス急落 ＋ 物理基盤下落"
+    elif t05 < -2.0 and t1 < -1.0: 
+        status = "⚠️ 【影の流動性枯渇】ネオクラウドへのGPU担保融資の蛇口閉鎖（物理限界）"
+    elif credit_chg < -1.5 and t1 < -1.0: 
+        status = "🔴 【流動性津波】信用心電図急落 ＋ インフラ下落（全面リスクオフ）"
+    elif bedrock < -1.0 and t1 < -1.0: 
+        status = "🔴 【PPA岩盤崩壊】信用プレミアム急落 ＋ 物理基盤下落"
+    elif t1 < -1.0 and t2 < -1.0 and t4 < -1.0: 
+        status = "🔴 【真のパニック崩壊】インフラ〜データ資源まで全面安"
+    elif t1 < -1.0 and t4 > 0.0: 
+        status = "🟢 【健全なローテーション】インフラ売却 ＋ データ資源(SaaS)買い"
+    elif t1 > 1.0 and t4 > 1.0: 
+        status = "🟢 【バブル継続】全レイヤーへの過剰流動性流入"
     output_data["status"] = status
 
     print("[*] Generating Daily Market Insight via Gemini API...")
