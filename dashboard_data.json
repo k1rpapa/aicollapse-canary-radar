@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-07-24T22:55:31.976689+00:00",
+    "timestamp": "2026-07-24T23:11:19.588169+00:00",
     "status": "⚪ 【待機】有意なマクロシグナルなし",
     "config": {
         "TIER_0": [
@@ -1960,6 +1960,6 @@
             "historical_min": 2310127.0
         }
     },
-    "insight": "⚠️ 相場解説の生成中にエラーが発生しました: 404 models/gemini-1.5-pro-latest is not found for API version v1beta, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.",
+    "insight": "⚪ 【SILENCE】 有意なマクロ環境の変化は検出されていません。監視を継続します。",
     "insight_hash": "3dc166ce6b3225ca9420e7a52d06df26"
 }
