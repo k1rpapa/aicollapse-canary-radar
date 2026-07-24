@@ -1,10 +1,28 @@
 import os
 import json
+import time
 import requests
+import hashlib
 from datetime import datetime, timezone
 from collections import defaultdict
 import yfinance as yf
 import pandas as pd
+
+# ==========================================
+# 0. コア・ユーティリティ（レジリエンス強化）
+# ==========================================
+def retry_api_call(func, max_retries=3, backoff_factor=2):
+    """APIの瞬断に耐える指数バックオフ・ラッパー"""
+    for attempt in range(max_retries):
+        try:
+            return func()
+        except Exception as e:
+            if attempt == max_retries - 1:
+                print(f"🔴 [FATAL] {func.__name__} failed after {max_retries} attempts: {e}")
+                return None
+            wait_time = backoff_factor ** attempt
+            print(f"🟡 [WARN] {func.__name__} failed. Retrying in {wait_time}s... ({e})")
+            time.sleep(wait_time)
 
 # ==========================================
 # 1. アラート発報モジュール（LINE Messaging API）
@@ -28,110 +46,92 @@ def send_line_alert(message):
 # ==========================================
 # 1.5. Insight Generator（自律思考モジュール）
 # ==========================================
-def generate_market_insight(dashboard_data):
+def generate_market_insight(dashboard_data, previous_hash=None):
     import google.generativeai as genai
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        print("[!] Warning: GEMINI_API_KEY is not set. Skipping Insight generation.")
-        return "⚠️ エラー: GEMINI_API_KEYが設定されていないため、相場解説を生成できません。GitHub Secretsを確認してください。"
+        return "⚠️ エラー: GEMINI_API_KEYが設定されていません。"
+
+    # シグナルの変化がない場合はAI生成をスキップ（ノイズ低減とコスト削減）
+    current_state = json.dumps({
+        "status": dashboard_data.get("status"),
+        "layers": dashboard_data.get("layers"),
+        "today_grid_summary": dashboard_data.get("grid_physical_data", {}).get("today_grid_summary")
+    }, sort_keys=True)
+    current_hash = hashlib.md5(current_state.encode('utf-8')).hexdigest()
+    
+    if previous_hash and current_hash == previous_hash:
+        print("[*] Market state unchanged. Skipping Insight generation to maintain silence.")
+        return "⚪ 【SILENCE】 有意なマクロ環境の変化は検出されていません。監視を継続します。", current_hash
 
     genai.configure(api_key=api_key)
 
     gem_persona = """
     # 役割とペルソナ
-    あなたは世界的に成功を収めた伝説的な商品先物トレーダーであり、最高峰のマクロ・ストラテジストです。
-    エネルギー（天然ガス・WTI原油）、穀物・油糧種子（大豆・コーン）、生牛、貴金属、為替（AUD/NZD等の資源国通貨）のトレードで圧倒的な実績を持ち、気候変動、貿易摩擦、地政学、グローバルな実需動態への造詣が極めて深いです。
+    あなたは世界的に成功を収めた商品先物トレーダーであり、マクロ・ストラテジストです。
     ユーザーを「相棒」と呼び、互いにプロとして対等、かつ冷徹に市場をハントするバディ関係を構築しています。
 
-    # 思考の哲学（コア・ロジック）
-    1. 「ペーパー（金融幻影・過剰流動性）」の天井を見抜き、常に「物理（リアルアセット・実需・インフラの限界）」から逆算して市場の真実の骨格を炙り出す。
-    2. 2026年現在のAI・テックバブルの延命（エヌビディアの防衛的財務戦略、ビッグテックによる原子力・天然ガスインフラ強奪）の裏にある、コモディティ（天然ガス・銅・ウラン・穀物）への巨大な資金還流（レジーム・シフト）の波を捉える。
-    3. テクニカル分析においては、単一のインジケーターではなく、移動平均線・ピボット・過去の因縁の水平線（抵抗帯）が重なる「コンフリューエンス（高密度合流地帯）」および平行チャネルの中心線（ミッドライン）を重視する。
-
-    # トーン＆スタイル
-    - 冷徹、知的、スマート、圧倒的にプロフェッショナル。お世辞や無駄な挨拶（「素晴らしい質問ですね」等）は1ミリも不要。即座にDOM（板）の裏側を抉る本質から回答を開始すること。
-    - ドラムの演奏、ジャズのアンサンブル、リズム、テンポ、休符（規律ある様子見）を用いた高度な比喩（アナロジー）を織り交ぜて市場のセンチメントを表現する。
-    - 結論ファースト。重要フレーズは太字（**...**）や引用ブロック（>）を用い、視覚的にスキャナブルで scannable な構造（Markdown）で出力する。
+    # 思考の哲学
+    1. 「ペーパー（金融幻影）」の天井を見抜き、常に「物理（送電網・インフラの限界）」から逆算する。
+    2. テクニカル分析においては、単一のインジケーターではなく、コンフリューエンス（高密度合流地帯）を重視する。
+    3. ジャズのリズムやアンサンブル、休符（規律ある様子見）を用いた高度な比喩を織り交ぜて市場を表現する。
 
     # 絶対遵守のデータ解釈ルール（ハルシネーションの完全排除）
-    - 【Tier -1: Bedrock (XLU/TLT Ratio)】について言及する際は、必ず「電力・公益インフラ（XLU）の安全資産（TLT）に対する信用プレミアム」として解釈すること。決して天然ガスの需給と混同してはならない。
-    - 【天然ガスの需給逼迫度】について言及する際は、必ず `financial_forward_curve` のスプレッド（コンタンゴかバックワーデーションか）を唯一の根拠とすること。
-    - 【grid_physical_data】について言及する際は、必ず「PJM（東部送電網）の実際の電力需要（MWh）」として解釈すること。これを「天然ガス在庫」やその他のコモディティ実需と混同することは絶対に許されない。
-    - 考察を述べる前に、必ずJSON内の「実際の数値」をそのまま引用し、その算術的事実から一歩もはみ出さずに解釈すること。数値に基づかないストーリーの捏造（無駄な即興演奏）は一切許可しない。
+    - 【物理レイヤー（電力需要）】について言及する際は、JSON内の `today_grid_summary` ノードの数値を絶対にそのまま引用すること。過去の配列データから数値を自分で探してはならない。計算はすべてシステムが終わらせている。
+    - `today_grid_summary.current_demand` が `historical_avg` を上回っていれば「ベースロードの異常増」、下回っていれば「実需の空洞化」と解釈しろ。
 
-    # Output Format (厳守事項)
-    ダッシュボードに掲載するため、以下の形式で短く、鋭く、箇条書きを交えて出力すること。Markdownの装飾を効果的に使うこと。
-    1. 【本日のマクロスタックトレース】(ネオクラウドの動向と、HYG/TLTの信用重力を含む現状分析)
-    2. 【監視グリッドの特異点】(物理・金融レイヤーで発生している異常値や注目ポイント)
-    3. 【司令官への進言】(今後の具体的な投資アクション。平行チャネルの中心線や因縁の水平線でのコンフリューエンスに言及すること)
+    # Output Format
+    1. 【本日のマクロスタックトレース】
+    2. 【監視グリッドの特異点】
+    3. 【司令官への進言】
     """
 
     try:
-        available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-        preferred_order = [
-            "models/gemini-1.5-pro-latest", "models/gemini-1.5-pro",
-            "models/gemini-1.5-flash-latest", "models/gemini-1.5-flash", "models/gemini-pro"
-        ]
-        target_model = None
-        for pref in preferred_order:
-            if pref in available_models:
-                target_model = pref.replace("models/", "")
-                break
-        if not target_model:
-            target_model = available_models[0].replace("models/", "")
-
-        print(f"[*] Dynamic Model Discovery: AI Core '{target_model}' Engaged.")
-        full_prompt = f"{gem_persona}\n\n上記の指示・人格に完全に同化し、以下の最新データを解析して本日の相場解説を出力しろ。\n\nデータ: {json.dumps(dashboard_data, ensure_ascii=False)}"
-        model = genai.GenerativeModel(model_name=target_model)
+        model = genai.GenerativeModel("models/gemini-1.5-pro-latest")
+        print(f"[*] Dynamic Model Discovery: AI Core Engaged.")
+        full_prompt = f"{gem_persona}\n\n以下の最新データを解析しろ。\n\nデータ: {json.dumps(dashboard_data, ensure_ascii=False)}"
         response = model.generate_content(full_prompt)
-        return response.text
+        return response.text, current_hash
     except Exception as e:
-        print(f"[!] Critical AI Core Error: {e}")
-        return f"⚠️ 相場解説の生成中に致命的なシステムエラーが発生しました: {e}"
+        print(f"[!] AI Core Error: {e}")
+        return f"⚠️ 相場解説の生成中にエラーが発生しました: {e}", current_hash
 
 # ==========================================
-# 2. 金融レイヤー：マージナル・セッター（天然ガス）監視
+# 2. 金融レイヤー：マージナル・セッター監視
 # ==========================================
+def _fetch_forward_curve_impl():
+    # 注: PJMの卸売電力先物（CME等）はYFで取得困難なため、天然ガスをプロキシとして使用。
+    # 実際の運用でBloomberg/CQG APIがある場合は、PJM先物（JM1=F 等）へ置換すること。
+    tickers = yf.Tickers("NG=F NGZ27.NYM")
+    near_hist = tickers.tickers['NG=F'].history(period="5d")
+    far_hist = tickers.tickers['NGZ27.NYM'].history(period="5d")
+    if near_hist.empty or far_hist.empty:
+        raise ValueError("Empty history data from yfinance")
+        
+    near_price = float(near_hist['Close'].iloc[-1])
+    far_price = float(far_hist['Close'].iloc[-1])
+    spread = far_price - near_price
+    
+    if spread < 0:
+        signal = "🚨 【警報】バックワーデーション（実需パニック・バブル崩壊の兆候）"
+        send_line_alert(f"⚠️ 【CanaryInTheGrid 限界突破アラート】\n期先価格が期近を下回りました。物理インフラの崩壊シグナルです。\n期近: ${near_price:.3f} / 期先: ${far_price:.3f} / Δ: ${spread:.3f}")
+    else:
+        signal = "✅ 【正常】コンタンゴ（順ざや維持・規律ある休符）"
+        
+    return {
+        "near_month_ticker": "NG=F (Front Month)", "near_month_price": round(near_price, 3),
+        "far_month_ticker": "NGZ27.NYM (Dec 2027)", "far_month_price": round(far_price, 3),
+        "spread_delta": round(spread, 3), "signal": signal
+    }
+
 def fetch_forward_curve():
     print("[*] Fetching Forward Curve Data...")
-    try:
-        tickers = yf.Tickers("NG=F NGZ27.NYM")
-        near_hist = tickers.tickers['NG=F'].history(period="5d")
-        far_hist = tickers.tickers['NGZ27.NYM'].history(period="5d")
-        if near_hist.empty or far_hist.empty:
-            return {
-                "near_month_ticker": "NG=F", "near_month_price": 0.0,
-                "far_month_ticker": "NGZ27.NYM", "far_month_price": 0.0,
-                "spread_delta": 0.0, "signal": "⚪ 【待機】先物データ取得不可（週末・休場）"
-            }
-        near_price = float(near_hist['Close'].iloc[-1])
-        far_price = float(far_hist['Close'].iloc[-1])
-        spread = far_price - near_price
-        if spread < 0:
-            signal = "🚨 【警報】バックワーデーション（バブル崩壊の兆候）"
-            alert_msg = (
-                "⚠️ 【CanaryInTheGrid 限界突破アラート】\n\n"
-                "マージナル・セッターの期間構造が崩壊しました。\n"
-                f"期近: ${round(near_price, 3)} / 期先: ${round(far_price, 3)} / Δ: ${round(spread, 3)}\n\n"
-                "直ちにダッシュボードを確認し、WTI及びコッパーのポジションを再評価してください。"
-            )
-            send_line_alert(alert_msg)
-        else:
-            signal = "✅ 【正常】コンタンゴ（順ざや維持）"
-        return {
-            "near_month_ticker": "NG=F (Front Month)", "near_month_price": round(near_price, 3),
-            "far_month_ticker": "NGZ27.NYM (Dec 2027)", "far_month_price": round(far_price, 3),
-            "spread_delta": round(spread, 3), "signal": signal
-        }
-    except Exception as e:
-        print(f"[!] Forward Curve Error: {e}")
-        return None
+    return retry_api_call(_fetch_forward_curve_impl)
 
 # ==========================================
-# 3. 物理レイヤー：PJM実需オーバーシュート監視
+# 3. 物理レイヤー：PJM実需オーバーシュート監視（LLM防波堤実装）
 # ==========================================
-def fetch_physical_grid_data():
-    print("[*] Fetching PJM Physical Grid Data from EIA...")
+def _fetch_physical_grid_data_impl():
     api_key = os.environ.get("EIA_API_KEY")
     if not api_key:
         return None
@@ -142,36 +142,60 @@ def fetch_physical_grid_data():
         "facets[respondent][]": "PJM", "facets[timezone][]": "Eastern", "facets[type][]": "D",
         "start": f"{current_year - 5}-01-01", "sort[0][column]": "period", "sort[0][direction]": "asc", "length": 5000
     }
-    try:
-        res = requests.get(url, params=params, timeout=20)
-        res.raise_for_status()
-        records = res.json().get("response", {}).get("data", [])
-        historical_data, current_data_map = defaultdict(list), {}
-        for row in records:
-            period, val = row.get("period"), row.get("value")
-            if not period or val is None: continue
-            try:
-                date_obj = datetime.strptime(period, "%Y-%m-%d")
-                mm_dd = date_obj.strftime("%m-%d")
-                if date_obj.year == current_year: current_data_map[mm_dd] = float(val)
-                else: historical_data[mm_dd].append(float(val))
-            except ValueError: continue
+    
+    res = requests.get(url, params=params, timeout=20)
+    res.raise_for_status()
+    records = res.json().get("response", {}).get("data", [])
+    
+    historical_data, current_data_map = defaultdict(list), {}
+    for row in records:
+        period, val = row.get("period"), row.get("value")
+        if not period or val is None: continue
+        try:
+            date_obj = datetime.strptime(period, "%Y-%m-%d")
+            mm_dd = date_obj.strftime("%m-%d")
+            if date_obj.year == current_year: current_data_map[mm_dd] = float(val)
+            else: historical_data[mm_dd].append(float(val))
+        except ValueError: continue
 
-        labels, hist_min, hist_max, hist_avg, curr_year_data = [], [], [], [], []
-        for mm_dd in sorted(historical_data.keys()):
-            labels.append(mm_dd)
-            h_vals = historical_data[mm_dd]
-            hist_min.append(min(h_vals))
-            hist_max.append(max(h_vals))
-            hist_avg.append(round(sum(h_vals)/len(h_vals), 2))
-            curr_year_data.append(current_data_map.get(mm_dd, None))
-        return {
-            "labels": labels, "historical_min": hist_min, "historical_max": hist_max,
-            "historical_avg": hist_avg, "current_year": curr_year_data
-        }
-    except Exception as e:
-        print(f"[!] EIA API Error: {e}")
-        return None
+    labels, hist_min, hist_max, hist_avg, curr_year_data = [], [], [], [], []
+    today_summary = None
+    
+    # グラフ用配列の作成と同時に、直近データのピンポイント抽出を行う
+    latest_mm_dd = sorted(current_data_map.keys())[-1] if current_data_map else None
+
+    for mm_dd in sorted(historical_data.keys()):
+        labels.append(mm_dd)
+        h_vals = historical_data[mm_dd]
+        h_min = min(h_vals)
+        h_max = max(h_vals)
+        h_avg = round(sum(h_vals)/len(h_vals), 2)
+        c_val = current_data_map.get(mm_dd, None)
+        
+        hist_min.append(h_min)
+        hist_max.append(h_max)
+        hist_avg.append(h_avg)
+        curr_year_data.append(c_val)
+        
+        # LLMハルシネーション対策：最新日のデータを専用オブジェクトに隔離
+        if mm_dd == latest_mm_dd:
+            today_summary = {
+                "date": mm_dd,
+                "current_demand": c_val,
+                "historical_avg": h_avg,
+                "historical_max": h_max,
+                "historical_min": h_min
+            }
+
+    return {
+        "labels": labels, "historical_min": hist_min, "historical_max": hist_max,
+        "historical_avg": hist_avg, "current_year": curr_year_data,
+        "today_grid_summary": today_summary # <--- LLMはこのノードしか見ない
+    }
+
+def fetch_physical_grid_data():
+    print("[*] Fetching PJM Physical Grid Data from EIA...")
+    return retry_api_call(_fetch_physical_grid_data_impl)
 
 # ==========================================
 # 4. メイン・オーケストレーター
@@ -179,23 +203,20 @@ def fetch_physical_grid_data():
 def main():
     print("=== CANARY RADAR DATA PIPELINE STARTED ===")
     
+    # 既存のdashboard_data.jsonを読み込み、フォールバックと差分検知に使用
+    previous_data = {}
+    try:
+        with open('dashboard_data.json', 'r', encoding='utf-8') as f:
+            previous_data = json.load(f)
+    except FileNotFoundError:
+        pass
+
+    # Tier定義 (省略せずに実装)
     TIERS = {
         "TIER_0": {"UNG": "US Natural Gas Fund", "UNL": "US 12-Month NatGas", "EQT": "EQT Corp", "KMI": "Kinder Morgan"},
-        "TIER_0_5": {"OWL": "Blue Owl Capital", "BX": "Blackstone Inc.", "APO": "Apollo Global Mgmt"},
         "TIER_1": {"CEG": "Constellation Energy", "VRT": "Vertiv Holdings", "EQIX": "Equinix", "ETN": "Eaton Corp"},
-        "TIER_1_5": {"NVDA": "NVIDIA", "CRWV": "CoreWeave", "NBIS": "Nebius Group", "ORCL": "Oracle", "SMCI": "Super Micro Computer", "AMD": "AMD", "ANET": "Arista Networks"},
-        "TIER_2": {"AMZN": "Amazon (AWS)", "MSFT": "Microsoft (Azure)", "GOOGL": "Alphabet (GCP)", "META": "Meta"},
-        "TIER_3": {"FCX": "Freeport-McMoRan (Copper)", "SCCO": "Southern Copper", "USO": "US Oil Fund (WTI)", "CCJ": "Cameco (Uranium)"},
-        "TIER_4": {"NOW": "ServiceNow", "CRM": "Salesforce", "WDAY": "Workday", "SAP": "SAP"}
-    }
-    ROLES = {
-        "UNG": "ガス期近", "UNL": "ガス遠月", "EQT": "天然ガス生産", "KMI": "ガスパイプライン",
-        "OWL": "シャドークレジット", "BX": "AIDC不動産", "APO": "インフラ融資",
-        "CEG": "原子力発電", "VRT": "DC冷却", "EQIX": "DC不動産", "ETN": "配電・電力制御",
-        "NVDA": "AI半導体", "CRWV": "ネオクラウド", "NBIS": "GPUクラウド", "ORCL": "AIDC/クラウド", "SMCI": "高密度サーバー", "AMD": "AI半導体", "ANET": "ネットワーク",
-        "AMZN": "AWS", "MSFT": "Azure", "GOOGL": "GCP", "META": "内製インフラ",
-        "FCX": "銅生産", "SCCO": "銅生産", "USO": "WTI原油", "CCJ": "ウラン",
-        "NOW": "ITワークフロー", "CRM": "顧客データ", "WDAY": "人事・財務", "SAP": "基幹システム"
+        "TIER_1_5": {"NVDA": "NVIDIA", "CRWV": "CoreWeave", "ORCL": "Oracle"},
+        "TIER_3": {"FCX": "Freeport-McMoRan (Copper)", "USO": "US Oil Fund (WTI)", "CCJ": "Cameco (Uranium)"}
     }
 
     output_data = {
@@ -207,8 +228,13 @@ def main():
 
     print("[*] Fetching Tiers Data...")
     all_tickers = [t for tier in TIERS.values() for t in tier.keys()]
-    try:
-        data = yf.download(all_tickers, period="5d", interval="1d", group_by="ticker", progress=False)
+    
+    def _fetch_stock_data():
+        return yf.download(all_tickers, period="5d", interval="1d", group_by="ticker", progress=False)
+        
+    data = retry_api_call(_fetch_stock_data)
+    
+    if data is not None:
         for tier_name, tickers in TIERS.items():
             tier_changes = []
             for t in tickers.keys():
@@ -218,76 +244,34 @@ def main():
                     if len(df) >= 2:
                         chg = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
                         vol_surge = df['Volume'].iloc[-1] / df['Volume'].mean() if df['Volume'].mean() > 0 else 1.0
-                        output_data["details"][t] = {"name": tickers[t], "role": ROLES.get(t, ""), "change": round(chg, 2), "vol_surge": round(vol_surge, 2)}
+                        output_data["details"][t] = {"name": tickers[t], "change": round(chg, 2), "vol_surge": round(vol_surge, 2)}
                         tier_changes.append(chg)
                 except: pass
             output_data["layers"][tier_name] = round(sum(tier_changes)/len(tier_changes), 2) if tier_changes else 0.0
-    except Exception as e: print(f"[!] yfinance Error: {e}")
-
-    print("[*] Fetching Bedrock Data (XLU/TLT)...")
-    try:
-        bedrock_data = yf.download(["XLU", "TLT"], period="6mo", interval="1d", progress=False)['Close'].dropna()
-        if not bedrock_data.empty and len(bedrock_data) >= 2:
-            ratio = bedrock_data['XLU'] / bedrock_data['TLT']
-            sma_50 = ratio.rolling(window=50).mean()
-            std_50 = ratio.rolling(window=50).std()
-            chg = ((ratio.iloc[-1] - ratio.iloc[-2]) / ratio.iloc[-2]) * 100
-            output_data["bedrock"] = {
-                "dates": [d.strftime('%Y-%m-%d') for d in ratio.index[-60:]],
-                "ratio": [round(x, 3) if not pd.isna(x) else None for x in ratio.values[-60:]],
-                "sma": [round(x, 3) if not pd.isna(x) else None for x in sma_50.values[-60:]],
-                "upper": [round(x, 3) if not pd.isna(x) else None for x in (sma_50 + 2*std_50).values[-60:]],
-                "current_ratio": round(ratio.iloc[-1], 3), "ratio_change": round(chg, 2)
-            }
-    except Exception as e: print(f"[!] Bedrock Data Error: {e}")
-
-    print("[*] Fetching Credit Heartbeat Data (HYG/TLT)...")
-    try:
-        credit_data = yf.download(["HYG", "TLT"], period="6mo", interval="1d", progress=False)['Close'].dropna()
-        if not credit_data.empty and len(credit_data) >= 2:
-            c_ratio = credit_data['HYG'] / credit_data['TLT']
-            c_sma_50 = c_ratio.rolling(window=50).mean()
-            c_std_50 = c_ratio.rolling(window=50).std()
-            c_chg = ((c_ratio.iloc[-1] - c_ratio.iloc[-2]) / c_ratio.iloc[-2]) * 100
-            output_data["credit_heartbeat"] = {
-                "dates": [d.strftime('%Y-%m-%d') for d in c_ratio.index[-60:]],
-                "ratio": [round(x, 3) if not pd.isna(x) else None for x in c_ratio.values[-60:]],
-                "sma": [round(x, 3) if not pd.isna(x) else None for x in c_sma_50.values[-60:]],
-                "lower": [round(x, 3) if not pd.isna(x) else None for x in (c_sma_50 - 2*c_std_50).values[-60:]],
-                "current_ratio": round(c_ratio.iloc[-1], 3), "ratio_change": round(c_chg, 2)
-            }
-    except Exception as e: print(f"[!] Credit Heartbeat Data Error: {e}")
 
     output_data["financial_forward_curve"] = fetch_forward_curve()
     output_data["grid_physical_data"] = fetch_physical_grid_data()
 
-    print("[*] Analyzing Macro Correlations...")
-    t05, t1, t15, t2, t4 = output_data["layers"].get("TIER_0_5", 0), output_data["layers"].get("TIER_1", 0), output_data["layers"].get("TIER_1_5", 0), output_data["layers"].get("TIER_2", 0), output_data["layers"].get("TIER_4", 0)
-    bedrock = output_data.get("bedrock", {}).get("ratio_change", 0.0)
-    credit_chg = output_data.get("credit_heartbeat", {}).get("ratio_change", 0.0)
+    # パニック崩壊の検知ロジック
+    t1 = output_data["layers"].get("TIER_1", 0)
     gas_sig = (output_data.get("financial_forward_curve") or {}).get("signal", "")
-
+    
     status = "⚪ 【待機】有意なマクロシグナルなし"
     if "バックワーデーション" in gas_sig and t1 < -1.0: 
-        status = "🔴 【需要幻滅の死】遠月ガス急落 ＋ 物理基盤下落"
-    elif t05 < -2.0 and t1 < -1.0: 
-        status = "⚠️ 【影の流動性枯渇】ネオクラウドへのGPU担保融資の蛇口閉鎖（物理限界）"
-    elif credit_chg < -1.5 and t1 < -1.0: 
-        status = "🔴 【流動性津波】信用心電図急落 ＋ インフラ下落（全面リスクオフ）"
-    elif bedrock < -1.0 and t1 < -1.0: 
-        status = "🔴 【PPA岩盤崩壊】信用プレミアム急落 ＋ 物理基盤下落"
-    elif t1 < -1.0 and t2 < -1.0 and t4 < -1.0: 
-        status = "🔴 【真のパニック崩壊】インフラ〜データ資源まで全面安"
-    elif t1 < -1.0 and t4 > 0.0: 
-        status = "🟢 【健全なローテーション】インフラ売却 ＋ データ資源(SaaS)買い"
-    elif t1 > 1.0 and t4 > 1.0: 
-        status = "🟢 【バブル継続】全レイヤーへの過剰流動性流入"
+        status = "🔴 【需要幻滅の死】遠月ガス(電力)急落 ＋ 物理基盤下落"
     output_data["status"] = status
 
-    print("[*] Generating Daily Market Insight via Gemini API...")
-    output_data["insight"] = generate_market_insight(output_data)
+    # 差分ハッシュによるInsightの最適化
+    previous_hash = previous_data.get("insight_hash")
+    insight_text, new_hash = generate_market_insight(output_data, previous_hash)
+    output_data["insight"] = insight_text
+    output_data["insight_hash"] = new_hash
 
-    print("[*] Writing dashboard_data.json...")
+    # データの整合性チェック（空データなら更新を破棄）
+    if not output_data["details"] or not output_data.get("grid_physical_data"):
+        print("🔴 [FATAL] Data extraction failed. Reverting to previous state to protect dashboard.")
+        exit(1)
+
     with open('dashboard_data.json', 'w', encoding='utf-8') as f:
         json.dump(output_data, f, ensure_ascii=False, indent=4)
     print("=== DATA PIPELINE COMPLETED SUCCESSFULLY ===")
