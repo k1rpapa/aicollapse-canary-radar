@@ -77,7 +77,7 @@ def generate_market_insight(dashboard_data, previous_hash=None):
     3. ジャズのリズムやアンサンブル、休符（規律ある様子見）を用いた高度な比喩を織り交ぜて市場を表現する。
 
     # 絶対遵守のデータ解釈ルール（ハルシネーションの完全排除）
-    - 【物理レイヤー（電力需要）】について言及する際は、JSON内の `today_grid_summary` ノードの数値を絶対にそのまま引用すること。過去の配列データから数値を自分で探してはならない。計算はすべてシステムが終わらせている。
+    - 【物理レイヤー（電力需要）】について言及する際は、JSON内の `today_grid_summary` ノードの数値を絶対にそのまま引用すること。過去の配列データから数値を自分で探してはならない。
     - `today_grid_summary.current_demand` が `historical_avg` を上回っていれば「ベースロードの異常増」、下回っていれば「実需の空洞化」と解釈しろ。
 
     # Output Format
@@ -100,8 +100,6 @@ def generate_market_insight(dashboard_data, previous_hash=None):
 # 2. 金融レイヤー：マージナル・セッター監視
 # ==========================================
 def _fetch_forward_curve_impl():
-    # 注: PJMの卸売電力先物（CME等）はYFで取得困難なため、天然ガスをプロキシとして使用。
-    # 実際の運用でBloomberg/CQG APIがある場合は、PJM先物（JM1=F 等）へ置換すること。
     tickers = yf.Tickers("NG=F NGZ27.NYM")
     near_hist = tickers.tickers['NG=F'].history(period="5d")
     far_hist = tickers.tickers['NGZ27.NYM'].history(period="5d")
@@ -129,7 +127,7 @@ def fetch_forward_curve():
     return retry_api_call(_fetch_forward_curve_impl)
 
 # ==========================================
-# 3. 物理レイヤー：PJM実需オーバーシュート監視（LLM防波堤実装）
+# 3. 物理レイヤー：PJM実需オーバーシュート監視
 # ==========================================
 def _fetch_physical_grid_data_impl():
     api_key = os.environ.get("EIA_API_KEY")
@@ -160,8 +158,6 @@ def _fetch_physical_grid_data_impl():
 
     labels, hist_min, hist_max, hist_avg, curr_year_data = [], [], [], [], []
     today_summary = None
-    
-    # グラフ用配列の作成と同時に、直近データのピンポイント抽出を行う
     latest_mm_dd = sorted(current_data_map.keys())[-1] if current_data_map else None
 
     for mm_dd in sorted(historical_data.keys()):
@@ -177,7 +173,6 @@ def _fetch_physical_grid_data_impl():
         hist_avg.append(h_avg)
         curr_year_data.append(c_val)
         
-        # LLMハルシネーション対策：最新日のデータを専用オブジェクトに隔離
         if mm_dd == latest_mm_dd:
             today_summary = {
                 "date": mm_dd,
@@ -190,7 +185,7 @@ def _fetch_physical_grid_data_impl():
     return {
         "labels": labels, "historical_min": hist_min, "historical_max": hist_max,
         "historical_avg": hist_avg, "current_year": curr_year_data,
-        "today_grid_summary": today_summary # <--- LLMはこのノードしか見ない
+        "today_grid_summary": today_summary
     }
 
 def fetch_physical_grid_data():
@@ -203,7 +198,6 @@ def fetch_physical_grid_data():
 def main():
     print("=== CANARY RADAR DATA PIPELINE STARTED ===")
     
-    # 既存のdashboard_data.jsonを読み込み、フォールバックと差分検知に使用
     previous_data = {}
     try:
         with open('dashboard_data.json', 'r', encoding='utf-8') as f:
@@ -211,7 +205,7 @@ def main():
     except FileNotFoundError:
         pass
 
-    # Tier定義（完全版：全レイヤー監視）
+    # Tier定義（完全版）
     TIERS = {
         "TIER_0": {"UNG": "US Natural Gas Fund", "UNL": "US 12-Month NatGas", "EQT": "EQT Corp", "KMI": "Kinder Morgan"},
         "TIER_0_5": {"OWL": "Blue Owl Capital", "BX": "Blackstone Inc.", "APO": "Apollo Global Mgmt"},
@@ -229,12 +223,11 @@ def main():
         "details": {}, "layers": {}
     }
 
+    # 1. 株式Tierデータの取得
     print("[*] Fetching Tiers Data...")
     all_tickers = [t for tier in TIERS.values() for t in tier.keys()]
-    
     def _fetch_stock_data():
         return yf.download(all_tickers, period="5d", interval="1d", group_by="ticker", progress=False)
-        
     data = retry_api_call(_fetch_stock_data)
     
     if data is not None:
@@ -246,16 +239,57 @@ def main():
                     df = df.dropna()
                     if len(df) >= 2:
                         chg = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
-                        vol_surge = df['Volume'].iloc[-1] / df['Volume'].mean() if df['Volume'].mean() > 0 else 1.0
-                        output_data["details"][t] = {"name": tickers[t], "change": round(chg, 2), "vol_surge": round(vol_surge, 2)}
+                        vol_surge = float(df['Volume'].iloc[-1] / df['Volume'].mean()) if df['Volume'].mean() > 0 else 1.0
+                        output_data["details"][t] = {"name": tickers[t], "change": round(float(chg), 2), "vol_surge": round(vol_surge, 2)}
                         tier_changes.append(chg)
                 except: pass
-            output_data["layers"][tier_name] = round(sum(tier_changes)/len(tier_changes), 2) if tier_changes else 0.0
+            output_data["layers"][tier_name] = round(float(sum(tier_changes)/len(tier_changes)), 2) if tier_changes else 0.0
 
+    # 2. Bedrock (XLU/TLT) データの取得（復元）
+    print("[*] Fetching Bedrock Data (XLU/TLT)...")
+    def _fetch_bedrock():
+        bedrock_data = yf.download(["XLU", "TLT"], period="6mo", interval="1d", progress=False)['Close'].dropna()
+        if not bedrock_data.empty and len(bedrock_data) >= 2:
+            ratio = bedrock_data['XLU'] / bedrock_data['TLT']
+            sma_50 = ratio.rolling(window=50).mean()
+            std_50 = ratio.rolling(window=50).std()
+            chg = ((ratio.iloc[-1] - ratio.iloc[-2]) / ratio.iloc[-2]) * 100
+            return {
+                "dates": [d.strftime('%Y-%m-%d') for d in ratio.index[-60:]],
+                "ratio": [round(float(x), 3) if not pd.isna(x) else None for x in ratio.values[-60:]],
+                "sma": [round(float(x), 3) if not pd.isna(x) else None for x in sma_50.values[-60:]],
+                "upper": [round(float(x), 3) if not pd.isna(x) else None for x in (sma_50 + 2*std_50).values[-60:]],
+                "current_ratio": round(float(ratio.iloc[-1]), 3), "ratio_change": round(float(chg), 2)
+            }
+        return None
+    bedrock_res = retry_api_call(_fetch_bedrock)
+    if bedrock_res: output_data["bedrock"] = bedrock_res
+
+    # 3. Credit Heartbeat (HYG/TLT) データの取得（復元）
+    print("[*] Fetching Credit Heartbeat Data (HYG/TLT)...")
+    def _fetch_credit():
+        credit_data = yf.download(["HYG", "TLT"], period="6mo", interval="1d", progress=False)['Close'].dropna()
+        if not credit_data.empty and len(credit_data) >= 2:
+            c_ratio = credit_data['HYG'] / credit_data['TLT']
+            c_sma_50 = c_ratio.rolling(window=50).mean()
+            c_std_50 = c_ratio.rolling(window=50).std()
+            c_chg = ((c_ratio.iloc[-1] - c_ratio.iloc[-2]) / c_ratio.iloc[-2]) * 100
+            return {
+                "dates": [d.strftime('%Y-%m-%d') for d in c_ratio.index[-60:]],
+                "ratio": [round(float(x), 3) if not pd.isna(x) else None for x in c_ratio.values[-60:]],
+                "sma": [round(float(x), 3) if not pd.isna(x) else None for x in c_sma_50.values[-60:]],
+                "lower": [round(float(x), 3) if not pd.isna(x) else None for x in (c_sma_50 - 2*c_std_50).values[-60:]],
+                "current_ratio": round(float(c_ratio.iloc[-1]), 3), "ratio_change": round(float(c_chg), 2)
+            }
+        return None
+    credit_res = retry_api_call(_fetch_credit)
+    if credit_res: output_data["credit_heartbeat"] = credit_res
+
+    # 4. 天然ガス先物 & 物理レイヤーデータの取得
     output_data["financial_forward_curve"] = fetch_forward_curve()
     output_data["grid_physical_data"] = fetch_physical_grid_data()
 
-    # パニック崩壊の検知ロジック
+    # 5. シグナル解析
     t1 = output_data["layers"].get("TIER_1", 0)
     gas_sig = (output_data.get("financial_forward_curve") or {}).get("signal", "")
     
@@ -264,17 +298,18 @@ def main():
         status = "🔴 【需要幻滅の死】遠月ガス(電力)急落 ＋ 物理基盤下落"
     output_data["status"] = status
 
-    # 差分ハッシュによるInsightの最適化
+    # 6. AIインサイトの生成（ハッシュ判定付き）
     previous_hash = previous_data.get("insight_hash")
     insight_text, new_hash = generate_market_insight(output_data, previous_hash)
     output_data["insight"] = insight_text
     output_data["insight_hash"] = new_hash
 
-    # データの整合性チェック（空データなら更新を破棄）
+    # 7. データ保全チェック
     if not output_data["details"] or not output_data.get("grid_physical_data"):
         print("🔴 [FATAL] Data extraction failed. Reverting to previous state to protect dashboard.")
         exit(1)
 
+    # 8. 書き出し
     with open('dashboard_data.json', 'w', encoding='utf-8') as f:
         json.dump(output_data, f, ensure_ascii=False, indent=4)
     print("=== DATA PIPELINE COMPLETED SUCCESSFULLY ===")
