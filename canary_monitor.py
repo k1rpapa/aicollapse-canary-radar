@@ -47,7 +47,7 @@ def send_line_alert(message):
 # 1.5. Insight Generator（自律思考モジュール）
 # ==========================================
 def generate_market_insight(dashboard_data, previous_hash=None):
-    from google import genai  # 新SDKへの移行
+    from google import genai
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         return "⚠️ エラー: GEMINI_API_KEYが設定されていません。", None
@@ -85,16 +85,30 @@ def generate_market_insight(dashboard_data, previous_hash=None):
     """
 
     try:
-        # 新しい genai クライアントの初期化
         client = genai.Client(api_key=api_key)
-        print(f"[*] Dynamic Model Discovery: AI Core (gemini-1.5-pro) Engaged.")
         full_prompt = f"{gem_persona}\n\n以下の最新データを解析しろ。\n\nデータ: {json.dumps(dashboard_data, ensure_ascii=False)}"
         
-        # 新SDKでの呼び出しメソッド
-        response = client.models.generate_content(
-            model='gemini-1.5-pro',
-            contents=full_prompt
-        )
+        # 404エラー対策：利用可能なモデルを順次トライするフォールバック・ウォーターフォール
+        models_to_try = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash', 'gemini-pro']
+        response = None
+        used_model = ""
+        
+        for m in models_to_try:
+            try:
+                response = client.models.generate_content(
+                    model=m,
+                    contents=full_prompt
+                )
+                used_model = m
+                break
+            except Exception as model_e:
+                print(f"[*] Fallback: Model {m} unavailable ({model_e}). Trying next...")
+                continue
+                
+        if response is None:
+            raise ValueError("All configured Gemini models returned 404/Error. API Key restrictions may apply.")
+            
+        print(f"[*] Dynamic Model Discovery: AI Core ({used_model}) Engaged.")
         return response.text, current_hash
     except Exception as e:
         print(f"[!] AI Core Error: {e}")
@@ -249,7 +263,7 @@ def main():
                 except: pass
             output_data["layers"][tier_name] = round(float(sum(tier_changes)/len(tier_changes)), 2) if tier_changes else 0.0
 
-    # 2. Bedrock (XLU/TLT) データの取得（復元）
+    # 2. Bedrock (XLU/TLT) データの取得
     print("[*] Fetching Bedrock Data (XLU/TLT)...")
     def _fetch_bedrock():
         bedrock_data = yf.download(["XLU", "TLT"], period="6mo", interval="1d", progress=False)['Close'].dropna()
@@ -269,7 +283,7 @@ def main():
     bedrock_res = retry_api_call(_fetch_bedrock)
     if bedrock_res: output_data["bedrock"] = bedrock_res
 
-    # 3. Credit Heartbeat (HYG/TLT) データの取得（復元）
+    # 3. Credit Heartbeat (HYG/TLT) データの取得
     print("[*] Fetching Credit Heartbeat Data (HYG/TLT)...")
     def _fetch_credit():
         credit_data = yf.download(["HYG", "TLT"], period="6mo", interval="1d", progress=False)['Close'].dropna()
@@ -303,6 +317,7 @@ def main():
     output_data["status"] = status
 
     # 6. AIインサイトの生成（ハッシュ判定付き）
+    # ※強制的に新しいインサイトを生成したい場合は、実行前に dashboard_data.json を削除してください。
     previous_hash = previous_data.get("insight_hash")
     insight_text, new_hash = generate_market_insight(output_data, previous_hash)
     output_data["insight"] = insight_text
