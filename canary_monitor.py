@@ -50,7 +50,7 @@ def generate_market_insight(dashboard_data, previous_hash=None):
     import google.generativeai as genai
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        return "⚠️ エラー: GEMINI_API_KEYが設定されていません。"
+        return "⚠️ エラー: GEMINI_API_KEYが設定されていません。", None
 
     # シグナルの変化がない場合はAI生成をスキップ（ノイズ低減とコスト削減）
     current_state = json.dumps({
@@ -211,12 +211,15 @@ def main():
     except FileNotFoundError:
         pass
 
-    # Tier定義 (省略せずに実装)
+    # Tier定義（完全版：全レイヤー監視）
     TIERS = {
         "TIER_0": {"UNG": "US Natural Gas Fund", "UNL": "US 12-Month NatGas", "EQT": "EQT Corp", "KMI": "Kinder Morgan"},
+        "TIER_0_5": {"OWL": "Blue Owl Capital", "BX": "Blackstone Inc.", "APO": "Apollo Global Mgmt"},
         "TIER_1": {"CEG": "Constellation Energy", "VRT": "Vertiv Holdings", "EQIX": "Equinix", "ETN": "Eaton Corp"},
-        "TIER_1_5": {"NVDA": "NVIDIA", "CRWV": "CoreWeave", "ORCL": "Oracle"},
-        "TIER_3": {"FCX": "Freeport-McMoRan (Copper)", "USO": "US Oil Fund (WTI)", "CCJ": "Cameco (Uranium)"}
+        "TIER_1_5": {"NVDA": "NVIDIA", "CRWV": "CoreWeave", "NBIS": "Nebius Group", "ORCL": "Oracle", "SMCI": "Super Micro Computer", "AMD": "AMD", "ANET": "Arista Networks"},
+        "TIER_2": {"AMZN": "Amazon (AWS)", "MSFT": "Microsoft (Azure)", "GOOGL": "Alphabet (GCP)", "META": "Meta"},
+        "TIER_3": {"FCX": "Freeport-McMoRan (Copper)", "SCCO": "Southern Copper", "USO": "US Oil Fund (WTI)", "CCJ": "Cameco (Uranium)"},
+        "TIER_4": {"NOW": "ServiceNow", "CRM": "Salesforce", "WDAY": "Workday", "SAP": "SAP"}
     }
 
     output_data = {
