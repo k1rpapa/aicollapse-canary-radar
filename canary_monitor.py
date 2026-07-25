@@ -47,7 +47,7 @@ def send_line_alert(message):
 # 1.5. Insight Generator（自律思考モジュール）
 # ==========================================
 def generate_market_insight(dashboard_data, previous_hash=None):
-    import google.generativeai as genai
+    from google import genai  # 新SDKへの移行
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         return "⚠️ エラー: GEMINI_API_KEYが設定されていません。", None
@@ -63,8 +63,6 @@ def generate_market_insight(dashboard_data, previous_hash=None):
     if previous_hash and current_hash == previous_hash:
         print("[*] Market state unchanged. Skipping Insight generation to maintain silence.")
         return "⚪ 【SILENCE】 有意なマクロ環境の変化は検出されていません。監視を継続します。", current_hash
-
-    genai.configure(api_key=api_key)
 
     gem_persona = """
     # 役割とペルソナ
@@ -87,10 +85,16 @@ def generate_market_insight(dashboard_data, previous_hash=None):
     """
 
     try:
-        model = genai.GenerativeModel("models/gemini-1.5-pro-latest")
-        print(f"[*] Dynamic Model Discovery: AI Core Engaged.")
+        # 新しい genai クライアントの初期化
+        client = genai.Client(api_key=api_key)
+        print(f"[*] Dynamic Model Discovery: AI Core (gemini-1.5-pro) Engaged.")
         full_prompt = f"{gem_persona}\n\n以下の最新データを解析しろ。\n\nデータ: {json.dumps(dashboard_data, ensure_ascii=False)}"
-        response = model.generate_content(full_prompt)
+        
+        # 新SDKでの呼び出しメソッド
+        response = client.models.generate_content(
+            model='gemini-1.5-pro',
+            contents=full_prompt
+        )
         return response.text, current_hash
     except Exception as e:
         print(f"[!] AI Core Error: {e}")
