@@ -44,15 +44,14 @@ def send_line_alert(message):
         print(f"🔴 Failed to execute LINE Alert: {e}")
 
 # ==========================================
-# 1.5. Insight Generator（自律思考モジュール）
+# 1.5. Insight Generator（自律思考モジュール） - REST APIベアメタル版
 # ==========================================
 def generate_market_insight(dashboard_data, previous_hash=None):
-    from google import genai
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         return "⚠️ エラー: GEMINI_API_KEYが設定されていません。", None
 
-    # シグナルの変化がない場合はAI生成をスキップ（ノイズ低減とコスト削減）
+    # シグナル変化のハッシュ判定（沈黙の規律）
     current_state = json.dumps({
         "status": dashboard_data.get("status"),
         "layers": dashboard_data.get("layers"),
@@ -74,45 +73,56 @@ def generate_market_insight(dashboard_data, previous_hash=None):
     2. テクニカル分析においては、単一のインジケーターではなく、コンフリューエンス（高密度合流地帯）を重視する。
     3. ジャズのリズムやアンサンブル、休符（規律ある様子見）を用いた高度な比喩を織り交ぜて市場を表現する。
 
-    # 絶対遵守のデータ解釈ルール（ハルシネーションの完全排除）
-    - 【物理レイヤー（電力需要）】について言及する際は、JSON内の `today_grid_summary` ノードの数値を絶対にそのまま引用すること。過去の配列データから数値を自分で探してはならない。
+    # 絶対遵守のデータ解釈ルール
+    - 【物理レイヤー（電力需要）】について言及する際は、JSON内の `today_grid_summary` ノードの数値を絶対にそのまま引用すること。
     - `today_grid_summary.current_demand` が `historical_avg` を上回っていれば「ベースロードの異常増」、下回っていれば「実需の空洞化」と解釈しろ。
-
+    
     # Output Format
     1. 【本日のマクロスタックトレース】
     2. 【監視グリッドの特異点】
     3. 【司令官への進言】
     """
 
-    try:
-        client = genai.Client(api_key=api_key)
-        full_prompt = f"{gem_persona}\n\n以下の最新データを解析しろ。\n\nデータ: {json.dumps(dashboard_data, ensure_ascii=False)}"
-        
-        # 404エラー対策：利用可能なモデルを順次トライするフォールバック・ウォーターフォール
-        models_to_try = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash', 'gemini-pro']
-        response = None
-        used_model = ""
-        
-        for m in models_to_try:
-            try:
-                response = client.models.generate_content(
-                    model=m,
-                    contents=full_prompt
-                )
+    full_prompt = f"{gem_persona}\n\n以下の最新データを解析しろ。\n\nデータ: {json.dumps(dashboard_data, ensure_ascii=False)}"
+    
+    # SDKラッパーを捨て、REST APIで直接最新エンドポイントを叩く
+    models_to_try = [
+        'gemini-2.5-flash',
+        'gemini-3.0-flash',
+        'gemini-1.5-flash-latest', 
+        'gemini-1.5-pro-latest'
+    ]
+    
+    headers = {'Content-Type': 'application/json'}
+    payload = {
+        "contents": [{"parts": [{"text": full_prompt}]}]
+    }
+    
+    insight_text = None
+    used_model = ""
+
+    for m in models_to_try:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent?key={api_key}"
+        try:
+            response = requests.post(url, headers=headers, json=payload, timeout=30)
+            response.raise_for_status()
+            result = response.json()
+            insight_text = result.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text")
+            
+            if insight_text:
                 used_model = m
                 break
-            except Exception as model_e:
-                print(f"[*] Fallback: Model {m} unavailable ({model_e}). Trying next...")
-                continue
-                
-        if response is None:
-            raise ValueError("All configured Gemini models returned 404/Error. API Key restrictions may apply.")
-            
-        print(f"[*] Dynamic Model Discovery: AI Core ({used_model}) Engaged.")
-        return response.text, current_hash
-    except Exception as e:
-        print(f"[!] AI Core Error: {e}")
-        return f"⚠️ 相場解説の生成中にエラーが発生しました: {e}", current_hash
+        except requests.exceptions.RequestException as e:
+            err_msg = e.response.text if hasattr(e, 'response') and e.response is not None else str(e)
+            print(f"[*] Fallback: REST API Model {m} unavailable. Moving to next. ({err_msg[:100]}...)")
+            continue
+
+    if not insight_text:
+        print("[!] AI Core Error: All REST API endpoints returned 404/Error.")
+        return "⚠️ 【AI CORE OFFLINE】 APIエンドポイントへのルーティングに失敗しました。プロジェクト権限の再確認が必要です。", current_hash
+
+    print(f"[*] Dynamic Model Discovery: Bare-Metal REST API ({used_model}) Engaged.")
+    return insight_text, current_hash
 
 # ==========================================
 # 2. 金融レイヤー：マージナル・セッター監視
@@ -223,7 +233,7 @@ def main():
     except FileNotFoundError:
         pass
 
-    # Tier定義（完全版）
+    # Tier定義
     TIERS = {
         "TIER_0": {"UNG": "US Natural Gas Fund", "UNL": "US 12-Month NatGas", "EQT": "EQT Corp", "KMI": "Kinder Morgan"},
         "TIER_0_5": {"OWL": "Blue Owl Capital", "BX": "Blackstone Inc.", "APO": "Apollo Global Mgmt"},
@@ -317,7 +327,6 @@ def main():
     output_data["status"] = status
 
     # 6. AIインサイトの生成（ハッシュ判定付き）
-    # ※強制的に新しいインサイトを生成したい場合は、実行前に dashboard_data.json を削除してください。
     previous_hash = previous_data.get("insight_hash")
     insight_text, new_hash = generate_market_insight(output_data, previous_hash)
     output_data["insight"] = insight_text
