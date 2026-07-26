@@ -648,9 +648,17 @@
         async function render() {
             try {
                 const response = await fetch(`./dashboard_data.json?t=${new Date().getTime()}`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                 globalDashboardData = await response.json();
                 renderContent(globalDashboardData);
-            } catch (e) { console.error("Data Fetch Error:", e); }
+            } catch (e) { 
+                console.error("Data Fetch Error:", e); 
+                const statusEl = document.getElementById('status-display');
+                if (statusEl) {
+                    statusEl.innerText = "⚠️ 【データロード待機】ブラウザのキャッシュクリア（Ctrl+F5）を行うか、再読み込みしてください。";
+                    statusEl.className = "mb-5 mx-1 p-4 bg-stone-900 border-l-4 border-amber-500 rounded-lg shadow-lg text-base sm:text-lg font-bold text-amber-400";
+                }
+            }
         }
         
         render(); setInterval(render, 60000);
