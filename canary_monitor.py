@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import time
 import requests
@@ -7,6 +8,13 @@ from datetime import datetime, timezone
 from collections import defaultdict
 import yfinance as yf
 import pandas as pd
+
+# Windows環境での標準出力エンコーディング対策
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 # ==========================================
 # 0. コア・ユーティリティ（レジリエンス強化）
@@ -18,10 +26,10 @@ def retry_api_call(func, max_retries=3, backoff_factor=2):
             return func()
         except Exception as e:
             if attempt == max_retries - 1:
-                print(f"🔴 [FATAL] {func.__name__} failed after {max_retries} attempts: {e}")
+                print(f"[FATAL] {func.__name__} failed after {max_retries} attempts: {e}")
                 return None
             wait_time = backoff_factor ** attempt
-            print(f"🟡 [WARN] {func.__name__} failed. Retrying in {wait_time}s... ({e})")
+            print(f"[WARN] {func.__name__} failed. Retrying in {wait_time}s... ({e})")
             time.sleep(wait_time)
 
 # ==========================================
@@ -41,51 +49,83 @@ def send_line_alert(message):
         res.raise_for_status()
         print("🟢 LINE Alert Executed Successfully.")
     except Exception as e:
-        print(f"🔴 Failed to execute LINE Alert: {e}")
+        print(f"[!] Failed to execute LINE Alert: {e}")
 
 # ==========================================
-# 1.5. Insight Generator（自律思考モジュール） - REST APIベアメタル版
+# 1.5. Insight Generator（日次＆週次自律思考モジュール）
 # ==========================================
-def generate_market_insight(dashboard_data, previous_hash=None):
+def generate_market_insight(dashboard_data, previous_hash=None, is_weekly=False):
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         return "⚠️ エラー: GEMINI_API_KEYが設定されていません。", None
 
+    mode_prefix = "weekly" if is_weekly else "daily"
+    target_layers = dashboard_data.get("weekly_layers" if is_weekly else "layers")
+    target_details = dashboard_data.get("weekly_details" if is_weekly else "details")
+
     # シグナル変化のハッシュ判定（沈黙の規律）
     current_state = json.dumps({
+        "mode": mode_prefix,
         "status": dashboard_data.get("status"),
-        "layers": dashboard_data.get("layers"),
-        "today_grid_summary": dashboard_data.get("grid_physical_data", {}).get("today_grid_summary")
+        "layers": target_layers,
+        "today_grid_summary": dashboard_data.get("grid_physical_data", {}).get("today_grid_summary") if dashboard_data.get("grid_physical_data") else None
     }, sort_keys=True)
     current_hash = hashlib.md5(current_state.encode('utf-8')).hexdigest()
     
     if previous_hash and current_hash == previous_hash:
-        print("[*] Market state unchanged. Skipping Insight generation to maintain silence.")
+        print(f"[*] {mode_prefix.upper()} Market state unchanged. Skipping Insight generation to maintain silence.")
         return "⚪ 【SILENCE】 有意なマクロ環境の変化は検出されていません。監視を継続します。", current_hash
 
-    gem_persona = """
-    # 役割とペルソナ
-    あなたは世界的に成功を収めた商品先物トレーダーであり、マクロ・ストラテジストです。
-    ユーザーを「相棒」と呼び、互いにプロとして対等、かつ冷徹に市場をハントするバディ関係を構築しています。
+    if is_weekly:
+        gem_persona = """
+        # 役割とペルソナ
+        あなたは世界的に成功を収めた商品先物トレーダーであり、マクロ・ストラテジストです。
+        ユーザーを「相棒」と呼び、冷徹かつ大所高所から週間（月曜〜金曜）の資金循環と物理構造の変化をハントします。
 
-    # 思考の哲学
-    1. 「ペーパー（金融幻影）」の天井を見抜き、常に「物理（送電網・インフラの限界）」から逆算する。
-    2. テクニカル分析においては、単一のインジケーターではなく、コンフリューエンス（高密度合流地帯）を重視する。
-    3. ジャズのリズムやアンサンブル、休符（規律ある様子見）を用いた高度な比喩を織り交ぜて市場を表現する。
+        # 思考の哲学
+        1. 日々のノイズを削ぎ落とし、1週間を通じて「資金の血流がどこから抜け、どこへ還流したか」の構造変化を解剖する。
+        2. 「ペーパー（金融幻影）」の天井を見抜き、常に「物理（送電網・インフラの限界）」から逆算する。
+        3. ジャズのリズムやアンサンブル、休符（規律ある様子見）を用いた高度な比喩を織り交ぜて週間トレンドを表現する。
 
-    # 絶対遵守のデータ解釈ルール
-    - 【物理レイヤー（電力需要）】について言及する際は、JSON内の `today_grid_summary` ノードの数値を絶対にそのまま引用すること。
-    - `today_grid_summary.current_demand` が `historical_avg` を上回っていれば「ベースロードの異常増」、下回っていれば「実需の空洞化」と解釈しろ。
+        # Output Format
+        1. 【今週のマクロ・レジームシフト】
+        2. 【週間監視グリッドの特異点と資金流出入】
+        3. 【来週に向けた司令官への進言】
+        """
+    else:
+        gem_persona = """
+        # 役割とペルソナ
+        あなたは世界的に成功を収めた商品先物トレーダーであり、マクロ・ストラテジストです。
+        ユーザーを「相棒」と呼び、互いにプロとして対等、かつ冷徹に市場をハントするバディ関係を構築しています。
+
+        # 思考の哲学
+        1. 「ペーパー（金融幻影）」の天井を見抜き、常に「物理（送電網・インフラの限界）」から逆算する。
+        2. テクニカル分析においては、単一のインジケーターではなく、コンフリューエンス（高密度合流地帯）を重視する。
+        3. ジャズのリズムやアンサンブル、休符（規律ある様子見）を用いた高度な比喩を織り交ぜて市場を表現する。
+
+        # 絶対遵守のデータ解釈ルール
+        - 【物理レイヤー（電力需要）】について言及する際は、JSON内の `today_grid_summary` ノードの数値を絶対にそのまま引用すること。
+        - `today_grid_summary.current_demand` が `historical_avg` を上回っていれば「ベースロードの異常増」、下回っていれば「実需の空洞化」と解釈しろ。
+        
+        # Output Format
+        1. 【本日のマクロスタックトレース】
+        2. 【監視グリッドの特異点】
+        3. 【司令官への進言】
+        """
+
+    input_payload = {
+        "mode": "WEEKLY" if is_weekly else "DAILY",
+        "status": dashboard_data.get("status"),
+        "layers": target_layers,
+        "details": target_details,
+        "bedrock": dashboard_data.get("weekly_bedrock" if is_weekly else "bedrock"),
+        "credit_heartbeat": dashboard_data.get("weekly_credit_heartbeat" if is_weekly else "credit_heartbeat"),
+        "financial_forward_curve": dashboard_data.get("financial_forward_curve"),
+        "today_grid_summary": dashboard_data.get("grid_physical_data", {}).get("today_grid_summary") if dashboard_data.get("grid_physical_data") else None
+    }
+
+    full_prompt = f"{gem_persona}\n\n以下の最新データを解析しろ。\n\nデータ: {json.dumps(input_payload, ensure_ascii=False)}"
     
-    # Output Format
-    1. 【本日のマクロスタックトレース】
-    2. 【監視グリッドの特異点】
-    3. 【司令官への進言】
-    """
-
-    full_prompt = f"{gem_persona}\n\n以下の最新データを解析しろ。\n\nデータ: {json.dumps(dashboard_data, ensure_ascii=False)}"
-    
-    # SDKラッパーを捨て、REST APIで直接最新エンドポイントを叩く
     models_to_try = [
         'gemini-2.5-flash',
         'gemini-3.0-flash',
@@ -121,7 +161,7 @@ def generate_market_insight(dashboard_data, previous_hash=None):
         print("[!] AI Core Error: All REST API endpoints returned 404/Error.")
         return "⚠️ 【AI CORE OFFLINE】 APIエンドポイントへのルーティングに失敗しました。プロジェクト権限の再確認が必要です。", current_hash
 
-    print(f"[*] Dynamic Model Discovery: Bare-Metal REST API ({used_model}) Engaged.")
+    print(f"[*] Dynamic Model Discovery ({mode_prefix.upper()}): Bare-Metal REST API ({used_model}) Engaged.")
     return insight_text, current_hash
 
 # ==========================================
@@ -160,6 +200,7 @@ def fetch_forward_curve():
 def _fetch_physical_grid_data_impl():
     api_key = os.environ.get("EIA_API_KEY")
     if not api_key:
+        print("[!] EIA_API_KEY not found. Skipping physical grid update.")
         return None
     url = "https://api.eia.gov/v2/electricity/rto/daily-region-data/data/"
     current_year = datetime.now(timezone.utc).year
@@ -248,32 +289,47 @@ def main():
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "status": "⚪ 【待機】シグナル解析中...",
         "config": {k: list(v.keys()) for k, v in TIERS.items()},
-        "details": {}, "layers": {}
+        "details": {}, "layers": {},
+        "weekly_details": {}, "weekly_layers": {}
     }
 
-    # 1. 株式Tierデータの取得
-    print("[*] Fetching Tiers Data...")
+    # 1. 株式Tierデータの取得（日次 & 週間）
+    print("[*] Fetching Tiers Data (Daily & Weekly)...")
     all_tickers = [t for tier in TIERS.values() for t in tier.keys()]
     def _fetch_stock_data():
-        return yf.download(all_tickers, period="5d", interval="1d", group_by="ticker", progress=False)
+        return yf.download(all_tickers, period="15d", interval="1d", group_by="ticker", progress=False)
     data = retry_api_call(_fetch_stock_data)
     
     if data is not None:
         for tier_name, tickers in TIERS.items():
-            tier_changes = []
+            tier_daily_changes = []
+            tier_weekly_changes = []
             for t in tickers.keys():
                 try:
                     df = data[t] if len(all_tickers) > 1 else data
                     df = df.dropna()
                     if len(df) >= 2:
+                        # 日次（前営業日比）
                         chg = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
                         vol_surge = float(df['Volume'].iloc[-1] / df['Volume'].mean()) if df['Volume'].mean() > 0 else 1.0
                         output_data["details"][t] = {"name": tickers[t], "change": round(float(chg), 2), "vol_surge": round(vol_surge, 2)}
-                        tier_changes.append(chg)
+                        tier_daily_changes.append(chg)
+                    
+                    if len(df) >= 5:
+                        idx_start = max(0, len(df) - 5)
+                        weekly_chg = ((df['Close'].iloc[-1] - df['Close'].iloc[idx_start]) / df['Close'].iloc[idx_start]) * 100
+                        output_data["weekly_details"][t] = {"name": tickers[t], "change": round(float(weekly_chg), 2), "vol_surge": round(vol_surge, 2)}
+                        tier_weekly_changes.append(weekly_chg)
+                    elif len(df) >= 2:
+                        weekly_chg = ((df['Close'].iloc[-1] - df['Close'].iloc[0]) / df['Close'].iloc[0]) * 100
+                        output_data["weekly_details"][t] = {"name": tickers[t], "change": round(float(weekly_chg), 2), "vol_surge": round(vol_surge, 2)}
+                        tier_weekly_changes.append(weekly_chg)
                 except: pass
-            output_data["layers"][tier_name] = round(float(sum(tier_changes)/len(tier_changes)), 2) if tier_changes else 0.0
+            
+            output_data["layers"][tier_name] = round(float(sum(tier_daily_changes)/len(tier_daily_changes)), 2) if tier_daily_changes else 0.0
+            output_data["weekly_layers"][tier_name] = round(float(sum(tier_weekly_changes)/len(tier_weekly_changes)), 2) if tier_weekly_changes else 0.0
 
-    # 2. Bedrock (XLU/TLT) データの取得
+    # 2. Bedrock (XLU/TLT) データの取得（日次 & 週間）
     print("[*] Fetching Bedrock Data (XLU/TLT)...")
     def _fetch_bedrock():
         bedrock_data = yf.download(["XLU", "TLT"], period="6mo", interval="1d", progress=False)['Close'].dropna()
@@ -282,18 +338,27 @@ def main():
             sma_50 = ratio.rolling(window=50).mean()
             std_50 = ratio.rolling(window=50).std()
             chg = ((ratio.iloc[-1] - ratio.iloc[-2]) / ratio.iloc[-2]) * 100
-            return {
+            
+            idx_start = max(0, len(ratio) - 5)
+            weekly_chg = ((ratio.iloc[-1] - ratio.iloc[idx_start]) / ratio.iloc[idx_start]) * 100
+
+            bedrock_dict = {
                 "dates": [d.strftime('%Y-%m-%d') for d in ratio.index[-60:]],
                 "ratio": [round(float(x), 3) if not pd.isna(x) else None for x in ratio.values[-60:]],
                 "sma": [round(float(x), 3) if not pd.isna(x) else None for x in sma_50.values[-60:]],
                 "upper": [round(float(x), 3) if not pd.isna(x) else None for x in (sma_50 + 2*std_50).values[-60:]],
                 "current_ratio": round(float(ratio.iloc[-1]), 3), "ratio_change": round(float(chg), 2)
             }
-        return None
-    bedrock_res = retry_api_call(_fetch_bedrock)
-    if bedrock_res: output_data["bedrock"] = bedrock_res
+            weekly_bedrock_dict = dict(bedrock_dict)
+            weekly_bedrock_dict["ratio_change"] = round(float(weekly_chg), 2)
+            return bedrock_dict, weekly_bedrock_dict
+        return None, None
 
-    # 3. Credit Heartbeat (HYG/TLT) データの取得
+    bedrock_res, weekly_bedrock_res = retry_api_call(_fetch_bedrock) or (None, None)
+    if bedrock_res: output_data["bedrock"] = bedrock_res
+    if weekly_bedrock_res: output_data["weekly_bedrock"] = weekly_bedrock_res
+
+    # 3. Credit Heartbeat (HYG/TLT) データの取得（日次 & 週間）
     print("[*] Fetching Credit Heartbeat Data (HYG/TLT)...")
     def _fetch_credit():
         credit_data = yf.download(["HYG", "TLT"], period="6mo", interval="1d", progress=False)['Close'].dropna()
@@ -302,20 +367,35 @@ def main():
             c_sma_50 = c_ratio.rolling(window=50).mean()
             c_std_50 = c_ratio.rolling(window=50).std()
             c_chg = ((c_ratio.iloc[-1] - c_ratio.iloc[-2]) / c_ratio.iloc[-2]) * 100
-            return {
+            
+            c_idx_start = max(0, len(c_ratio) - 5)
+            c_weekly_chg = ((c_ratio.iloc[-1] - c_ratio.iloc[c_idx_start]) / c_ratio.iloc[c_idx_start]) * 100
+
+            credit_dict = {
                 "dates": [d.strftime('%Y-%m-%d') for d in c_ratio.index[-60:]],
                 "ratio": [round(float(x), 3) if not pd.isna(x) else None for x in c_ratio.values[-60:]],
                 "sma": [round(float(x), 3) if not pd.isna(x) else None for x in c_sma_50.values[-60:]],
                 "lower": [round(float(x), 3) if not pd.isna(x) else None for x in (c_sma_50 - 2*c_std_50).values[-60:]],
                 "current_ratio": round(float(c_ratio.iloc[-1]), 3), "ratio_change": round(float(c_chg), 2)
             }
-        return None
-    credit_res = retry_api_call(_fetch_credit)
+            weekly_credit_dict = dict(credit_dict)
+            weekly_credit_dict["ratio_change"] = round(float(c_weekly_chg), 2)
+            return credit_dict, weekly_credit_dict
+        return None, None
+
+    credit_res, weekly_credit_res = retry_api_call(_fetch_credit) or (None, None)
     if credit_res: output_data["credit_heartbeat"] = credit_res
+    if weekly_credit_res: output_data["weekly_credit_heartbeat"] = weekly_credit_res
 
     # 4. 天然ガス先物 & 物理レイヤーデータの取得
     output_data["financial_forward_curve"] = fetch_forward_curve()
-    output_data["grid_physical_data"] = fetch_physical_grid_data()
+    
+    grid_phys = fetch_physical_grid_data()
+    if grid_phys:
+        output_data["grid_physical_data"] = grid_phys
+    elif previous_data.get("grid_physical_data"):
+        # EIA_API_KEY未設定時のローカルフォールバック
+        output_data["grid_physical_data"] = previous_data["grid_physical_data"]
 
     # 5. シグナル解析
     t1 = output_data["layers"].get("TIER_1", 0)
@@ -326,15 +406,20 @@ def main():
         status = "🔴 【需要幻滅の死】遠月ガス(電力)急落 ＋ 物理基盤下落"
     output_data["status"] = status
 
-    # 6. AIインサイトの生成（ハッシュ判定付き）
-    previous_hash = previous_data.get("insight_hash")
-    insight_text, new_hash = generate_market_insight(output_data, previous_hash)
+    # 6. AIインサイトの生成（DAILY & WEEKLY, ハッシュ判定付き）
+    previous_daily_hash = previous_data.get("insight_hash")
+    insight_text, new_daily_hash = generate_market_insight(output_data, previous_daily_hash, is_weekly=False)
     output_data["insight"] = insight_text
-    output_data["insight_hash"] = new_hash
+    output_data["insight_hash"] = new_daily_hash
+
+    previous_weekly_hash = previous_data.get("weekly_insight_hash")
+    weekly_insight_text, new_weekly_hash = generate_market_insight(output_data, previous_weekly_hash, is_weekly=True)
+    output_data["weekly_insight"] = weekly_insight_text
+    output_data["weekly_insight_hash"] = new_weekly_hash
 
     # 7. データ保全チェック
-    if not output_data["details"] or not output_data.get("grid_physical_data"):
-        print("🔴 [FATAL] Data extraction failed. Reverting to previous state to protect dashboard.")
+    if not output_data["details"]:
+        print("[FATAL] Data extraction failed. Reverting to previous state to protect dashboard.")
         exit(1)
 
     # 8. 書き出し

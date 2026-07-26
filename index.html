@@ -33,8 +33,8 @@
         </div>
     </header>
 
-    <!-- タブナビゲーション -->
-    <div class="flex space-x-6 border-b border-stone-800 mb-6 px-1">
+    <!-- メインタブナビゲーション -->
+    <div class="flex space-x-6 border-b border-stone-800 mb-5 px-1">
         <button id="btn-radar" onclick="switchTab('radar')" class="px-3 py-2.5 text-base sm:text-xl font-bold border-b-2 active-tab-btn transition-colors">RADAR VIEW</button>
         <button id="btn-grid" onclick="switchTab('grid')" class="px-3 py-2.5 text-base sm:text-xl font-bold border-b-2 inactive-tab-btn hover:text-stone-300 transition-colors">PHYSICAL GRID</button>
         <button id="btn-docs" onclick="switchTab('docs')" class="px-3 py-2.5 text-base sm:text-xl font-bold border-b-2 inactive-tab-btn hover:text-stone-300 transition-colors">STRATEGY DOCS</button>
@@ -44,6 +44,17 @@
     <!-- VIEW: RADAR (金融・株式ダッシュボード画面)     -->
     <!-- ========================================== -->
     <div id="view-radar">
+        <!-- RADAR VIEW 内 サブモード切り替え (DAILY vs WEEKLY) -->
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-5 mx-1 p-2 bg-stone-900/90 border border-stone-800 rounded-lg">
+            <div class="inline-flex p-1 bg-stone-950 border border-stone-800 rounded-md">
+                <button id="radar-sub-daily" onclick="switchRadarSubTab('daily')" class="px-4 py-1.5 text-xs sm:text-sm font-bold rounded bg-cyan-900/80 text-cyan-300 border border-cyan-500/50 shadow transition-all">DAILY (日次)</button>
+                <button id="radar-sub-weekly" onclick="switchRadarSubTab('weekly')" class="px-4 py-1.5 text-xs sm:text-sm font-bold rounded text-stone-400 hover:text-stone-200 transition-all">WEEKLY (週次:月〜金)</button>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span id="radar-mode-indicator" class="text-xs sm:text-sm font-mono text-cyan-400 font-bold px-2.5 py-1 bg-cyan-950/60 border border-cyan-800 rounded-md">MODE: DAILY SLICE</span>
+            </div>
+        </div>
+
         <div id="status-display" class="mb-5 mx-1 p-4 bg-stone-900 border-l-4 border-stone-600 rounded-lg shadow-lg text-base sm:text-2xl font-bold leading-tight tracking-wide">
             データロード中...
         </div>
@@ -52,7 +63,7 @@
             <div class="p-3.5 sm:p-5 cursor-pointer hover:bg-stone-800/60 transition-colors flex justify-between items-center group" onclick="toggleInsight()">
                 <h2 class="text-sm sm:text-lg font-black text-amber-500 flex items-center">
                     <span id="insight-indicator" class="w-2.5 h-2.5 bg-amber-500 rounded-full animate-pulse mr-2.5"></span>
-                    DAILY MARKET INSIGHT 
+                    <span id="insight-title-text">DAILY MARKET INSIGHT</span>
                     <span class="hidden sm:inline text-stone-400 font-normal ml-2.5 text-xs sm:text-sm">(from Canary AI)</span>
                 </h2>
                 <div class="flex items-center">
@@ -102,7 +113,7 @@
                 </div>
             </div>
 
-            <!-- パネル3: 根源的エネルギー (スクロールなし) -->
+            <!-- パネル3: 根源的エネルギー -->
             <div class="bg-stone-900/90 p-4 rounded-lg border border-red-900/50 shadow-md flex flex-col justify-between">
                 <div class="flex justify-between items-start mb-2 border-b border-stone-800 pb-2">
                     <div>
@@ -111,7 +122,6 @@
                     </div>
                     <div id="t0-avg" class="text-xl sm:text-3xl font-black">-</div>
                 </div>
-                <!-- 縦スクロールを完全に排除 (max-h 制限および overflow を解除) -->
                 <div id="t0-list" class="space-y-2 mt-2"></div>
             </div>
         </div>
@@ -354,6 +364,8 @@
         let bedrockChartInstance = null;
         let creditChartInstance = null; 
         let seasonalityChartInstance = null; 
+        let globalDashboardData = null;
+        let currentRadarMode = 'daily'; // 'daily' or 'weekly'
 
         function toggleInsight() {
             const body = document.getElementById('insight-body');
@@ -380,6 +392,32 @@
                     btnEl.className = 'px-3 py-2.5 text-base sm:text-xl font-bold border-b-2 inactive-tab-btn hover:text-stone-300 transition-colors';
                 }
             });
+        }
+
+        function switchRadarSubTab(mode) {
+            currentRadarMode = mode;
+            const btnDaily = document.getElementById('radar-sub-daily');
+            const btnWeekly = document.getElementById('radar-sub-weekly');
+            const indicator = document.getElementById('radar-mode-indicator');
+            const insightTitle = document.getElementById('insight-title-text');
+
+            if (mode === 'daily') {
+                btnDaily.className = 'px-4 py-1.5 text-xs sm:text-sm font-bold rounded bg-cyan-900/80 text-cyan-300 border border-cyan-500/50 shadow transition-all';
+                btnWeekly.className = 'px-4 py-1.5 text-xs sm:text-sm font-bold rounded text-stone-400 hover:text-stone-200 transition-all';
+                indicator.innerText = 'MODE: DAILY SLICE';
+                indicator.className = 'text-xs sm:text-sm font-mono text-cyan-400 font-bold px-2.5 py-1 bg-cyan-950/60 border border-cyan-800 rounded-md';
+                insightTitle.innerText = 'DAILY MARKET INSIGHT';
+            } else {
+                btnWeekly.className = 'px-4 py-1.5 text-xs sm:text-sm font-bold rounded bg-amber-900/80 text-amber-300 border border-amber-500/50 shadow transition-all';
+                btnDaily.className = 'px-4 py-1.5 text-xs sm:text-sm font-bold rounded text-stone-400 hover:text-stone-200 transition-all';
+                indicator.innerText = 'MODE: WEEKLY (月〜金)';
+                indicator.className = 'text-xs sm:text-sm font-mono text-amber-400 font-bold px-2.5 py-1 bg-amber-950/60 border border-amber-800 rounded-md';
+                insightTitle.innerText = 'WEEKLY MARKET INSIGHT';
+            }
+
+            if (globalDashboardData) {
+                renderContent(globalDashboardData);
+            }
         }
 
         function getTierColorClass(tier, val) {
@@ -495,7 +533,9 @@
         }
 
         function renderDominoMonitor(data) {
-            const getVal = (ticker) => data.details && data.details[ticker] ? data.details[ticker].change : null;
+            const isWeekly = currentRadarMode === 'weekly';
+            const detailsObj = isWeekly && data.weekly_details ? data.weekly_details : data.details;
+            const getVal = (ticker) => detailsObj && detailsObj[ticker] ? detailsObj[ticker].change : null;
             const uso = getVal('USO'); const fcx = getVal('FCX'); const scco = getVal('SCCO'); const ccj = getVal('CCJ');
 
             const setHtml = (id, val) => {
@@ -522,83 +562,94 @@
             }
         }
 
+        function renderContent(data) {
+            const isWeekly = currentRadarMode === 'weekly';
+            
+            document.getElementById('timestamp').innerText = `Last Updated: ${new Date(data.timestamp).toLocaleString()} (JST)`;
+            
+            const statusEl = document.getElementById('status-display');
+            if (data.status) {
+                statusEl.innerText = data.status;
+                statusEl.className = 'mb-5 mx-1 p-4 bg-stone-900 border-l-4 rounded-lg shadow-lg text-base sm:text-2xl font-bold leading-tight tracking-wide ';
+                if(data.status.includes('🟢')) statusEl.classList.add('border-emerald-500', 'text-emerald-400');
+                else if(data.status.includes('🔴')) statusEl.classList.add('border-rose-500', 'text-rose-400', 'blink');
+                else if(data.status.includes('🟡') || data.status.includes('🟠')) statusEl.classList.add('border-amber-500', 'text-amber-400');
+                else statusEl.classList.add('border-stone-500', 'text-stone-300');
+            }
+
+            const targetInsight = isWeekly ? (data.weekly_insight || data.insight) : data.insight;
+            if (targetInsight) {
+                document.getElementById('insight-content').innerText = targetInsight;
+                document.getElementById('insight-status-text').innerText = "ANALYSIS READY";
+                document.getElementById('insight-status-text').classList.replace('text-stone-500', 'text-amber-400');
+                document.getElementById('insight-indicator').classList.remove('animate-pulse');
+            }
+
+            const activeBedrock = isWeekly && data.weekly_bedrock ? data.weekly_bedrock : data.bedrock;
+            const activeCredit = isWeekly && data.weekly_credit_heartbeat ? data.weekly_credit_heartbeat : data.credit_heartbeat;
+
+            if (activeBedrock) renderBedrockChart(activeBedrock);
+            if (activeCredit) renderCreditChart(activeCredit);
+
+            const activeLayers = isWeekly && data.weekly_layers ? data.weekly_layers : data.layers;
+            const activeDetails = isWeekly && data.weekly_details ? data.weekly_details : data.details;
+
+            const mapping = {
+                'TIER_0': { list: 't0-list', avg: 't0-avg' },
+                'TIER_0_5': { list: 't05-list', avg: 't05-avg' },
+                'TIER_1': { list: 't1-list', avg: 't1-avg' },
+                'TIER_1_5': { list: 't15-list', avg: 't15-avg' },
+                'TIER_2': { list: 't2-list', avg: 't2-avg' },
+                'TIER_3': { list: 't3-list', avg: 't3-avg' },
+                'TIER_4': { list: 't4-list', avg: 't4-avg' }
+            };
+
+            for (const [tier, ids] of Object.entries(mapping)) {
+                if(!activeLayers || activeLayers[tier] === undefined) continue;
+                
+                const avgVal = activeLayers[tier];
+                document.getElementById(ids.avg).innerText = `${avgVal > 0 ? '+' : ''}${avgVal.toFixed(2)}%`;
+                document.getElementById(ids.avg).className = `text-sm sm:text-xl font-black ${getTierColorClass(tier, avgVal)}`;
+
+                const container = document.getElementById(ids.list);
+                container.innerHTML = '';
+                
+                data.config[tier].forEach(t => {
+                    const d = activeDetails[t];
+                    if (!d) return;
+                    const fullName = d.name || t;
+                    const roleDesc = d.role ? `<p class="text-[10px] sm:text-xs text-stone-400 truncate mt-0.5 font-sans">${d.role}</p>` : '';
+                    const surgeIndicator = d.vol_surge > 1.5 ? `<span class="text-[10px] bg-amber-500 text-stone-950 px-1.5 py-0.5 rounded font-black ml-1.5 animate-pulse">SURGE</span>` : '';
+
+                    container.innerHTML += `
+                        <div class="flex justify-between items-center p-2 bg-stone-950/80 rounded-md border border-stone-800">
+                            <div class="flex flex-col w-2/3 pr-1 truncate">
+                                <div class="flex items-center">
+                                    <a href="https://finance.yahoo.com/quote/${t}" target="_blank" class="font-black text-sm sm:text-base text-stone-100 hover:text-cyan-400 tracking-wide">${t}</a>
+                                    ${surgeIndicator}
+                                </div>
+                                <p class="text-xs sm:text-sm text-stone-300 font-bold truncate mt-0.5 font-sans">${fullName}</p>
+                                ${roleDesc}
+                            </div>
+                            <div class="flex flex-col items-end w-1/3">
+                                <span class="${getTierColorClass(tier, d.change)} font-mono text-sm sm:text-base font-black">
+                                    ${d.change > 0 ? '+' : ''}${d.change.toFixed(2)}%
+                                </span>
+                            </div>
+                        </div>`;
+                });
+            }
+
+            if(data.financial_forward_curve) renderFinancialLayer(data.financial_forward_curve);
+            if(data.grid_physical_data) renderPhysicalLayer(data.grid_physical_data);
+            renderDominoMonitor(data);
+        }
+
         async function render() {
             try {
                 const response = await fetch(`./dashboard_data.json?t=${new Date().getTime()}`);
-                const data = await response.json();
-                
-                document.getElementById('timestamp').innerText = `Last Updated: ${new Date(data.timestamp).toLocaleString()} (JST)`;
-                
-                const statusEl = document.getElementById('status-display');
-                if (data.status) {
-                    statusEl.innerText = data.status;
-                    statusEl.className = 'mb-5 mx-1 p-4 bg-stone-900 border-l-4 rounded-lg shadow-lg text-base sm:text-2xl font-bold leading-tight tracking-wide ';
-                    if(data.status.includes('🟢')) statusEl.classList.add('border-emerald-500', 'text-emerald-400');
-                    else if(data.status.includes('🔴')) statusEl.classList.add('border-rose-500', 'text-rose-400', 'blink');
-                    else if(data.status.includes('🟡') || data.status.includes('🟠')) statusEl.classList.add('border-amber-500', 'text-amber-400');
-                    else statusEl.classList.add('border-stone-500', 'text-stone-300');
-                }
-
-                if (data.insight) {
-                    document.getElementById('insight-content').innerText = data.insight;
-                    document.getElementById('insight-status-text').innerText = "ANALYSIS READY";
-                    document.getElementById('insight-status-text').classList.replace('text-stone-500', 'text-amber-400');
-                    document.getElementById('insight-indicator').classList.remove('animate-pulse');
-                }
-
-                if (data.bedrock) renderBedrockChart(data.bedrock);
-                if (data.credit_heartbeat) renderCreditChart(data.credit_heartbeat);
-
-                const mapping = {
-                    'TIER_0': { list: 't0-list', avg: 't0-avg' },
-                    'TIER_0_5': { list: 't05-list', avg: 't05-avg' },
-                    'TIER_1': { list: 't1-list', avg: 't1-avg' },
-                    'TIER_1_5': { list: 't15-list', avg: 't15-avg' },
-                    'TIER_2': { list: 't2-list', avg: 't2-avg' },
-                    'TIER_3': { list: 't3-list', avg: 't3-avg' },
-                    'TIER_4': { list: 't4-list', avg: 't4-avg' }
-                };
-
-                for (const [tier, ids] of Object.entries(mapping)) {
-                    if(!data.layers || data.layers[tier] === undefined) continue;
-                    
-                    const avgVal = data.layers[tier];
-                    document.getElementById(ids.avg).innerText = `${avgVal > 0 ? '+' : ''}${avgVal.toFixed(2)}%`;
-                    document.getElementById(ids.avg).className = `text-sm sm:text-xl font-black ${getTierColorClass(tier, avgVal)}`;
-
-                    const container = document.getElementById(ids.list);
-                    container.innerHTML = '';
-                    
-                    data.config[tier].forEach(t => {
-                        const d = data.details[t];
-                        if (!d) return;
-                        const fullName = d.name || t;
-                        const roleDesc = d.role ? `<p class="text-[10px] sm:text-xs text-stone-400 truncate mt-0.5 font-sans">${d.role}</p>` : '';
-                        const surgeIndicator = d.vol_surge > 1.5 ? `<span class="text-[10px] bg-amber-500 text-stone-950 px-1.5 py-0.5 rounded font-black ml-1.5 animate-pulse">SURGE</span>` : '';
-
-                        container.innerHTML += `
-                            <div class="flex justify-between items-center p-2 bg-stone-950/80 rounded-md border border-stone-800">
-                                <div class="flex flex-col w-2/3 pr-1 truncate">
-                                    <div class="flex items-center">
-                                        <a href="https://finance.yahoo.com/quote/${t}" target="_blank" class="font-black text-sm sm:text-base text-stone-100 hover:text-cyan-400 tracking-wide">${t}</a>
-                                        ${surgeIndicator}
-                                    </div>
-                                    <p class="text-xs sm:text-sm text-stone-300 font-bold truncate mt-0.5 font-sans">${fullName}</p>
-                                    ${roleDesc}
-                                </div>
-                                <div class="flex flex-col items-end w-1/3">
-                                    <span class="${getTierColorClass(tier, d.change)} font-mono text-sm sm:text-base font-black">
-                                        ${d.change > 0 ? '+' : ''}${d.change.toFixed(2)}%
-                                    </span>
-                                </div>
-                            </div>`;
-                    });
-                }
-
-                if(data.financial_forward_curve) renderFinancialLayer(data.financial_forward_curve);
-                if(data.grid_physical_data) renderPhysicalLayer(data.grid_physical_data);
-                renderDominoMonitor(data);
-
+                globalDashboardData = await response.json();
+                renderContent(globalDashboardData);
             } catch (e) { console.error("Data Fetch Error:", e); }
         }
         
