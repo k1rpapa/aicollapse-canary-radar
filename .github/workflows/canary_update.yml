@@ -2,7 +2,7 @@ name: Canary Infrastructure Auto-Update
 
 on:
   schedule:
-    - cron: '0 0,12 * * 1-5'
+    - cron: '0 21 * * 1-5' # 日本時間 火〜土曜 朝6:00 (UTC 月〜金 21:00)
   workflow_dispatch:
 
 permissions:
