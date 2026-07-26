@@ -182,7 +182,18 @@
         <div class="bg-stone-900 p-5 rounded-lg border border-stone-800 mb-6 shadow-lg">
             <h3 class="text-base sm:text-xl font-bold text-red-500 uppercase tracking-widest leading-none mb-4 border-b border-stone-700 pb-2.5">［1. 金融レイヤー］ 天然ガス先物 フォワードカーブ（マージナル・セッター）</h3>
             <div id="signal-box" class="p-4 rounded-lg border font-bold text-base sm:text-2xl mb-4 bg-stone-950 border-stone-700 tracking-wide">データロード中...</div>
-            <div class="text-sm sm:text-base leading-relaxed text-stone-300 font-sans" id="spread-details"></div>
+            <div class="text-sm sm:text-base leading-relaxed text-stone-300 font-sans mb-4" id="spread-details"></div>
+            
+            <!-- スプレッドモメンタムチャート -->
+            <div class="border-t border-stone-800 pt-4 mt-2">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="text-xs sm:text-sm font-bold text-stone-300 uppercase tracking-wider font-mono">スプレッド・モメンタム推移 (過去60日)</h4>
+                    <span class="text-[10px] sm:text-xs text-stone-400 font-mono">期近(NG=F) vs 2027年12月限(NGZ27)</span>
+                </div>
+                <div style="position: relative; height: 35vh; min-height: 260px; width: 100%;">
+                    <canvas id="gasSpreadChart"></canvas>
+                </div>
+            </div>
         </div>
 
         <div class="bg-stone-900 p-5 rounded-lg border border-stone-800 mb-6 shadow-lg">
@@ -364,6 +375,7 @@
         let bedrockChartInstance = null;
         let creditChartInstance = null; 
         let seasonalityChartInstance = null; 
+        let gasSpreadChartInstance = null;
         let globalDashboardData = null;
         let currentRadarMode = 'daily'; // 'daily' or 'weekly'
 
@@ -503,6 +515,33 @@
                 `期近 契約 (${data.near_month_ticker}): <b class="text-white">$${data.near_month_price}</b><br>` +
                 `期先 契約 (${data.far_month_ticker}): <b class="text-white">$${data.far_month_price}</b><br>` +
                 `スプレッド (Δ): <b class="text-white">$${data.spread_delta}</b>`;
+
+            if (data.dates && data.near_prices && data.far_prices && data.spreads) {
+                const ctx = document.getElementById('gasSpreadChart').getContext('2d');
+                if (gasSpreadChartInstance) gasSpreadChartInstance.destroy();
+
+                gasSpreadChartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.dates,
+                        datasets: [
+                            { label: '期先 2027年12月限 ($)', data: data.far_prices, borderColor: '#a855f7', borderWidth: 2, pointRadius: 0, tension: 0.1, yAxisID: 'y' },
+                            { label: '期近 NG=F ($)', data: data.near_prices, borderColor: '#22d3ee', borderWidth: 2, pointRadius: 0, tension: 0.1, yAxisID: 'y' },
+                            { label: 'スプレッド Δ (期先 - 期近)', data: data.spreads, borderColor: '#f59e0b', backgroundColor: 'rgba(245, 158, 11, 0.12)', fill: true, borderWidth: 2, tension: 0.1, pointRadius: 0, yAxisID: 'y1' }
+                        ]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        scales: {
+                            y: { position: 'left', title: { display: true, text: '先物価格 ($)', color: '#a8a29e', font: { family: 'JetBrains Mono', size: 12 } }, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a8a29e', font: { family: 'JetBrains Mono', size: 11 } } },
+                            y1: { position: 'right', title: { display: true, text: 'スプレッド Δ ($)', color: '#f59e0b', font: { family: 'JetBrains Mono', size: 12 } }, grid: { drawOnChartArea: false }, ticks: { color: '#f59e0b', font: { family: 'JetBrains Mono', size: 11 } } },
+                            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#a8a29e', maxTicksLimit: 10, font: { family: 'JetBrains Mono', size: 11 } } }
+                        },
+                        plugins: { legend: { labels: { color: '#f5f5f4', font: { family: 'JetBrains Mono', size: 12 } } } }
+                    }
+                });
+            }
         }
 
         function renderPhysicalLayer(data) {

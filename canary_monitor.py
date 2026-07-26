@@ -165,18 +165,29 @@ def generate_market_insight(dashboard_data, previous_hash=None, is_weekly=False)
     return insight_text, current_hash
 
 # ==========================================
-# 2. 金融レイヤー：マージナル・セッター監視
+# 2. 金融レイヤー：マージナル・セッター監視（スプレッド時系列付き）
 # ==========================================
 def _fetch_forward_curve_impl():
     tickers = yf.Tickers("NG=F NGZ27.NYM")
-    near_hist = tickers.tickers['NG=F'].history(period="5d")
-    far_hist = tickers.tickers['NGZ27.NYM'].history(period="5d")
+    near_hist = tickers.tickers['NG=F'].history(period="3mo")['Close'].dropna()
+    far_hist = tickers.tickers['NGZ27.NYM'].history(period="3mo")['Close'].dropna()
+    
     if near_hist.empty or far_hist.empty:
-        raise ValueError("Empty history data from yfinance")
+        raise ValueError("Empty history data from yfinance for natural gas futures")
         
-    near_price = float(near_hist['Close'].iloc[-1])
-    far_price = float(far_hist['Close'].iloc[-1])
-    spread = far_price - near_price
+    df_combined = pd.DataFrame({"near": near_hist, "far": far_hist}).dropna()
+    if len(df_combined) < 2:
+        raise ValueError("Insufficient overlapping history data for natural gas futures")
+
+    df_subset = df_combined.iloc[-60:]
+    dates = [d.strftime('%Y-%m-%d') for d in df_subset.index]
+    near_prices = [round(float(x), 3) for x in df_subset['near'].values]
+    far_prices = [round(float(x), 3) for x in df_subset['far'].values]
+    spreads = [round(float(f - n), 3) for f, n in zip(far_prices, near_prices)]
+
+    near_price = near_prices[-1]
+    far_price = far_prices[-1]
+    spread = spreads[-1]
     
     if spread < 0:
         signal = "🚨 【警報】バックワーデーション（実需パニック・バブル崩壊の兆候）"
@@ -187,11 +198,12 @@ def _fetch_forward_curve_impl():
     return {
         "near_month_ticker": "NG=F (Front Month)", "near_month_price": round(near_price, 3),
         "far_month_ticker": "NGZ27.NYM (Dec 2027)", "far_month_price": round(far_price, 3),
-        "spread_delta": round(spread, 3), "signal": signal
+        "spread_delta": round(spread, 3), "signal": signal,
+        "dates": dates, "near_prices": near_prices, "far_prices": far_prices, "spreads": spreads
     }
 
 def fetch_forward_curve():
-    print("[*] Fetching Forward Curve Data...")
+    print("[*] Fetching Forward Curve Data (History & Spreads)...")
     return retry_api_call(_fetch_forward_curve_impl)
 
 # ==========================================
@@ -309,7 +321,6 @@ def main():
                     df = data[t] if len(all_tickers) > 1 else data
                     df = df.dropna()
                     if len(df) >= 2:
-                        # 日次（前営業日比）
                         chg = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
                         vol_surge = float(df['Volume'].iloc[-1] / df['Volume'].mean()) if df['Volume'].mean() > 0 else 1.0
                         output_data["details"][t] = {"name": tickers[t], "change": round(float(chg), 2), "vol_surge": round(vol_surge, 2)}
@@ -394,7 +405,6 @@ def main():
     if grid_phys:
         output_data["grid_physical_data"] = grid_phys
     elif previous_data.get("grid_physical_data"):
-        # EIA_API_KEY未設定時のローカルフォールバック
         output_data["grid_physical_data"] = previous_data["grid_physical_data"]
 
     # 5. シグナル解析
