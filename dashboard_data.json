@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-07-29T22:01:41.039231+00:00",
+    "timestamp": "2026-07-30T21:13:55.596998+00:00",
     "status": "⚪ 【待機】有意なマクロシグナルなし",
     "config": {
         "TIER_0": [
@@ -50,328 +50,327 @@
     "details": {
         "UNG": {
             "name": "US Natural Gas Fund",
-            "change": 1.33,
-            "vol_surge": 0.77
+            "change": 0.81,
+            "vol_surge": 1.26
         },
         "UNL": {
             "name": "US 12-Month NatGas",
-            "change": 1.43,
-            "vol_surge": 0.54
+            "change": -0.83,
+            "vol_surge": 0.41
         },
         "EQT": {
             "name": "EQT Corp",
-            "change": 1.76,
-            "vol_surge": 0.67
+            "change": 0.27,
+            "vol_surge": 0.49
         },
         "KMI": {
             "name": "Kinder Morgan",
-            "change": 0.76,
-            "vol_surge": 0.74
+            "change": -0.6,
+            "vol_surge": 0.8
         },
         "OWL": {
             "name": "Blue Owl Capital",
-            "change": -2.65,
-            "vol_surge": 1.28
+            "change": 6.39,
+            "vol_surge": 2.42
         },
         "BX": {
             "name": "Blackstone Inc.",
-            "change": -3.36,
-            "vol_surge": 1.07
+            "change": -1.03,
+            "vol_surge": 0.81
         },
         "APO": {
             "name": "Apollo Global Mgmt",
-            "change": -3.95,
-            "vol_surge": 0.71
+            "change": 0.4,
+            "vol_surge": 1.19
         },
         "CEG": {
             "name": "Constellation Energy",
-            "change": -0.72,
-            "vol_surge": 1.01
+            "change": 2.17,
+            "vol_surge": 1.18
         },
         "VRT": {
             "name": "Vertiv Holdings",
-            "change": -17.26,
-            "vol_surge": 3.95
+            "change": 2.0,
+            "vol_surge": 2.39
         },
         "EQIX": {
             "name": "Equinix",
-            "change": -2.59,
-            "vol_surge": 1.47
+            "change": 3.92,
+            "vol_surge": 1.68
         },
         "ETN": {
             "name": "Eaton Corp",
-            "change": -6.31,
-            "vol_surge": 2.06
+            "change": 6.91,
+            "vol_surge": 1.28
         },
         "NVDA": {
             "name": "NVIDIA",
-            "change": -3.55,
-            "vol_surge": 1.08
+            "change": 2.65,
+            "vol_surge": 0.97
         },
         "CRWV": {
             "name": "CoreWeave",
-            "change": -9.63,
-            "vol_surge": 1.47
+            "change": 21.51,
+            "vol_surge": 1.7
         },
         "NBIS": {
             "name": "Nebius Group",
-            "change": -12.65,
-            "vol_surge": 1.84
+            "change": 27.13,
+            "vol_surge": 1.8
         },
         "ORCL": {
             "name": "Oracle",
-            "change": -1.85,
-            "vol_surge": 0.7
+            "change": 8.34,
+            "vol_surge": 0.95
         },
         "SMCI": {
             "name": "Super Micro Computer",
-            "change": -9.67,
-            "vol_surge": 0.86
+            "change": 7.9,
+            "vol_surge": 0.81
         },
         "AMD": {
             "name": "AMD",
-            "change": -5.51,
-            "vol_surge": 1.15
+            "change": 13.0,
+            "vol_surge": 1.26
         },
         "ANET": {
             "name": "Arista Networks",
-            "change": -6.92,
-            "vol_surge": 1.04
+            "change": 8.26,
+            "vol_surge": 0.9
         },
         "AMZN": {
             "name": "Amazon (AWS)",
-            "change": -1.82,
-            "vol_surge": 1.06
+            "change": 3.9,
+            "vol_surge": 1.93
         },
         "MSFT": {
             "name": "Microsoft (Azure)",
-            "change": -0.71,
-            "vol_surge": 1.38
+            "change": 15.51,
+            "vol_surge": 3.02
         },
         "GOOGL": {
             "name": "Alphabet (GCP)",
-            "change": 0.9,
-            "vol_surge": 0.9
+            "change": -0.91,
+            "vol_surge": 0.98
         },
         "META": {
             "name": "Meta",
-            "change": -1.31,
-            "vol_surge": 1.14
+            "change": -7.95,
+            "vol_surge": 2.26
         },
         "FCX": {
             "name": "Freeport-McMoRan (Copper)",
-            "change": -2.68,
-            "vol_surge": 1.25
+            "change": 5.75,
+            "vol_surge": 0.7
         },
         "SCCO": {
             "name": "Southern Copper",
-            "change": -1.95,
-            "vol_surge": 0.79
+            "change": 5.43,
+            "vol_surge": 0.59
         },
         "USO": {
             "name": "US Oil Fund (WTI)",
-            "change": 7.32,
-            "vol_surge": 0.99
+            "change": -1.42,
+            "vol_surge": 0.48
         },
         "CCJ": {
             "name": "Cameco (Uranium)",
-            "change": -2.75,
-            "vol_surge": 0.74
+            "change": 4.33,
+            "vol_surge": 0.91
         },
         "NOW": {
             "name": "ServiceNow",
-            "change": 4.65,
-            "vol_surge": 1.46
+            "change": -4.92,
+            "vol_surge": 1.01
         },
         "CRM": {
             "name": "Salesforce",
-            "change": 3.79,
-            "vol_surge": 1.13
+            "change": -4.07,
+            "vol_surge": 0.77
         },
         "WDAY": {
             "name": "Workday",
-            "change": 5.21,
-            "vol_surge": 1.56
+            "change": -5.89,
+            "vol_surge": 1.46
         },
         "SAP": {
             "name": "SAP",
-            "change": 3.81,
-            "vol_surge": 1.55
+            "change": -2.75,
+            "vol_surge": 1.04
         }
     },
     "layers": {
-        "TIER_0": 1.32,
-        "TIER_0_5": -3.32,
-        "TIER_1": -6.72,
-        "TIER_1_5": -7.11,
-        "TIER_2": -0.74,
-        "TIER_3": -0.01,
-        "TIER_4": 4.36
+        "TIER_0": -0.09,
+        "TIER_0_5": 1.92,
+        "TIER_1": 3.75,
+        "TIER_1_5": 12.68,
+        "TIER_2": 2.64,
+        "TIER_3": 3.52,
+        "TIER_4": -4.41
     },
     "weekly_details": {
         "UNG": {
             "name": "US Natural Gas Fund",
-            "change": -6.41,
-            "vol_surge": 0.77
+            "change": -5.12,
+            "vol_surge": 1.26
         },
         "UNL": {
             "name": "US 12-Month NatGas",
-            "change": -2.03,
-            "vol_surge": 0.54
+            "change": -2.61,
+            "vol_surge": 0.41
         },
         "EQT": {
             "name": "EQT Corp",
-            "change": -1.54,
-            "vol_surge": 0.67
+            "change": -0.6,
+            "vol_surge": 0.49
         },
         "KMI": {
             "name": "Kinder Morgan",
-            "change": -2.81,
-            "vol_surge": 0.74
+            "change": -3.65,
+            "vol_surge": 0.8
         },
         "OWL": {
             "name": "Blue Owl Capital",
-            "change": 3.69,
-            "vol_surge": 1.28
+            "change": 7.51,
+            "vol_surge": 2.42
         },
         "BX": {
             "name": "Blackstone Inc.",
-            "change": 3.94,
-            "vol_surge": 1.07
+            "change": -1.48,
+            "vol_surge": 0.81
         },
         "APO": {
             "name": "Apollo Global Mgmt",
-            "change": 0.65,
-            "vol_surge": 0.71
+            "change": -1.92,
+            "vol_surge": 1.19
         },
         "CEG": {
             "name": "Constellation Energy",
-            "change": -6.4,
-            "vol_surge": 1.01
+            "change": -3.93,
+            "vol_surge": 1.18
         },
         "VRT": {
             "name": "Vertiv Holdings",
-            "change": -26.64,
-            "vol_surge": 3.95
+            "change": -21.65,
+            "vol_surge": 2.39
         },
         "EQIX": {
             "name": "Equinix",
-            "change": -2.47,
-            "vol_surge": 1.47
+            "change": -3.39,
+            "vol_surge": 1.68
         },
         "ETN": {
             "name": "Eaton Corp",
-            "change": -12.83,
-            "vol_surge": 2.06
+            "change": -4.25,
+            "vol_surge": 1.28
         },
         "NVDA": {
             "name": "NVIDIA",
-            "change": -8.98,
-            "vol_surge": 1.08
+            "change": -5.7,
+            "vol_surge": 0.97
         },
         "CRWV": {
             "name": "CoreWeave",
-            "change": -25.01,
-            "vol_surge": 1.47
+            "change": 2.81,
+            "vol_surge": 1.7
         },
         "NBIS": {
             "name": "Nebius Group",
-            "change": -32.92,
-            "vol_surge": 1.84
+            "change": 0.35,
+            "vol_surge": 1.8
         },
         "ORCL": {
             "name": "Oracle",
-            "change": -1.92,
-            "vol_surge": 0.7
+            "change": 10.93,
+            "vol_surge": 0.95
         },
         "SMCI": {
             "name": "Super Micro Computer",
-            "change": -17.63,
-            "vol_surge": 0.86
+            "change": -7.87,
+            "vol_surge": 0.81
         },
         "AMD": {
             "name": "AMD",
-            "change": -20.41,
-            "vol_surge": 1.15
+            "change": -7.0,
+            "vol_surge": 1.26
         },
         "ANET": {
             "name": "Arista Networks",
-            "change": -10.55,
-            "vol_surge": 1.04
+            "change": -1.71,
+            "vol_surge": 0.9
         },
         "AMZN": {
             "name": "Amazon (AWS)",
-            "change": -3.0,
-            "vol_surge": 1.06
+            "change": 1.46,
+            "vol_surge": 1.93
         },
         "MSFT": {
             "name": "Microsoft (Azure)",
-            "change": 2.35,
-            "vol_surge": 1.38
+            "change": 18.18,
+            "vol_surge": 3.02
         },
         "GOOGL": {
             "name": "Alphabet (GCP)",
-            "change": 5.99,
-            "vol_surge": 0.9
+            "change": 4.35,
+            "vol_surge": 0.98
         },
         "META": {
             "name": "Meta",
-            "change": -3.38,
-            "vol_surge": 1.14
+            "change": -9.44,
+            "vol_surge": 2.26
         },
         "FCX": {
             "name": "Freeport-McMoRan (Copper)",
-            "change": -5.53,
-            "vol_surge": 1.25
+            "change": 1.34,
+            "vol_surge": 0.7
         },
         "SCCO": {
             "name": "Southern Copper",
-            "change": -3.7,
-            "vol_surge": 0.79
+            "change": 3.18,
+            "vol_surge": 0.59
         },
         "USO": {
             "name": "US Oil Fund (WTI)",
-            "change": -7.3,
-            "vol_surge": 0.99
+            "change": -6.74,
+            "vol_surge": 0.48
         },
         "CCJ": {
             "name": "Cameco (Uranium)",
-            "change": -5.33,
-            "vol_surge": 0.74
+            "change": 0.42,
+            "vol_surge": 0.91
         },
         "NOW": {
             "name": "ServiceNow",
-            "change": 25.91,
-            "vol_surge": 1.46
+            "change": 11.43,
+            "vol_surge": 1.01
         },
         "CRM": {
             "name": "Salesforce",
-            "change": 20.04,
-            "vol_surge": 1.13
+            "change": 10.42,
+            "vol_surge": 0.77
         },
         "WDAY": {
             "name": "Workday",
-            "change": 31.39,
-            "vol_surge": 1.56
+            "change": 16.82,
+            "vol_surge": 1.46
         },
         "SAP": {
             "name": "SAP",
-            "change": 27.06,
-            "vol_surge": 1.55
+            "change": 13.05,
+            "vol_surge": 1.04
         }
     },
     "weekly_layers": {
-        "TIER_0": -3.2,
-        "TIER_0_5": 2.76,
-        "TIER_1": -12.09,
-        "TIER_1_5": -16.77,
-        "TIER_2": 0.49,
-        "TIER_3": -5.46,
-        "TIER_4": 26.1
+        "TIER_0": -2.99,
+        "TIER_0_5": 1.37,
+        "TIER_1": -8.3,
+        "TIER_1_5": -1.17,
+        "TIER_2": 3.64,
+        "TIER_3": -0.45,
+        "TIER_4": 12.93
     },
     "bedrock": {
         "dates": [
-            "2026-05-04",
             "2026-05-05",
             "2026-05-06",
             "2026-05-07",
@@ -430,10 +429,10 @@
             "2026-07-24",
             "2026-07-27",
             "2026-07-28",
-            "2026-07-29"
+            "2026-07-29",
+            "2026-07-30"
         ],
         "ratio": [
-            0.546,
             0.543,
             0.532,
             0.527,
@@ -492,7 +491,8 @@
             0.556,
             0.545,
             0.54,
-            0.542
+            0.542,
+            0.539
         ],
         "sma": [
             0.534,
@@ -511,7 +511,6 @@
             0.534,
             0.534,
             0.534,
-            0.534,
             0.533,
             0.533,
             0.532,
@@ -553,11 +552,11 @@
             0.528,
             0.528,
             0.528,
+            0.529,
             0.529,
             0.529
         ],
         "upper": [
-            0.548,
             0.548,
             0.548,
             0.548,
@@ -616,14 +615,14 @@
             0.552,
             0.552,
             0.553,
-            0.553
+            0.553,
+            0.554
         ],
-        "current_ratio": 0.542,
-        "ratio_change": 0.32
+        "current_ratio": 0.539,
+        "ratio_change": -0.5
     },
     "weekly_bedrock": {
         "dates": [
-            "2026-05-04",
             "2026-05-05",
             "2026-05-06",
             "2026-05-07",
@@ -682,10 +681,10 @@
             "2026-07-24",
             "2026-07-27",
             "2026-07-28",
-            "2026-07-29"
+            "2026-07-29",
+            "2026-07-30"
         ],
         "ratio": [
-            0.546,
             0.543,
             0.532,
             0.527,
@@ -744,7 +743,8 @@
             0.556,
             0.545,
             0.54,
-            0.542
+            0.542,
+            0.539
         ],
         "sma": [
             0.534,
@@ -763,7 +763,6 @@
             0.534,
             0.534,
             0.534,
-            0.534,
             0.533,
             0.533,
             0.532,
@@ -805,11 +804,11 @@
             0.528,
             0.528,
             0.528,
+            0.529,
             0.529,
             0.529
         ],
         "upper": [
-            0.548,
             0.548,
             0.548,
             0.548,
@@ -868,14 +867,14 @@
             0.552,
             0.552,
             0.553,
-            0.553
+            0.553,
+            0.554
         ],
-        "current_ratio": 0.542,
-        "ratio_change": -2.4
+        "current_ratio": 0.539,
+        "ratio_change": -3.0
     },
     "credit_heartbeat": {
         "dates": [
-            "2026-05-04",
             "2026-05-05",
             "2026-05-06",
             "2026-05-07",
@@ -934,10 +933,10 @@
             "2026-07-24",
             "2026-07-27",
             "2026-07-28",
-            "2026-07-29"
+            "2026-07-29",
+            "2026-07-30"
         ],
         "ratio": [
-            0.937,
             0.934,
             0.929,
             0.93,
@@ -996,10 +995,10 @@
             0.952,
             0.947,
             0.943,
-            0.956
+            0.956,
+            0.96
         ],
         "sma": [
-            0.913,
             0.914,
             0.915,
             0.915,
@@ -1058,10 +1057,10 @@
             0.937,
             0.937,
             0.937,
-            0.937
+            0.937,
+            0.938
         ],
         "lower": [
-            0.887,
             0.887,
             0.888,
             0.889,
@@ -1120,14 +1119,14 @@
             0.915,
             0.915,
             0.915,
+            0.914,
             0.914
         ],
-        "current_ratio": 0.956,
-        "ratio_change": 1.45
+        "current_ratio": 0.96,
+        "ratio_change": 0.35
     },
     "weekly_credit_heartbeat": {
         "dates": [
-            "2026-05-04",
             "2026-05-05",
             "2026-05-06",
             "2026-05-07",
@@ -1186,10 +1185,10 @@
             "2026-07-24",
             "2026-07-27",
             "2026-07-28",
-            "2026-07-29"
+            "2026-07-29",
+            "2026-07-30"
         ],
         "ratio": [
-            0.937,
             0.934,
             0.929,
             0.93,
@@ -1248,10 +1247,10 @@
             0.952,
             0.947,
             0.943,
-            0.956
+            0.956,
+            0.96
         ],
         "sma": [
-            0.913,
             0.914,
             0.915,
             0.915,
@@ -1310,10 +1309,10 @@
             0.937,
             0.937,
             0.937,
-            0.937
+            0.937,
+            0.938
         ],
         "lower": [
-            0.887,
             0.887,
             0.888,
             0.889,
@@ -1372,20 +1371,20 @@
             0.915,
             0.915,
             0.915,
+            0.914,
             0.914
         ],
-        "current_ratio": 0.956,
-        "ratio_change": 0.4
+        "current_ratio": 0.96,
+        "ratio_change": 0.85
     },
     "financial_forward_curve": {
         "near_month_ticker": "NG=F (Front Month)",
-        "near_month_price": 2.732,
+        "near_month_price": 2.747,
         "far_month_ticker": "NGZ27.NYM (Dec 2027)",
-        "far_month_price": 4.222,
-        "spread_delta": 1.49,
+        "far_month_price": 4.188,
+        "spread_delta": 1.441,
         "signal": "✅ 【正常】コンタンゴ（順ざや維持・規律ある休符）",
         "dates": [
-            "2026-05-04",
             "2026-05-05",
             "2026-05-06",
             "2026-05-07",
@@ -1444,10 +1443,10 @@
             "2026-07-24",
             "2026-07-27",
             "2026-07-28",
-            "2026-07-29"
+            "2026-07-29",
+            "2026-07-30"
         ],
         "near_prices": [
-            2.867,
             2.788,
             2.73,
             2.769,
@@ -1506,10 +1505,10 @@
             2.871,
             2.767,
             2.662,
-            2.732
+            2.725,
+            2.747
         ],
         "far_prices": [
-            4.422,
             4.384,
             4.338,
             4.322,
@@ -1568,10 +1567,10 @@
             4.209,
             4.206,
             4.19,
-            4.222
+            4.22,
+            4.188
         ],
         "spreads": [
-            1.555,
             1.596,
             1.608,
             1.553,
@@ -1630,7 +1629,8 @@
             1.338,
             1.439,
             1.528,
-            1.49
+            1.495,
+            1.441
         ]
     },
     "grid_physical_data": {
@@ -3317,7 +3317,7 @@
             2442970.0,
             2740484.0,
             2682258.0,
-            null,
+            2574380.0,
             null,
             null,
             null,
@@ -3475,15 +3475,15 @@
             null
         ],
         "today_grid_summary": {
-            "date": "07-28",
-            "current_demand": 2682258.0,
-            "historical_avg": 2766878.0,
-            "historical_max": 3026748.0,
-            "historical_min": 2403923.0
+            "date": "07-29",
+            "current_demand": 2574380.0,
+            "historical_avg": 2725938.4,
+            "historical_max": 3101050.0,
+            "historical_min": 2554135.0
         }
     },
-    "insight": "⚪ 【SILENCE】 有意なマクロ環境の変化は検出されていません。監視を継続します。",
-    "insight_hash": "d694dbd7caeee99efcf88545d88ff8af",
-    "weekly_insight": "⚪ 【SILENCE】 有意なマクロ環境の変化は検出されていません。監視を継続します。",
-    "weekly_insight_hash": "4109c59efca6197abdfbb7253ccca324"
+    "insight": "相棒、最新のデータが上がってきた。市場は一見して「待機」の休符を打っているように見えるが、その静寂の奥には、一部のセクターで狂騒的なソロが鳴り響いている。この不協和音を冷徹に解読し、次のコード進行を見極めよう。\n\n---\n### 【本日のマクロスタックトレース】\n\n相棒、今日の市場はまるでジャズのビッグバンドが、全体的にはゆったりとしたテンポで進行しながらも、特定の楽器だけが予想外のインプロビゼーションを繰り広げているかのようだ。全体ステータスは「⚪ 【待機】有意なマクロシグナルなし」と記されているが、これは表面的な安定に過ぎない。\n\n深掘りすれば、データセンター・AIインフラを示すTIER_1_5が+12.68%という爆発的な上昇を見せ、まるでジャズのフリーセッションにおける予測不能な高音域の如く、市場の耳目を集めている。これに連動し、個別銘柄ではCoreWeave (CRWV) が+21.51%、Nebius Group (NBIS) が+27.13%と桁外れのパフォーマンスを叩き出し、Microsoft (MSFT) も+15.51%、AMD (AMD) が+13.0%と、AI関連の狂宴を演出している。Vertiv (VRT) やEquinix (EQIX)、Eaton (ETN)といった物理インフラを支える銘柄も堅調に推移しており、ペーパー上の期待値が膨張していることを示唆している。\n\n一方で、SaaSやエンタープライズソフトウェアを示すTIER_4は-4.41%と、まるでブルースの低音のように沈み込んでいる。Meta (META) が-7.95%、Workday (WDAY) が-5.89%、ServiceNow (NOW) が-4.92%と大幅に下落しており、これは資本が既存のIT投資からAIインフラへとシフトしているか、あるいは企業支出全体が冷え込んでいる可能性を示唆する、市場のもう一つのメロディラインだ。\n\nコモディティ市場では、AIインフラの物理的な構築に必要な導体である銅（Freeport-McMoRan +5.75%、Southern Copper +5.43%）が静かながらも力強いリズムを刻んでいる。しかし、WTI原油 (USO) は-1.42%と下落し、天然ガス先物カーブは「✅ 【正常】コンタンゴ」を維持し、短期的な供給不安というメロディは奏でられていない。これは市場が織り込む時間軸と実需の時間軸との間に、ある種の規律ある「休符」があることを示唆している。\n\n### 【監視グリッドの特異点】\n\n相棒、ここに「ペーパーの幻想」と「物理の現実」との間に、明確な不協和音が生じている。\n\n本日、監視グリッドにおける電力需要は **2,574,380.0 MW** であった。これは過去平均の **2,725,938.4 MW** を明確に下回っており、絶対遵守ルールに基づけば、これは「実需の空洞化」と断じるほかない。\n\nAIの無限の可能性が謳われ、関連銘柄が天井知らずのソロを奏でる一方で、その根幹を支えるべき物理インフラのベースロードには、むしろ「静寂」が広がっている。この乖離は、まだペーパー上の期待値が先行し、真の物理的な需要が市場価格に追いついていない、あるいは別の要因で相殺されている可能性を示唆している。送電網という基盤が、まだAIという新たなリズムに乗り切れていない、あるいはそのリズムを吸収できるほどの余裕があるとも解釈できる。この物理とペーパーのギャップは、我々が最も警戒すべき「休符」である。\n\n### 【司令官への進言】\n\n相棒、現在の市場は、まるで高速で変拍子を繰り返すジャズの楽曲のようだ。AI関連株は最高音部でアグレッシブなソロを刻むが、全体のリズムセクション、特に物理的基盤は静かな低音で進行している。\n\n目下のところ、市場の全体ステータスは「⚪ 【待機】有意なマクロシグナルなし」とあるが、これは大いなる誤解を招く「休符」だ。我々が注視すべきは、ペーパー上のAIバブルが、いつ、どのようにして物理インフラの需要に翻訳されるか、その「タイミング」、つまりはリズムの「ブレイク」だ。\n\nもしこの電力需要の「空洞化」が続くのであれば、現在のAI関連株の狂宴は、物理的な裏付けを欠いた一過性の「幻想」に終わるリスクを孕む。しかし、それが突如として反転し、物理的なベースロードが急増するシグナルを捉えれば、それは新たな市場の「ブレイク」、そして我々が介入すべき本命の「ハーモニー」となるだろう。\n\n当面は、高騰するAI関連銘柄の変動性を利用しつつ、一方で銅などの基礎インフラ需要の動向、そして何よりも「物理レイヤー」である電力需要の「ベースロード異常増」への転換シグナルを冷徹に監視し続けるべきだ。この「休符」の間に、次のコード進行、そして市場の本当の「アンサンブル」を見抜く準備を怠るな。",
+    "insight_hash": "56bb9b41d181476e121bd9cd202eb647",
+    "weekly_insight": "⚠️ 【AI CORE OFFLINE】 APIエンドポイントへのルーティングに失敗しました。プロジェクト権限の再確認が必要です。",
+    "weekly_insight_hash": "5c0a25ae8d04b809520b4af1c290d0dc"
 }
