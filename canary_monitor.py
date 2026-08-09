@@ -127,6 +127,8 @@ def generate_market_insight(dashboard_data, previous_hash=None, is_weekly=False)
     full_prompt = f"{gem_persona}\n\n以下の最新データを解析しろ。\n\nデータ: {json.dumps(input_payload, ensure_ascii=False)}"
     
     models_to_try = [
+        'gemini-1.5-flash',
+        'gemini-1.5-pro',
         'gemini-2.5-flash',
         'gemini-3.0-flash',
         'gemini-1.5-flash-latest', 
@@ -288,13 +290,50 @@ def main():
 
     # Tier定義
     TIERS = {
-        "TIER_0": {"UNG": "US Natural Gas Fund", "UNL": "US 12-Month NatGas", "EQT": "EQT Corp", "KMI": "Kinder Morgan"},
-        "TIER_0_5": {"OWL": "Blue Owl Capital", "BX": "Blackstone Inc.", "APO": "Apollo Global Mgmt"},
-        "TIER_1": {"CEG": "Constellation Energy", "VRT": "Vertiv Holdings", "EQIX": "Equinix", "ETN": "Eaton Corp"},
-        "TIER_1_5": {"NVDA": "NVIDIA", "CRWV": "CoreWeave", "NBIS": "Nebius Group", "ORCL": "Oracle", "SMCI": "Super Micro Computer", "AMD": "AMD", "ANET": "Arista Networks"},
-        "TIER_2": {"AMZN": "Amazon (AWS)", "MSFT": "Microsoft (Azure)", "GOOGL": "Alphabet (GCP)", "META": "Meta"},
-        "TIER_3": {"FCX": "Freeport-McMoRan (Copper)", "SCCO": "Southern Copper", "USO": "US Oil Fund (WTI)", "CCJ": "Cameco (Uranium)"},
-        "TIER_4": {"NOW": "ServiceNow", "CRM": "Salesforce", "WDAY": "Workday", "SAP": "SAP"}
+        "TIER_0": {
+            "UNG": {"name": "US Natural Gas Fund", "role": "天然ガス ETF"}, 
+            "UNL": {"name": "US 12-Month NatGas", "role": "天然ガス ETF (期先)"}, 
+            "EQT": {"name": "EQT Corp", "role": "天然ガス探鉱・生産"}, 
+            "KMI": {"name": "Kinder Morgan", "role": "エネルギー・インフラ"}
+        },
+        "TIER_0_5": {
+            "OWL": {"name": "Blue Owl Capital", "role": "代替資産運用 (プライベート・クレジット)"}, 
+            "BX": {"name": "Blackstone Inc.", "role": "代替資産運用"}, 
+            "APO": {"name": "Apollo Global Mgmt", "role": "代替資産運用"}
+        },
+        "TIER_1": {
+            "CEG": {"name": "Constellation Energy", "role": "原子力・クリーンエネルギー"}, 
+            "VRT": {"name": "Vertiv Holdings", "role": "データセンター冷却・電力管理"}, 
+            "EQIX": {"name": "Equinix", "role": "データセンター REIT"}, 
+            "ETN": {"name": "Eaton Corp", "role": "電力管理システム"}
+        },
+        "TIER_1_5": {
+            "NVDA": {"name": "NVIDIA", "role": "AI半導体・GPU"}, 
+            "CRWV": {"name": "CoreWeave", "role": "GPUクラウドインフラ"}, 
+            "NBIS": {"name": "Nebius Group", "role": "AIクラウドインフラ"}, 
+            "ORCL": {"name": "Oracle", "role": "クラウドインフラ (OCI)"}, 
+            "SMCI": {"name": "Super Micro Computer", "role": "AIサーバー・ラック"}, 
+            "AMD": {"name": "AMD", "role": "AI半導体・GPU"}, 
+            "ANET": {"name": "Arista Networks", "role": "AIネットワーク機器"}
+        },
+        "TIER_2": {
+            "AMZN": {"name": "Amazon (AWS)", "role": "ハイパースケーラー"}, 
+            "MSFT": {"name": "Microsoft (Azure)", "role": "ハイパースケーラー"}, 
+            "GOOGL": {"name": "Alphabet (GCP)", "role": "ハイパースケーラー"}, 
+            "META": {"name": "Meta", "role": "AI・メタバース"}
+        },
+        "TIER_3": {
+            "FCX": {"name": "Freeport-McMoRan (Copper)", "role": "銅鉱山"}, 
+            "SCCO": {"name": "Southern Copper", "role": "銅鉱山"}, 
+            "USO": {"name": "US Oil Fund (WTI)", "role": "原油 ETF"}, 
+            "CCJ": {"name": "Cameco (Uranium)", "role": "ウラン鉱山"}
+        },
+        "TIER_4": {
+            "NOW": {"name": "ServiceNow", "role": "エンタープライズ SaaS"}, 
+            "CRM": {"name": "Salesforce", "role": "エンタープライズ SaaS"}, 
+            "WDAY": {"name": "Workday", "role": "エンタープライズ SaaS"}, 
+            "SAP": {"name": "SAP", "role": "エンタープライズ SaaS"}
+        }
     }
 
     output_data = {
@@ -323,17 +362,17 @@ def main():
                     if len(df) >= 2:
                         chg = ((df['Close'].iloc[-1] - df['Close'].iloc[-2]) / df['Close'].iloc[-2]) * 100
                         vol_surge = float(df['Volume'].iloc[-1] / df['Volume'].mean()) if df['Volume'].mean() > 0 else 1.0
-                        output_data["details"][t] = {"name": tickers[t], "change": round(float(chg), 2), "vol_surge": round(vol_surge, 2)}
+                        output_data["details"][t] = {"name": tickers[t]["name"], "role": tickers[t]["role"], "change": round(float(chg), 2), "vol_surge": round(vol_surge, 2)}
                         tier_daily_changes.append(chg)
                     
                     if len(df) >= 5:
                         idx_start = max(0, len(df) - 5)
                         weekly_chg = ((df['Close'].iloc[-1] - df['Close'].iloc[idx_start]) / df['Close'].iloc[idx_start]) * 100
-                        output_data["weekly_details"][t] = {"name": tickers[t], "change": round(float(weekly_chg), 2), "vol_surge": round(vol_surge, 2)}
+                        output_data["weekly_details"][t] = {"name": tickers[t]["name"], "role": tickers[t]["role"], "change": round(float(weekly_chg), 2), "vol_surge": round(vol_surge, 2)}
                         tier_weekly_changes.append(weekly_chg)
                     elif len(df) >= 2:
                         weekly_chg = ((df['Close'].iloc[-1] - df['Close'].iloc[0]) / df['Close'].iloc[0]) * 100
-                        output_data["weekly_details"][t] = {"name": tickers[t], "change": round(float(weekly_chg), 2), "vol_surge": round(vol_surge, 2)}
+                        output_data["weekly_details"][t] = {"name": tickers[t]["name"], "role": tickers[t]["role"], "change": round(float(weekly_chg), 2), "vol_surge": round(vol_surge, 2)}
                         tier_weekly_changes.append(weekly_chg)
                 except: pass
             
