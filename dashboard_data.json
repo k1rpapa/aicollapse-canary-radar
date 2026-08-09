@@ -3543,7 +3543,7 @@
         }
     },
     "insight": "⚪ 【SILENCE】 有意なマクロ環境の変化は検出されていません。監視を継続します。",
-    "insight_hash": "0429fe8c6be2d7d03e8ba0a6616040ac",
+    "insight_hash": null,
     "weekly_insight": "⚪ 【SILENCE】 有意なマクロ環境の変化は検出されていません。監視を継続します。",
-    "weekly_insight_hash": "9c890de5551e159506bdc7bd1ef40995"
+    "weekly_insight_hash": null
 }
