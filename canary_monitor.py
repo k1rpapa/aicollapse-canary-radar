@@ -54,7 +54,7 @@ def send_line_alert(message):
 # ==========================================
 # 1.5. Insight Generator（日次＆週次自律思考モジュール）
 # ==========================================
-def generate_market_insight(dashboard_data, previous_hash=None, is_weekly=False):
+def generate_market_insight(dashboard_data, previous_hash=None, previous_insight_text=None, is_weekly=False):
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
         return "⚠️ エラー: GEMINI_API_KEYが設定されていません。", None
@@ -74,6 +74,8 @@ def generate_market_insight(dashboard_data, previous_hash=None, is_weekly=False)
     
     if previous_hash and current_hash == previous_hash:
         print(f"[*] {mode_prefix.upper()} Market state unchanged. Skipping Insight generation to maintain silence.")
+        if previous_insight_text and not previous_insight_text.startswith("⚠️ エラー"):
+            return previous_insight_text, current_hash
         return "⚪ 【SILENCE】 有意なマクロ環境の変化は検出されていません。監視を継続します。", current_hash
 
     if is_weekly:
@@ -457,12 +459,14 @@ def main():
 
     # 6. AIインサイトの生成（DAILY & WEEKLY, ハッシュ判定付き）
     previous_daily_hash = previous_data.get("insight_hash")
-    insight_text, new_daily_hash = generate_market_insight(output_data, previous_daily_hash, is_weekly=False)
+    previous_daily_insight = previous_data.get("insight")
+    insight_text, new_daily_hash = generate_market_insight(output_data, previous_daily_hash, previous_daily_insight, is_weekly=False)
     output_data["insight"] = insight_text
     output_data["insight_hash"] = new_daily_hash
 
     previous_weekly_hash = previous_data.get("weekly_insight_hash")
-    weekly_insight_text, new_weekly_hash = generate_market_insight(output_data, previous_weekly_hash, is_weekly=True)
+    previous_weekly_insight = previous_data.get("weekly_insight")
+    weekly_insight_text, new_weekly_hash = generate_market_insight(output_data, previous_weekly_hash, previous_weekly_insight, is_weekly=True)
     output_data["weekly_insight"] = weekly_insight_text
     output_data["weekly_insight_hash"] = new_weekly_hash
 
