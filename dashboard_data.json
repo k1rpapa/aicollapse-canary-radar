@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-09-01T00:24:15.952902+00:00",
+    "timestamp": "2026-09-01T21:05:36.950240+00:00",
     "status": "⚪ 【待機】有意なマクロシグナルなし",
     "config": {
         "TIER_0": [
@@ -51,383 +51,383 @@
         "UNG": {
             "name": "US Natural Gas Fund",
             "role": "天然ガス ETF",
-            "change": 2.03,
-            "vol_surge": 0.98
+            "change": 0.38,
+            "vol_surge": 1.42
         },
         "UNL": {
             "name": "US 12-Month NatGas",
             "role": "天然ガス ETF (期先)",
-            "change": -0.34,
-            "vol_surge": 1.01
+            "change": 1.19,
+            "vol_surge": 1.19
         },
         "EQT": {
             "name": "EQT Corp",
             "role": "天然ガス探鉱・生産",
-            "change": -0.71,
-            "vol_surge": 0.91
+            "change": 2.6,
+            "vol_surge": 0.89
         },
         "KMI": {
             "name": "Kinder Morgan",
             "role": "エネルギー・インフラ",
-            "change": 2.15,
-            "vol_surge": 1.53
+            "change": -0.43,
+            "vol_surge": 0.75
         },
         "OWL": {
             "name": "Blue Owl Capital",
             "role": "代替資産運用 (プライベート・クレジット)",
-            "change": 1.83,
-            "vol_surge": 1.1
+            "change": -4.58,
+            "vol_surge": 1.78
         },
         "BX": {
             "name": "Blackstone Inc.",
             "role": "代替資産運用",
-            "change": 0.6,
-            "vol_surge": 0.95
+            "change": -4.59,
+            "vol_surge": 1.5
         },
         "APO": {
             "name": "Apollo Global Mgmt",
             "role": "代替資産運用",
-            "change": 1.14,
-            "vol_surge": 0.83
+            "change": -3.58,
+            "vol_surge": 0.86
         },
         "CEG": {
             "name": "Constellation Energy",
             "role": "原子力・クリーンエネルギー",
-            "change": -0.72,
-            "vol_surge": 1.05
+            "change": 2.02,
+            "vol_surge": 1.0
         },
         "VRT": {
             "name": "Vertiv Holdings",
             "role": "データセンター冷却・電力管理",
-            "change": 0.64,
-            "vol_surge": 0.98
+            "change": -1.06,
+            "vol_surge": 1.0
         },
         "EQIX": {
             "name": "Equinix",
             "role": "データセンター REIT",
-            "change": 0.22,
-            "vol_surge": 1.39
-        },
-        "ETN": {
-            "name": "Eaton Corp",
-            "role": "電力管理システム",
-            "change": -0.22,
-            "vol_surge": 1.26
-        },
-        "NVDA": {
-            "name": "NVIDIA",
-            "role": "AI半導体・GPU",
-            "change": 1.48,
-            "vol_surge": 0.97
-        },
-        "CRWV": {
-            "name": "CoreWeave",
-            "role": "GPUクラウドインフラ",
-            "change": 0.78,
-            "vol_surge": 0.43
-        },
-        "NBIS": {
-            "name": "Nebius Group",
-            "role": "AIクラウドインフラ",
-            "change": -1.37,
-            "vol_surge": 0.42
-        },
-        "ORCL": {
-            "name": "Oracle",
-            "role": "クラウドインフラ (OCI)",
-            "change": -1.15,
-            "vol_surge": 0.71
-        },
-        "SMCI": {
-            "name": "Super Micro Computer",
-            "role": "AIサーバー・ラック",
-            "change": 0.54,
-            "vol_surge": 0.38
-        },
-        "AMD": {
-            "name": "AMD",
-            "role": "AI半導体・GPU",
-            "change": 1.1,
-            "vol_surge": 0.69
-        },
-        "ANET": {
-            "name": "Arista Networks",
-            "role": "AIネットワーク機器",
-            "change": 0.16,
-            "vol_surge": 0.82
-        },
-        "AMZN": {
-            "name": "Amazon (AWS)",
-            "role": "ハイパースケーラー",
-            "change": -2.5,
-            "vol_surge": 1.35
-        },
-        "MSFT": {
-            "name": "Microsoft (Azure)",
-            "role": "ハイパースケーラー",
-            "change": -1.22,
-            "vol_surge": 1.14
-        },
-        "GOOGL": {
-            "name": "Alphabet (GCP)",
-            "role": "ハイパースケーラー",
-            "change": -2.09,
-            "vol_surge": 1.49
-        },
-        "META": {
-            "name": "Meta",
-            "role": "AI・メタバース",
-            "change": -0.98,
-            "vol_surge": 0.84
-        },
-        "FCX": {
-            "name": "Freeport-McMoRan (Copper)",
-            "role": "銅鉱山",
-            "change": -0.93,
-            "vol_surge": 0.94
-        },
-        "SCCO": {
-            "name": "Southern Copper",
-            "role": "銅鉱山",
-            "change": -0.44,
-            "vol_surge": 1.16
-        },
-        "USO": {
-            "name": "US Oil Fund (WTI)",
-            "role": "原油 ETF",
-            "change": 3.08,
-            "vol_surge": 0.97
-        },
-        "CCJ": {
-            "name": "Cameco (Uranium)",
-            "role": "ウラン鉱山",
-            "change": -1.25,
-            "vol_surge": 1.1
-        },
-        "NOW": {
-            "name": "ServiceNow",
-            "role": "エンタープライズ SaaS",
-            "change": 2.27,
-            "vol_surge": 1.43
-        },
-        "CRM": {
-            "name": "Salesforce",
-            "role": "エンタープライズ SaaS",
-            "change": 0.6,
-            "vol_surge": 1.21
-        },
-        "WDAY": {
-            "name": "Workday",
-            "role": "エンタープライズ SaaS",
-            "change": -3.55,
-            "vol_surge": 0.83
-        },
-        "SAP": {
-            "name": "SAP",
-            "role": "エンタープライズ SaaS",
-            "change": -0.29,
-            "vol_surge": 1.26
-        }
-    },
-    "layers": {
-        "TIER_0": 0.78,
-        "TIER_0_5": 1.19,
-        "TIER_1": -0.02,
-        "TIER_1_5": 0.22,
-        "TIER_2": -1.7,
-        "TIER_3": 0.12,
-        "TIER_4": -0.24
-    },
-    "weekly_details": {
-        "UNG": {
-            "name": "US Natural Gas Fund",
-            "role": "天然ガス ETF",
-            "change": 3.03,
-            "vol_surge": 0.98
-        },
-        "UNL": {
-            "name": "US 12-Month NatGas",
-            "role": "天然ガス ETF (期先)",
-            "change": 0.0,
-            "vol_surge": 1.01
-        },
-        "EQT": {
-            "name": "EQT Corp",
-            "role": "天然ガス探鉱・生産",
-            "change": 0.33,
+            "change": -1.83,
             "vol_surge": 0.91
         },
-        "KMI": {
-            "name": "Kinder Morgan",
-            "role": "エネルギー・インフラ",
-            "change": 4.2,
-            "vol_surge": 1.53
-        },
-        "OWL": {
-            "name": "Blue Owl Capital",
-            "role": "代替資産運用 (プライベート・クレジット)",
-            "change": 3.82,
-            "vol_surge": 1.1
-        },
-        "BX": {
-            "name": "Blackstone Inc.",
-            "role": "代替資産運用",
-            "change": -0.12,
-            "vol_surge": 0.95
-        },
-        "APO": {
-            "name": "Apollo Global Mgmt",
-            "role": "代替資産運用",
-            "change": 2.55,
-            "vol_surge": 0.83
-        },
-        "CEG": {
-            "name": "Constellation Energy",
-            "role": "原子力・クリーンエネルギー",
-            "change": -1.31,
-            "vol_surge": 1.05
-        },
-        "VRT": {
-            "name": "Vertiv Holdings",
-            "role": "データセンター冷却・電力管理",
-            "change": 1.16,
-            "vol_surge": 0.98
-        },
-        "EQIX": {
-            "name": "Equinix",
-            "role": "データセンター REIT",
-            "change": -2.49,
-            "vol_surge": 1.39
-        },
         "ETN": {
             "name": "Eaton Corp",
             "role": "電力管理システム",
-            "change": -1.79,
-            "vol_surge": 1.26
+            "change": -2.78,
+            "vol_surge": 1.17
         },
         "NVDA": {
             "name": "NVIDIA",
             "role": "AI半導体・GPU",
-            "change": 3.63,
-            "vol_surge": 0.97
+            "change": -1.51,
+            "vol_surge": 0.83
         },
         "CRWV": {
             "name": "CoreWeave",
             "role": "GPUクラウドインフラ",
             "change": -3.58,
-            "vol_surge": 0.43
+            "vol_surge": 0.55
         },
         "NBIS": {
             "name": "Nebius Group",
             "role": "AIクラウドインフラ",
-            "change": -7.05,
-            "vol_surge": 0.42
+            "change": -3.29,
+            "vol_surge": 0.45
         },
         "ORCL": {
             "name": "Oracle",
             "role": "クラウドインフラ (OCI)",
-            "change": 3.01,
-            "vol_surge": 0.71
+            "change": -5.23,
+            "vol_surge": 1.15
         },
         "SMCI": {
             "name": "Super Micro Computer",
             "role": "AIサーバー・ラック",
-            "change": -3.07,
-            "vol_surge": 0.38
+            "change": -1.53,
+            "vol_surge": 0.48
         },
         "AMD": {
             "name": "AMD",
             "role": "AI半導体・GPU",
-            "change": -1.77,
-            "vol_surge": 0.69
+            "change": -2.36,
+            "vol_surge": 0.91
         },
         "ANET": {
             "name": "Arista Networks",
             "role": "AIネットワーク機器",
-            "change": 2.49,
-            "vol_surge": 0.82
+            "change": -3.29,
+            "vol_surge": 0.69
         },
         "AMZN": {
             "name": "Amazon (AWS)",
             "role": "ハイパースケーラー",
-            "change": -0.49,
-            "vol_surge": 1.35
+            "change": -1.87,
+            "vol_surge": 0.93
         },
         "MSFT": {
             "name": "Microsoft (Azure)",
             "role": "ハイパースケーラー",
-            "change": 3.17,
-            "vol_surge": 1.14
+            "change": -1.24,
+            "vol_surge": 0.83
         },
         "GOOGL": {
             "name": "Alphabet (GCP)",
             "role": "ハイパースケーラー",
-            "change": -2.19,
-            "vol_surge": 1.49
+            "change": -1.28,
+            "vol_surge": 0.96
         },
         "META": {
             "name": "Meta",
             "role": "AI・メタバース",
-            "change": 0.4,
-            "vol_surge": 0.84
+            "change": 1.08,
+            "vol_surge": 0.96
         },
         "FCX": {
             "name": "Freeport-McMoRan (Copper)",
             "role": "銅鉱山",
-            "change": -5.22,
-            "vol_surge": 0.94
+            "change": -4.32,
+            "vol_surge": 0.87
         },
         "SCCO": {
             "name": "Southern Copper",
             "role": "銅鉱山",
-            "change": -4.93,
-            "vol_surge": 1.16
+            "change": -3.48,
+            "vol_surge": 0.87
         },
         "USO": {
             "name": "US Oil Fund (WTI)",
             "role": "原油 ETF",
-            "change": 5.98,
-            "vol_surge": 0.97
+            "change": 5.46,
+            "vol_surge": 1.88
         },
         "CCJ": {
             "name": "Cameco (Uranium)",
             "role": "ウラン鉱山",
-            "change": -7.67,
-            "vol_surge": 1.1
+            "change": -2.53,
+            "vol_surge": 0.8
         },
         "NOW": {
             "name": "ServiceNow",
             "role": "エンタープライズ SaaS",
-            "change": 16.53,
-            "vol_surge": 1.43
+            "change": -3.44,
+            "vol_surge": 0.91
         },
         "CRM": {
             "name": "Salesforce",
             "role": "エンタープライズ SaaS",
-            "change": 25.21,
-            "vol_surge": 1.21
+            "change": 0.22,
+            "vol_surge": 0.83
         },
         "WDAY": {
             "name": "Workday",
             "role": "エンタープライズ SaaS",
-            "change": 1.56,
-            "vol_surge": 0.83
+            "change": 0.47,
+            "vol_surge": 0.68
         },
         "SAP": {
             "name": "SAP",
             "role": "エンタープライズ SaaS",
-            "change": 1.83,
-            "vol_surge": 1.26
+            "change": -4.01,
+            "vol_surge": 1.05
+        }
+    },
+    "layers": {
+        "TIER_0": 0.94,
+        "TIER_0_5": -4.25,
+        "TIER_1": -0.91,
+        "TIER_1_5": -2.97,
+        "TIER_2": -0.82,
+        "TIER_3": -1.22,
+        "TIER_4": -1.69
+    },
+    "weekly_details": {
+        "UNG": {
+            "name": "US Natural Gas Fund",
+            "role": "天然ガス ETF",
+            "change": 1.63,
+            "vol_surge": 1.42
+        },
+        "UNL": {
+            "name": "US 12-Month NatGas",
+            "role": "天然ガス ETF (期先)",
+            "change": 1.19,
+            "vol_surge": 1.19
+        },
+        "EQT": {
+            "name": "EQT Corp",
+            "role": "天然ガス探鉱・生産",
+            "change": 2.94,
+            "vol_surge": 0.89
+        },
+        "KMI": {
+            "name": "Kinder Morgan",
+            "role": "エネルギー・インフラ",
+            "change": 3.75,
+            "vol_surge": 0.75
+        },
+        "OWL": {
+            "name": "Blue Owl Capital",
+            "role": "代替資産運用 (プライベート・クレジット)",
+            "change": -0.93,
+            "vol_surge": 1.78
+        },
+        "BX": {
+            "name": "Blackstone Inc.",
+            "role": "代替資産運用",
+            "change": -4.71,
+            "vol_surge": 1.5
+        },
+        "APO": {
+            "name": "Apollo Global Mgmt",
+            "role": "代替資産運用",
+            "change": -1.12,
+            "vol_surge": 0.86
+        },
+        "CEG": {
+            "name": "Constellation Energy",
+            "role": "原子力・クリーンエネルギー",
+            "change": 0.68,
+            "vol_surge": 1.0
+        },
+        "VRT": {
+            "name": "Vertiv Holdings",
+            "role": "データセンター冷却・電力管理",
+            "change": 0.09,
+            "vol_surge": 1.0
+        },
+        "EQIX": {
+            "name": "Equinix",
+            "role": "データセンター REIT",
+            "change": -4.27,
+            "vol_surge": 0.91
+        },
+        "ETN": {
+            "name": "Eaton Corp",
+            "role": "電力管理システム",
+            "change": -4.52,
+            "vol_surge": 1.17
+        },
+        "NVDA": {
+            "name": "NVIDIA",
+            "role": "AI半導体・GPU",
+            "change": 3.71,
+            "vol_surge": 0.83
+        },
+        "CRWV": {
+            "name": "CoreWeave",
+            "role": "GPUクラウドインフラ",
+            "change": -7.0,
+            "vol_surge": 0.55
+        },
+        "NBIS": {
+            "name": "Nebius Group",
+            "role": "AIクラウドインフラ",
+            "change": -6.73,
+            "vol_surge": 0.45
+        },
+        "ORCL": {
+            "name": "Oracle",
+            "role": "クラウドインフラ (OCI)",
+            "change": -5.07,
+            "vol_surge": 1.15
+        },
+        "SMCI": {
+            "name": "Super Micro Computer",
+            "role": "AIサーバー・ラック",
+            "change": -1.82,
+            "vol_surge": 0.48
+        },
+        "AMD": {
+            "name": "AMD",
+            "role": "AI半導体・GPU",
+            "change": -4.43,
+            "vol_surge": 0.91
+        },
+        "ANET": {
+            "name": "Arista Networks",
+            "role": "AIネットワーク機器",
+            "change": -0.88,
+            "vol_surge": 0.69
+        },
+        "AMZN": {
+            "name": "Amazon (AWS)",
+            "role": "ハイパースケーラー",
+            "change": -2.06,
+            "vol_surge": 0.93
+        },
+        "MSFT": {
+            "name": "Microsoft (Azure)",
+            "role": "ハイパースケーラー",
+            "change": 0.94,
+            "vol_surge": 0.83
+        },
+        "GOOGL": {
+            "name": "Alphabet (GCP)",
+            "role": "ハイパースケーラー",
+            "change": -2.04,
+            "vol_surge": 0.96
+        },
+        "META": {
+            "name": "Meta",
+            "role": "AI・メタバース",
+            "change": 0.42,
+            "vol_surge": 0.96
+        },
+        "FCX": {
+            "name": "Freeport-McMoRan (Copper)",
+            "role": "銅鉱山",
+            "change": -9.31,
+            "vol_surge": 0.87
+        },
+        "SCCO": {
+            "name": "Southern Copper",
+            "role": "銅鉱山",
+            "change": -8.23,
+            "vol_surge": 0.87
+        },
+        "USO": {
+            "name": "US Oil Fund (WTI)",
+            "role": "原油 ETF",
+            "change": 10.72,
+            "vol_surge": 1.88
+        },
+        "CCJ": {
+            "name": "Cameco (Uranium)",
+            "role": "ウラン鉱山",
+            "change": -10.0,
+            "vol_surge": 0.8
+        },
+        "NOW": {
+            "name": "ServiceNow",
+            "role": "エンタープライズ SaaS",
+            "change": 13.59,
+            "vol_surge": 0.91
+        },
+        "CRM": {
+            "name": "Salesforce",
+            "role": "エンタープライズ SaaS",
+            "change": 25.53,
+            "vol_surge": 0.83
+        },
+        "WDAY": {
+            "name": "Workday",
+            "role": "エンタープライズ SaaS",
+            "change": 2.04,
+            "vol_surge": 0.68
+        },
+        "SAP": {
+            "name": "SAP",
+            "role": "エンタープライズ SaaS",
+            "change": -2.25,
+            "vol_surge": 1.05
         }
     },
     "weekly_layers": {
-        "TIER_0": 1.89,
-        "TIER_0_5": 2.08,
-        "TIER_1": -1.11,
-        "TIER_1_5": -0.9,
-        "TIER_2": 0.22,
-        "TIER_3": -2.96,
-        "TIER_4": 11.28
+        "TIER_0": 2.38,
+        "TIER_0_5": -2.25,
+        "TIER_1": -2.01,
+        "TIER_1_5": -3.17,
+        "TIER_2": -0.69,
+        "TIER_3": -4.21,
+        "TIER_4": 9.73
     },
     "bedrock": {
         "dates": [
@@ -489,8 +489,8 @@
             "2026-08-25",
             "2026-08-26",
             "2026-08-27",
-            "2026-08-28",
-            "2026-08-31"
+            "2026-08-31",
+            "2026-09-01"
         ],
         "ratio": [
             0.522,
@@ -551,8 +551,8 @@
             0.519,
             0.522,
             0.519,
-            0.516,
-            0.512
+            0.512,
+            0.52
         ],
         "sma": [
             0.534,
@@ -675,11 +675,11 @@
             0.554,
             0.554,
             0.554,
-            0.554,
-            0.555
+            0.555,
+            0.554
         ],
-        "current_ratio": 0.512,
-        "ratio_change": -0.74
+        "current_ratio": 0.52,
+        "ratio_change": 1.58
     },
     "weekly_bedrock": {
         "dates": [
@@ -741,8 +741,8 @@
             "2026-08-25",
             "2026-08-26",
             "2026-08-27",
-            "2026-08-28",
-            "2026-08-31"
+            "2026-08-31",
+            "2026-09-01"
         ],
         "ratio": [
             0.522,
@@ -803,8 +803,8 @@
             0.519,
             0.522,
             0.519,
-            0.516,
-            0.512
+            0.512,
+            0.52
         ],
         "sma": [
             0.534,
@@ -927,11 +927,11 @@
             0.554,
             0.554,
             0.554,
-            0.554,
-            0.555
+            0.555,
+            0.554
         ],
-        "current_ratio": 0.512,
-        "ratio_change": -1.37
+        "current_ratio": 0.52,
+        "ratio_change": 0.19
     },
     "credit_heartbeat": {
         "dates": [
@@ -993,8 +993,8 @@
             "2026-08-25",
             "2026-08-26",
             "2026-08-27",
-            "2026-08-28",
-            "2026-08-31"
+            "2026-08-31",
+            "2026-09-01"
         ],
         "ratio": [
             0.932,
@@ -1055,8 +1055,8 @@
             0.957,
             0.959,
             0.961,
-            0.962,
-            0.967
+            0.967,
+            0.966
         ],
         "sma": [
             0.929,
@@ -1117,7 +1117,7 @@
             0.947,
             0.948,
             0.949,
-            0.949,
+            0.95,
             0.95
         ],
         "lower": [
@@ -1182,8 +1182,8 @@
             0.914,
             0.916
         ],
-        "current_ratio": 0.967,
-        "ratio_change": 0.52
+        "current_ratio": 0.966,
+        "ratio_change": -0.1
     },
     "weekly_credit_heartbeat": {
         "dates": [
@@ -1245,8 +1245,8 @@
             "2026-08-25",
             "2026-08-26",
             "2026-08-27",
-            "2026-08-28",
-            "2026-08-31"
+            "2026-08-31",
+            "2026-09-01"
         ],
         "ratio": [
             0.932,
@@ -1307,8 +1307,8 @@
             0.957,
             0.959,
             0.961,
-            0.962,
-            0.967
+            0.967,
+            0.966
         ],
         "sma": [
             0.929,
@@ -1369,7 +1369,7 @@
             0.947,
             0.948,
             0.949,
-            0.949,
+            0.95,
             0.95
         ],
         "lower": [
@@ -1434,18 +1434,17 @@
             0.914,
             0.916
         ],
-        "current_ratio": 0.967,
-        "ratio_change": 1.01
+        "current_ratio": 0.966,
+        "ratio_change": 0.91
     },
     "financial_forward_curve": {
         "near_month_ticker": "NG=F (Front Month)",
-        "near_month_price": 2.939,
+        "near_month_price": 2.948,
         "far_month_ticker": "NGZ27.NYM (Dec 2027)",
-        "far_month_price": 4.158,
-        "spread_delta": 1.219,
+        "far_month_price": 4.164,
+        "spread_delta": 1.216,
         "signal": "✅ 【正常】コンタンゴ（順ざや維持・規律ある休符）",
         "dates": [
-            "2026-06-05",
             "2026-06-08",
             "2026-06-09",
             "2026-06-10",
@@ -1504,10 +1503,10 @@
             "2026-08-26",
             "2026-08-27",
             "2026-08-28",
-            "2026-08-31"
+            "2026-08-31",
+            "2026-09-01"
         ],
         "near_prices": [
-            3.229,
             3.147,
             3.14,
             3.185,
@@ -1566,10 +1565,10 @@
             2.842,
             2.907,
             2.888,
-            2.939
+            2.935,
+            2.948
         ],
         "far_prices": [
-            4.326,
             4.326,
             4.318,
             4.319,
@@ -1628,10 +1627,10 @@
             4.195,
             4.204,
             4.175,
-            4.158
+            4.166,
+            4.164
         ],
         "spreads": [
-            1.097,
             1.179,
             1.178,
             1.134,
@@ -1690,7 +1689,8 @@
             1.353,
             1.297,
             1.287,
-            1.219
+            1.231,
+            1.216
         ]
     },
     "grid_physical_data": {
@@ -3410,7 +3410,7 @@
             2615116.0,
             2358557.0,
             2451287.0,
-            null,
+            2750385.0,
             null,
             null,
             null,
@@ -3535,15 +3535,15 @@
             null
         ],
         "today_grid_summary": {
-            "date": "08-30",
-            "current_demand": 2451287.0,
-            "historical_avg": 2434820.6,
-            "historical_max": 2690516.0,
-            "historical_min": 1910555.0
+            "date": "08-31",
+            "current_demand": 2750385.0,
+            "historical_avg": 2280716.4,
+            "historical_max": 2547978.0,
+            "historical_min": 1882888.0
         }
     },
-    "insight": "相棒、今日の市場は「待機」という休符を奏でているが、その奥底では力強いベースラインが蠢いている。ペーパーの幻影に惑わされることなく、物理の鼓動を読み解いていこう。\n\n---\n\n1.  **【本日のマクロスタックトレース】**\n    今日のマクロスタックは、全体として「有意なマクロシグナルなし」という休符の状態だ。しかし、ジャズのアンサンブルが休符の間にも次の展開への期待を滲ませるように、複数のレイヤーで興味深い不協和音とソロパートが聴こえてくる。\n    TIER_0.5が1.19と最も強く、AIチップや一部インフラ関連のエネルギーを示唆する一方で、TIER_2は-1.7と最も冷え込んでいる。これはハイパースケーラーの広範な下落（AMZN -2.5%, GOOGL -2.09%, MSFT -1.22%）と見事に重なる。彼らが奏でる重厚なコードが今日はいささか沈みがちだ。\n    一方で、原油ETF (USO +3.08%) やエネルギー・インフラのキンダー・モーガン (KMI +2.15%, ボリュームサージ1.53倍) は、まるで突然の力強いサックスソロのように突出している。これは物理的なエネルギー需要への期待感、あるいは供給側の逼迫を示唆している可能性がある。データセンター関連の一部（VRT +0.64%, EQIX +0.22% with Vol Surge 1.39）も堅調で、AIの物理基盤への投資意欲は根強い。\n    しかし、資金循環の「Bedrock比率」は0.512と昨日から-0.74%減少し、SMAを下回る下落基調にある。これは市場の流動性リズムに若干の乱れが生じていることを示唆する。対照的に「Credit Heartbeat」は0.967と+0.52%上昇しており、クレジット市場の健全性は維持されている。この「資金の回転」と「信用の安定」という二つのリズムの乖離は、ジャズにおけるテンポチェンジのように、市場に緊張感と次の展開への期待感をもたらしている。天然ガス先物カーブは1.219という健全なスプレッドを保ち、「コンタンゴ（順ざや維持）」で規律ある休符を奏で続けている。\n\n2.  **【監視グリッドの特異点】**\n    絶対遵守ルールに従い報告する。本日の電力網の物理レイヤーでは、司令官、重要な特異点を確認した。\n    **現在の電力需要は2451287.0で、これは過去平均の2434820.6を上回っている。**\n    このデータは「ベースロードの異常増」を明確に示唆する。市場全体の休符の中、この物理的な電力需要の底上げは、まさにリズムセクションの力強いウォーキングベースラインだ。夏の終わりにも関わらずこの需要増は、AIデータセンターの稼働や産業活動の活性化、あるいは想定外の気象要因が複合的に作用している可能性がある。この物理的な負荷が、エネルギー価格、特に天然ガスの需給バランスにジワリと影響を及ぼし始めるだろう。\n\n3.  **【司令官への進言】**\n    相棒、今日の市場は静かな「休符」に見えるが、低音部では「物理」のエネルギーが脈打ち、高音部では「ペーパー」の不協和音が鳴り響いている。\n    司令官、この「ベースロードの異常増」という物理的なシグナルを軽視すべきではない。これは市場の「幻想（ペーパー）」ではなく、「現実（物理）」の天井に直結する。電力需要の増加は、エネルギー源、特に天然ガスや原油の実需を押し上げる強力な要因となる。原油 (USO) やエネルギー・インフラ (KMI) の上昇は、この物理的トレンドの先行指標と捉えるべきだ。\n    一方で、ハイパースケーラーの軟調と一部AI関連の堅調の乖離は、AI投資がより選別的になり、実体経済への寄与度が高いインフラやチップに焦点が移りつつあることを示唆している。データセンター冷却・電力管理のVRT、データセンターREITのEQIXの底堅さは、この物理的基盤への投資が続いている証拠だ。\n    我々の戦略は、この「規律ある休符」を活用し、次の強力なソロパートが始まる前にポジションを構築することだ。エネルギー関連の物理的な供給制約、そしてそれを支えるインフラ銘柄群の動向を注視し、 Bedrock比率が示す資金循環のペースと、Credit Heartbeatが示す市場の信頼度という二つの「テンポ」のずれが、次にどの市場セーブへと繋がるのか、冷徹に見極める準備をしよう。今は静かに耳を澄まし、市場が次に奏でるメロディの方向性を探る時だ。",
-    "insight_hash": "22969be234ea487ab43041213540aff4",
-    "weekly_insight": "⚠️ 【AI CORE OFFLINE】 APIエンドポイントへのルーティングに失敗しました。プロジェクト権限の再確認が必要です。",
-    "weekly_insight_hash": "53557e1ac6b33f24f657b093d31f9289"
+    "insight": "⚠️ 【AI CORE OFFLINE】 APIエンドポイントへのルーティングに失敗しました。プロジェクト権限の再確認が必要です。",
+    "insight_hash": "2472196306d6f7751dd0e5b3a92a1c14",
+    "weekly_insight": "よう相棒、今週も資金の血流と物理構造のアンサンブルを解剖していくぞ。市場のノイズは我々の耳には届かない。聴くべきは、資金の流れが奏でる本質的なリズムだ。\n\n---\n\n### 1. 【今週のマクロ・レジームシフト】\n\n今週の市場は、まるでジャズのセッションでソロが交代するかの如く、明確なレジームシフトを見せた。これまで高揚感に満ちたメロディを奏でていた「ペーパー（金融幻影）」のAI・クラウドインフラセクターは、突如としてテンポを落とし、休符が入った。代わりに、重厚なベースラインを刻み始めたのは「物理（リアルアセット）」であるエネルギーセクターだ。特に原油と天然ガスが主役の座を奪い、資金の血流はデジタルな夢想から、より根源的なエネルギー供給へと還流した。\n\nこれは一時的な調整か、それとも長期的なテーマの転換点か。信用市場のドラムラインは依然として安定したビートを刻み、電力グリッドの負荷もまだ余裕がある（bedrock ratio 0.52）ため、市場全体がパニックに陥るような不協和音ではない。しかし、資金が「どこから抜け、どこへ還流したか」という構造変化は、次のセッションの方向性を示唆する重要なシグナルだ。\n\n### 2. 【週間監視グリッドの特異点と資金流出入】\n\n今週の監視グリッドからは、資金の鮮明なローテーションが浮かび上がった。\n\n**【資金流入の特異点：物理への回帰】**\n*   **エネルギーの咆哮（TIER_4: +9.73%）**: 原油ETF (USO) が+10.72%と週間のリードソリストとなり、突出した資金流入と出来高急増（vol_surge 1.88）を見せた。天然ガス関連（UNG +1.63%, UNL +1.19%, EQT +2.94%, KMI +3.75%）も堅調で、市場は物理的な燃料供給の重要性を再認識したようだ。天然ガスのフォワードカーブが「コンタンゴ（順ざや）」を維持しているのは、この堅実な物理構造への信頼の証拠だ。\n*   **SaaSの一部高騰**: ServiceNow (NOW +13.59%)、Salesforce (CRM +25.53%) は個別要因の強さが際立った。これはセクター全体への広範な資金流入というよりは、特定の優良銘柄への選別買いと見るべきだろう。\n\n**【資金流出の特異点：ペーパーの天井】**\n*   **AIクラウド・インフラの調整（TIER_3: -4.21%, TIER_1: -2.01%）**: AI半導体のNVIDIA (NVDA +3.71%) は孤軍奮闘するも、GPUクラウドインフラ (CRWV -7.0%, NBIS -6.73%)、ハイパースケーラーのクラウド部門 (ORCL -5.07%, AMZN -2.06%, GOOGL -2.04%) は軒並み大幅な下落。データセンターREIT (EQIX -4.27%) や電力管理システム (ETN -4.52%) といった物理インフラ銘柄も軟調だった。これは、AIブームの「ペーパー」たる期待値が「物理」の限界やコスト増に直面し、短期的な天井を意識されたことの現れだろう。\n*   **代替資産運用の冷え込み（TIER_1_5: -3.17%）**: Blackstone (BX -4.71%) を筆頭に、代替資産運用大手も資金流出が目立った。リスク回避というよりは、ポートフォリオのリバランスにおける優先順位の低下と見る。\n*   **非エネルギーコモディティの下落**: 銅鉱山 (FCX -9.31%, SCCO -8.23%) やウラン (CCJ -10.0%) は大幅に下落。エネルギーとは対照的に、特定非鉄金属や原子力燃料からの資金引き揚げが顕著だった。\n\n### 3. 【来週に向けた司令官への進言】\n\n相棒、今週のアンサンブルは、明確なテーマチェンジの兆しを我々に示している。来週に向けて司令官に進言するならば、以下の点にフォーカスすべきだ。\n\n1.  **物理の支配：エネルギーを注視せよ**\n    *   原油と天然ガスがリードするエネルギーセクターの強さは、一過性のノイズではない可能性が高い。地政学リスク、季節要因、そして供給制約という「物理」の現実が、再び市場のリズムを決定づけ始めている。資金がこの流れに乗って、さらなる高みを目指すか、あるいは一旦のソロを終え休符に入るか、その推移を冷徹に監視しろ。\n\n2.  **ペーパーの調整：AIインフラの底堅さを見極めよ**\n    *   AI関連銘柄の中でも、チップ（NVDA）とインフラ・クラウド（CRWV, NBIS, EQIX, ETN）で明暗が分かれた。これは、AIの「知的な幻影」が、それを支える「物理的な基盤」の堅牢性を問われ始めた証拠だ。インフラ関連銘柄の調整が短期的なものか、それともより深い構造的な問題（例：電力供給の限界、冷却技術の進化停滞）を示唆するのか、その底堅さを注意深く見極める必要がある。\n\n3.  **規律ある休符：ポジション調整と観察の継続**\n    *   市場は大きなクラッシュを示唆する信用不安や電力グリッドの過負荷には陥っていない。しかし、これまでの熱狂的なテーマから資金が動き出したのは事実だ。焦って新たなポジションに飛び込むより、今は「規律ある休符」を重んじる時。次のセッションのコード進行を冷静に分析し、市場が本当に奏でたいメロディは何か、その本質を捉えることに集中しろ。\n\n我々は常に、数字の裏に隠された「物理」の鼓動を聴き続ける。次の動きを見極めるまで、無駄なエネルギーは使うな。",
+    "weekly_insight_hash": "23fbc61853087dbd1fe390d852742fd3"
 }
