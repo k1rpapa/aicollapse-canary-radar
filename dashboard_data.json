@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-09-07T21:39:11.031503+00:00",
+    "timestamp": "2026-09-07T23:17:49.236901+00:00",
     "status": "⚪ 【待機】有意なマクロシグナルなし",
     "config": {
         "TIER_0": [
@@ -1439,10 +1439,10 @@
     },
     "financial_forward_curve": {
         "near_month_ticker": "NG=F (Front Month)",
-        "near_month_price": 2.975,
+        "near_month_price": 2.977,
         "far_month_ticker": "NGZ27.NYM (Dec 2027)",
         "far_month_price": 4.197,
-        "spread_delta": 1.222,
+        "spread_delta": 1.22,
         "signal": "✅ 【正常】コンタンゴ（順ざや維持・規律ある休符）",
         "dates": [
             "2026-06-12",
@@ -1566,7 +1566,7 @@
             2.956,
             2.913,
             2.975,
-            2.975
+            2.977
         ],
         "far_prices": [
             4.301,
@@ -1690,7 +1690,7 @@
             1.231,
             1.29,
             1.222,
-            1.222
+            1.22
         ]
     },
     "grid_physical_data": {
