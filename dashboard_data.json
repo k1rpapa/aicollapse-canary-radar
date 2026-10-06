@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-10-05T21:19:36.664444+00:00",
+    "timestamp": "2026-10-06T01:40:33.705148+00:00",
     "status": "⚪ 【待機】有意なマクロシグナルなし",
     "config": {
         "TIER_0": [
@@ -70,7 +70,7 @@
             "name": "Kinder Morgan",
             "role": "エネルギー・インフラ",
             "change": 1.09,
-            "vol_surge": 0.71
+            "vol_surge": 0.75
         },
         "OWL": {
             "name": "Blue Owl Capital",
@@ -118,7 +118,7 @@
             "name": "NVIDIA",
             "role": "AI半導体・GPU",
             "change": 2.12,
-            "vol_surge": 1.14
+            "vol_surge": 1.15
         },
         "CRWV": {
             "name": "CoreWeave",
@@ -136,7 +136,7 @@
             "name": "Oracle",
             "role": "クラウドインフラ (OCI)",
             "change": 0.13,
-            "vol_surge": 0.54
+            "vol_surge": 0.57
         },
         "SMCI": {
             "name": "Super Micro Computer",
@@ -148,37 +148,37 @@
             "name": "AMD",
             "role": "AI半導体・GPU",
             "change": -0.34,
-            "vol_surge": 0.6
+            "vol_surge": 0.61
         },
         "ANET": {
             "name": "Arista Networks",
             "role": "AIネットワーク機器",
             "change": -0.22,
-            "vol_surge": 0.71
+            "vol_surge": 0.73
         },
         "AMZN": {
             "name": "Amazon (AWS)",
             "role": "ハイパースケーラー",
             "change": -0.05,
-            "vol_surge": 1.01
+            "vol_surge": 1.04
         },
         "MSFT": {
             "name": "Microsoft (Azure)",
             "role": "ハイパースケーラー",
             "change": 1.48,
-            "vol_surge": 1.13
+            "vol_surge": 1.14
         },
         "GOOGL": {
             "name": "Alphabet (GCP)",
             "role": "ハイパースケーラー",
             "change": 0.86,
-            "vol_surge": 0.92
+            "vol_surge": 0.94
         },
         "META": {
             "name": "Meta",
             "role": "AI・メタバース",
             "change": 1.9,
-            "vol_surge": 0.62
+            "vol_surge": 0.63
         },
         "FCX": {
             "name": "Freeport-McMoRan (Copper)",
@@ -196,7 +196,7 @@
             "name": "US Oil Fund (WTI)",
             "role": "原油 ETF",
             "change": -2.29,
-            "vol_surge": 0.55
+            "vol_surge": 0.56
         },
         "CCJ": {
             "name": "Cameco (Uranium)",
@@ -208,7 +208,7 @@
             "name": "ServiceNow",
             "role": "エンタープライズ SaaS",
             "change": 1.27,
-            "vol_surge": 0.65
+            "vol_surge": 0.71
         },
         "CRM": {
             "name": "Salesforce",
@@ -261,7 +261,7 @@
             "name": "Kinder Morgan",
             "role": "エネルギー・インフラ",
             "change": 3.15,
-            "vol_surge": 0.71
+            "vol_surge": 0.75
         },
         "OWL": {
             "name": "Blue Owl Capital",
@@ -309,7 +309,7 @@
             "name": "NVIDIA",
             "role": "AI半導体・GPU",
             "change": 5.15,
-            "vol_surge": 1.14
+            "vol_surge": 1.15
         },
         "CRWV": {
             "name": "CoreWeave",
@@ -327,7 +327,7 @@
             "name": "Oracle",
             "role": "クラウドインフラ (OCI)",
             "change": 3.4,
-            "vol_surge": 0.54
+            "vol_surge": 0.57
         },
         "SMCI": {
             "name": "Super Micro Computer",
@@ -339,37 +339,37 @@
             "name": "AMD",
             "role": "AI半導体・GPU",
             "change": 3.98,
-            "vol_surge": 0.6
+            "vol_surge": 0.61
         },
         "ANET": {
             "name": "Arista Networks",
             "role": "AIネットワーク機器",
             "change": 1.99,
-            "vol_surge": 0.71
+            "vol_surge": 0.73
         },
         "AMZN": {
             "name": "Amazon (AWS)",
             "role": "ハイパースケーラー",
             "change": 1.92,
-            "vol_surge": 1.01
+            "vol_surge": 1.04
         },
         "MSFT": {
             "name": "Microsoft (Azure)",
             "role": "ハイパースケーラー",
             "change": 3.19,
-            "vol_surge": 1.13
+            "vol_surge": 1.14
         },
         "GOOGL": {
             "name": "Alphabet (GCP)",
             "role": "ハイパースケーラー",
             "change": 1.63,
-            "vol_surge": 0.92
+            "vol_surge": 0.94
         },
         "META": {
             "name": "Meta",
             "role": "AI・メタバース",
             "change": 0.42,
-            "vol_surge": 0.62
+            "vol_surge": 0.63
         },
         "FCX": {
             "name": "Freeport-McMoRan (Copper)",
@@ -387,7 +387,7 @@
             "name": "US Oil Fund (WTI)",
             "role": "原油 ETF",
             "change": 0.45,
-            "vol_surge": 0.55
+            "vol_surge": 0.56
         },
         "CCJ": {
             "name": "Cameco (Uranium)",
@@ -399,7 +399,7 @@
             "name": "ServiceNow",
             "role": "エンタープライズ SaaS",
             "change": 4.73,
-            "vol_surge": 0.65
+            "vol_surge": 0.71
         },
         "CRM": {
             "name": "Salesforce",
@@ -1439,10 +1439,10 @@
     },
     "financial_forward_curve": {
         "near_month_ticker": "NG=F (Front Month)",
-        "near_month_price": 3.08,
+        "near_month_price": 3.078,
         "far_month_ticker": "NGZ27.NYM (Dec 2027)",
-        "far_month_price": 4.057,
-        "spread_delta": 0.977,
+        "far_month_price": 4.058,
+        "spread_delta": 0.98,
         "signal": "✅ 【正常】コンタンゴ（順ざや維持・規律ある休符）",
         "dates": [
             "2026-07-13",
@@ -1566,7 +1566,7 @@
             3.026,
             2.967,
             3.035,
-            3.08
+            3.078
         ],
         "far_prices": [
             4.142,
@@ -1628,7 +1628,7 @@
             4.137,
             4.086,
             4.046,
-            4.057
+            4.058
         ],
         "spreads": [
             1.245,
@@ -1690,7 +1690,7 @@
             1.111,
             1.119,
             1.011,
-            0.977
+            0.98
         ]
     },
     "grid_physical_data": {
