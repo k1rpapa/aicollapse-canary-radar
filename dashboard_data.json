@@ -1,5 +1,5 @@
 {
-    "timestamp": "2026-11-10T00:43:08.801706+00:00",
+    "timestamp": "2026-11-10T03:12:19.320240+00:00",
     "status": "⚪ 【待機】有意なマクロシグナルなし",
     "config": {
         "TIER_0": [
@@ -52,7 +52,7 @@
             "name": "US Natural Gas Fund",
             "role": "天然ガス ETF",
             "change": 7.81,
-            "vol_surge": 1.19
+            "vol_surge": 1.2
         },
         "UNL": {
             "name": "US 12-Month NatGas",
@@ -94,13 +94,13 @@
             "name": "Constellation Energy",
             "role": "原子力・クリーンエネルギー",
             "change": 10.46,
-            "vol_surge": 1.7
+            "vol_surge": 1.81
         },
         "VRT": {
             "name": "Vertiv Holdings",
             "role": "データセンター冷却・電力管理",
             "change": 9.63,
-            "vol_surge": 0.8
+            "vol_surge": 0.81
         },
         "EQIX": {
             "name": "Equinix",
@@ -118,13 +118,13 @@
             "name": "NVIDIA",
             "role": "AI半導体・GPU",
             "change": -4.27,
-            "vol_surge": 3.13
+            "vol_surge": 3.14
         },
         "CRWV": {
             "name": "CoreWeave",
             "role": "GPUクラウドインフラ",
             "change": 5.56,
-            "vol_surge": 0.78
+            "vol_surge": 0.79
         },
         "NBIS": {
             "name": "Nebius Group",
@@ -136,7 +136,7 @@
             "name": "Oracle",
             "role": "クラウドインフラ (OCI)",
             "change": 3.18,
-            "vol_surge": 0.58
+            "vol_surge": 0.59
         },
         "SMCI": {
             "name": "Super Micro Computer",
@@ -148,7 +148,7 @@
             "name": "AMD",
             "role": "AI半導体・GPU",
             "change": 13.26,
-            "vol_surge": 1.6
+            "vol_surge": 1.61
         },
         "ANET": {
             "name": "Arista Networks",
@@ -160,7 +160,7 @@
             "name": "Amazon (AWS)",
             "role": "ハイパースケーラー",
             "change": 2.94,
-            "vol_surge": 0.95
+            "vol_surge": 0.96
         },
         "MSFT": {
             "name": "Microsoft (Azure)",
@@ -196,13 +196,13 @@
             "name": "US Oil Fund (WTI)",
             "role": "原油 ETF",
             "change": -3.87,
-            "vol_surge": 1.09
+            "vol_surge": 1.1
         },
         "CCJ": {
             "name": "Cameco (Uranium)",
             "role": "ウラン鉱山",
             "change": 5.71,
-            "vol_surge": 0.83
+            "vol_surge": 0.84
         },
         "NOW": {
             "name": "ServiceNow",
@@ -226,7 +226,7 @@
             "name": "SAP",
             "role": "エンタープライズ SaaS",
             "change": 1.7,
-            "vol_surge": 0.64
+            "vol_surge": 0.65
         }
     },
     "layers": {
@@ -243,7 +243,7 @@
             "name": "US Natural Gas Fund",
             "role": "天然ガス ETF",
             "change": 10.41,
-            "vol_surge": 1.19
+            "vol_surge": 1.2
         },
         "UNL": {
             "name": "US 12-Month NatGas",
@@ -285,13 +285,13 @@
             "name": "Constellation Energy",
             "role": "原子力・クリーンエネルギー",
             "change": 4.82,
-            "vol_surge": 1.7
+            "vol_surge": 1.81
         },
         "VRT": {
             "name": "Vertiv Holdings",
             "role": "データセンター冷却・電力管理",
             "change": -15.04,
-            "vol_surge": 0.8
+            "vol_surge": 0.81
         },
         "EQIX": {
             "name": "Equinix",
@@ -309,13 +309,13 @@
             "name": "NVIDIA",
             "role": "AI半導体・GPU",
             "change": -13.56,
-            "vol_surge": 3.13
+            "vol_surge": 3.14
         },
         "CRWV": {
             "name": "CoreWeave",
             "role": "GPUクラウドインフラ",
             "change": -8.86,
-            "vol_surge": 0.78
+            "vol_surge": 0.79
         },
         "NBIS": {
             "name": "Nebius Group",
@@ -327,7 +327,7 @@
             "name": "Oracle",
             "role": "クラウドインフラ (OCI)",
             "change": -5.07,
-            "vol_surge": 0.58
+            "vol_surge": 0.59
         },
         "SMCI": {
             "name": "Super Micro Computer",
@@ -339,7 +339,7 @@
             "name": "AMD",
             "role": "AI半導体・GPU",
             "change": 5.1,
-            "vol_surge": 1.6
+            "vol_surge": 1.61
         },
         "ANET": {
             "name": "Arista Networks",
@@ -351,7 +351,7 @@
             "name": "Amazon (AWS)",
             "role": "ハイパースケーラー",
             "change": 6.48,
-            "vol_surge": 0.95
+            "vol_surge": 0.96
         },
         "MSFT": {
             "name": "Microsoft (Azure)",
@@ -387,13 +387,13 @@
             "name": "US Oil Fund (WTI)",
             "role": "原油 ETF",
             "change": -9.81,
-            "vol_surge": 1.09
+            "vol_surge": 1.1
         },
         "CCJ": {
             "name": "Cameco (Uranium)",
             "role": "ウラン鉱山",
             "change": 3.87,
-            "vol_surge": 0.83
+            "vol_surge": 0.84
         },
         "NOW": {
             "name": "ServiceNow",
@@ -417,7 +417,7 @@
             "name": "SAP",
             "role": "エンタープライズ SaaS",
             "change": 3.09,
-            "vol_surge": 0.64
+            "vol_surge": 0.65
         }
     },
     "weekly_layers": {
@@ -1439,10 +1439,10 @@
     },
     "financial_forward_curve": {
         "near_month_ticker": "NG=F (Front Month)",
-        "near_month_price": 3.211,
+        "near_month_price": 3.2,
         "far_month_ticker": "NGZ27.NYM (Dec 2027)",
-        "far_month_price": 3.9,
-        "spread_delta": 0.689,
+        "far_month_price": 3.908,
+        "spread_delta": 0.708,
         "signal": "✅ 【正常】コンタンゴ（順ざや維持・規律ある休符）",
         "dates": [
             "2026-08-17",
@@ -1566,7 +1566,7 @@
             2.959,
             2.947,
             2.998,
-            3.211
+            3.2
         ],
         "far_prices": [
             4.172,
@@ -1628,7 +1628,7 @@
             3.917,
             3.864,
             3.856,
-            3.9
+            3.908
         ],
         "spreads": [
             1.482,
@@ -1690,7 +1690,7 @@
             0.958,
             0.917,
             0.858,
-            0.689
+            0.708
         ]
     },
     "grid_physical_data": {
